@@ -2,26 +2,35 @@
     <div class="container ">
         <h2>Reservations </h2>
         <a href="<?php echo e(route('res.create')); ?>" class="btn btn-primary">Add Reservation</a>
-        <table>
+        <table border="2px solid">
             <tr>
                 <th>ID</th>
                 <th>Start</th>
-                <th>End</th>
-                <th></th>
+                <th>Students Count</th>
+                <th>Max Students Count</th>
+                <th>open/close</th>
+                <th>Actions</th>
             </tr>
             <?php $__currentLoopData = $reservations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $res): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr>
                     <td><?php echo e($res->id); ?></td>
                     <td><?php echo e($res->start); ?></td>
-                    <td><?php echo e($res->end); ?></td>
-                    <td>
+                    <td><?php echo e($res->students->count()); ?></td>
+                    <td><?php echo e($res->max_students); ?></td>
+                    <td><?php echo e($res->done); ?></td>
 
+                    <td>
+                        <a href="<?php echo e(route('res.show',['re'=>$res])); ?>" class="btn btn-primary">Show</a>
                         <a href="<?php echo e(route('res.edit',['re'=>$res])); ?>" class="btn btn-success">Edit</a>
-                        <form style="display: inline;" method="post" action="<?php echo e(route('res.destroy',['re'=>$res])); ?>">
-                            <?php echo method_field('delete'); ?>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                            <?php echo csrf_field(); ?>
-                        </form>
+
+
+
+
+                        
+
+
+
+
                     </td>
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

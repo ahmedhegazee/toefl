@@ -25,4 +25,14 @@ class Student extends Model
             0=>'Not Verified',
         ];
     }
+
+    public function reservation()
+    {
+        return $this->belongsTo(Reservation::class);
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
 }

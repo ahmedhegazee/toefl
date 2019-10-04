@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
         'available'=>\App\Http\Middleware\isAvailableReservation::class,
         'check_roles'=>\App\Http\Middleware\checkRoles::class,
         'check_student'=>\App\Http\Middleware\checkStudent::class,
+        'admin'=>\App\Http\Middleware\admin::class,
     ];
 
     /**

@@ -38,7 +38,7 @@ endif; ?>
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('email'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }
-endif; ?>" name="email"  required  autofocus>
+endif; ?>" name="email" value="<?php echo e(old('email')); ?>"  required  autofocus>
 
                                 <?php if ($errors->has('email')) :
 if (isset($message)) { $messageCache = $message; }
@@ -60,7 +60,7 @@ endif; ?>
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('phone'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }
-endif; ?>" name="phone"  required >
+endif; ?>" name="phone" value="<?php echo e(old('phone')); ?>"  required >
 
                                 <?php if ($errors->has('phone')) :
 if (isset($message)) { $messageCache = $message; }
