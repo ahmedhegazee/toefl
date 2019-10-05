@@ -3,10 +3,10 @@
 @section('content')
     <div class="container">
         <h1></h1>
-        <form action="{{route('grammar.question.store')}}" method="post">
-            @include('grammar.questions.form')
+        <form action="{{route('vocab.store')}}" method="post">
+            @include('layouts.questions')
             <button type="submit" class="btn btn-primary">
-                {{ __('Add Grammar Question') }}
+                {{ __('Add Vocab Question') }}
             </button>
         </form>
     </div>

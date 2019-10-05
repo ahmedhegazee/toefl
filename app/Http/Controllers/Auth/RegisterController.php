@@ -53,8 +53,7 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-//        dd($data['name']);
-        return Validator::make($data, [
+        $rules =[
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
             'phone'=>'required|string|unique:students',
@@ -62,7 +61,22 @@ class RegisterController extends Controller
             'nidimage'=>'required|image|max:5120',
             'certificateimage'=>'required|image|max:5120',
             'messageimage'=>'required|image|max:5120',
-        ]);
+        ];
+        $messages=[
+            'personalimage.required'=>'personal image field is required',
+            'nidimage.required'=>'national id image field is required',
+            'certificateimage.required'=>'certificate image field is required',
+            'messageimage.required'=>'message image field is required',
+            'name.required'=>'full name field is required',
+            'personalimage.image'=>'you have to upload image to personal image field ',
+            'nidimage.image'=>'you have to upload image to national id image field ',
+            'certificateimage.image'=>'you have to upload image to certificate image field ',
+            'messageimage.image'=>'you have to upload image to message image field ',
+            'phone.unique'=>'this phone number is token',
+            'email.unique'=>'this email is token',
+        ];
+//        dd($data['name']);
+        return Validator::make($data,$rules,$messages );
     }
 
     /**

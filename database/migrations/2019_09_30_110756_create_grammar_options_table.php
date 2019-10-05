@@ -16,7 +16,7 @@ class CreateGrammarOptionsTable extends Migration
         Schema::create('grammar_options', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('question_id');
-            $table->string('option_text');
+            $table->string('content');
             $table->unsignedInteger('correct')->default(0);
             $table->foreign('question_id')->references('id')->on('grammar_questions');
             $table->timestamps();

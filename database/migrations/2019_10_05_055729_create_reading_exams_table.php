@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGrammarQuestionsTable extends Migration
+class CreateReadingExamsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateGrammarQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('grammar_questions', function (Blueprint $table) {
+        Schema::create('reading_exams', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('content');
-            $table->unsignedBigInteger('grammar_question_type_id');
-            $table->foreign('grammar_question_type_id')->references('id')->on('grammar_question_types');
+            $table->unsignedBigInteger('group_id');
+            $table->foreign('group_id')->references('id')->on('groups');
+
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateGrammarQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('grammar_questions');
+        Schema::dropIfExists('reading_exams');
     }
 }

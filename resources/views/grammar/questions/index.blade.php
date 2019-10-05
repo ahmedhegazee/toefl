@@ -3,7 +3,7 @@
 @section('content')
     <div class="container ">
         <h2>Grammar Questions </h2>
-        <a href="{{route('grammar.create')}}" class="btn btn-primary">Add Grammar Question</a>
+        <a href="{{route('grammar.question.create')}}" class="btn btn-primary">Add Grammar Question</a>
         <table border="2px solid">
             <tr>
                 <th>ID</th>
@@ -20,10 +20,10 @@
             @foreach($questions as $question)
                 <tr>
                     <td>{{$question->id}}</td>
-                    <td>{{$question->question_text}}</td>
+                    <td>{{$question->content}}</td>
                     <td>{{$question->type->name}}</td>
                     @foreach($question->options as $option)
-                    <td>{{$option->option_text}}</td>
+                    <td>{{$option->content}}</td>
 
                     @endforeach
                     @foreach($question->options as $option)
@@ -32,9 +32,9 @@
                     @endif
 @endforeach
                     <td>
-{{--                        <a href="{{route('res.show',['res'=>$res])}}" class="btn btn-primary">Show</a>--}}
-                        <a href="{{route('grammar.edit',['grammar'=>$question])}}" class="btn btn-success">Edit</a>
-                        <form style="display: inline;" method="post" action="{{route('grammar.destroy',['grammar'=>$question->id])}}">
+
+                        <a href="{{route('grammar.question.edit',['question'=>$question])}}" class="btn btn-success">Edit</a>
+                        <form style="display: inline;" method="post" action="{{route('grammar.question.destroy',['question'=>$question->id])}}">
                             @method('delete')
                             <button type="submit" class="btn btn-danger">Delete</button>
                             @csrf

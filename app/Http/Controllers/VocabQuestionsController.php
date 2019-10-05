@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Grammar\GrammarQuestion;
-use \Illuminate\Http\Request;
+use App\Reading\ReadingQuestion;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
-class GrammarQuestionsController extends Controller
+class VocabQuestionsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class GrammarQuestionsController extends Controller
      */
     public function index()
     {
-        $questions = GrammarQuestion::with('options','type')->paginate(15);
-        return view('grammar.questions.index',compact('questions'));
+      $questions=  ReadingQuestion::where('reading_question_type_id',1)->paginate(15);
+      return view('reading.vocab.index',compact('questions'));
     }
 
     /**
@@ -33,53 +33,41 @@ class GrammarQuestionsController extends Controller
             2=>'Third Option',
             3=>'Fourth Option',
         ];
-        $types=[
-            0=>'Fill in the space',
-            1=>'Find the mistake',
-        ];
-        return view('grammar.questions.create',compact('options','types'));
+        return view('reading.vocab.create',compact('options'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         $this->validator($request->all())->validate();
 
-        $question=GrammarQuestion::create([
-           'content'=>$request['content'],
-           'grammar_question_type_id'=>$request['type']
-       ]);
-       foreach($request->options as $option){
-           $question->options()->create([
-               'content'=>$option
-           ]);
-       }
-       $question->options[$request->correct-1]->update(['correct'=>1]);
-        return Redirect::action('GrammarQuestionsController@index');
+        $question= ReadingQuestion::create([
+            'content'=>$request['content'],
+            'reading_question_type_id'=>1,
+        ]);
+
+        foreach($request->options as $option){
+            $question->options()->create([
+                'content'=>$option
+            ]);
+        }
+        $question->options[$request->correct-1]->update(['correct'=>1]);
+        return Redirect::action('VocabQuestionsController@index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param GrammarQuestion $question
-     * @return void
-     */
-    public function show(GrammarQuestion $question)
-    {
-    }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param GrammarQuestion $question
-     * @return \Illuminate\Http\Response
+     * @param ReadingQuestion $vocab
+     * @return void
      */
-    public function edit(GrammarQuestion $question)
+    public function edit(ReadingQuestion $vocab)
     {
         $options = [
             0=>'First Option',
@@ -87,55 +75,51 @@ class GrammarQuestionsController extends Controller
             2=>'Third Option',
             3=>'Fourth Option',
         ];
-        $types=[
-            0=>'Fill in the space',
-            1=>'Find the mistake',
-        ];
-        return view('grammar.questions.update',compact('question','options','types'));
-
+        $question=$vocab;
+        return view('reading.vocab.update',compact('options','question'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param GrammarQuestion $question
+     * @param ReadingQuestion $vocab
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, GrammarQuestion $question)
+    public function update(Request $request, ReadingQuestion $vocab)
     {
         $this->validator($request->all())->validate();
 
-        $question->update([
-            'content'=>$request['content'],
-            'grammar_question_type_id'=>$request['type'],
-            ]);
+        $question=$vocab;
+        $question->update(['content'=>$request['content']]);
         $question->options()->delete();
+
         foreach($request->options as $option){
             $question->options()->create([
                 'content'=>$option,
-
             ]);
         }
         $question->options[$request->correct-1]->update(['correct'=>1]);
-        return Redirect::action('GrammarQuestionsController@index');
+        return Redirect::action('VocabQuestionsController@index');
+
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param GrammarQuestion $question
+     * @param ReadingQuestion $vocab
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Exception
      */
-    public function destroy(GrammarQuestion $question)
+    public function destroy(ReadingQuestion $vocab)
     {
+        $question=$vocab;
+
         $question->options()->delete();
         $question->delete();
-        return Redirect::action('GrammarQuestionsController@index');
+        return Redirect::action('VocabQuestionsController@index');
 
     }
-
     /**
      * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
@@ -157,7 +141,7 @@ class GrammarQuestionsController extends Controller
             'correct'=>'required|numeric',
             'type'=>'required|numeric'
         ];
-       return Validator::make($data,$roles,$message);
+        return Validator::make($data,$roles,$message);
 
     }
 

@@ -11,8 +11,8 @@
 
                         <div class="row justify-content-between p-2">
 
-                            <a href="{{route('grammar.index')}}" class="btn btn-primary ">Grammar Questions</a>
-                            <a href="{{route('paragraph.index')}}" class="btn btn-primary ">Reading Questions</a>
+                            <a href="{{route('vocab.index')}}" class="btn btn-primary ">Vocab Questions</a>
+                            <a href="{{route('paragraph.index')}}" class="btn btn-primary ">Paragraphs</a>
 {{--                            <a href="{{route('listening.index')}}" class="btn btn-primary ">Listening Questions </a>--}}
 
                         </div>

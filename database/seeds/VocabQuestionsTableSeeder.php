@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class GrammarQuestionsTableSeeder extends Seeder
+class VocabQuestionsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,20 +11,16 @@ class GrammarQuestionsTableSeeder extends Seeder
      */
     public function run()
     {
-        $arr=[1,2];
-        for($i=0;$i<100;$i++){
-            $correct= array_rand([1,2,3,4]);
-
-            $rand =array_rand($arr);
-            $question=\App\Grammar\GrammarQuestion::create([
-                'content'=>'question2',
-                'grammar_question_type_id'=>$arr[$rand],
+        for($i=0;$i<50;$i++){
+           $correct= array_rand([1,2,3,4]);
+           $question= \App\Reading\ReadingQuestion::create([
+                'content'=>'Question 2',
+                'reading_question_type_id'=>1
             ]);
             for ($j=0;$j<4;$j++){
                 $question->options()->create(['content'=>'Option '.($j+1)]);
             }
             $question->options[$correct]->update(['correct'=>1]);
         }
-
     }
 }

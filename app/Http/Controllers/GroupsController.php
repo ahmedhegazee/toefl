@@ -52,7 +52,7 @@ class GroupsController extends Controller
      * @param  \App\Group  $group
      * @return \Illuminate\Http\Response
      */
-    public function show(Group $group)
+    public function show(Reservation $re,Group $group)
     {
         $students= $group->students;
         return view('group.show',compact('students','group'));
@@ -64,9 +64,9 @@ class GroupsController extends Controller
      * @param  \App\Group  $group
      * @return \Illuminate\Http\Response
      */
-    public function edit(Group $group)
+    public function edit(Reservation $re,Group $group)
     {
-        return view('group.update',compact('group'));
+        return view('group.update',compact('group','re'));
     }
 
     /**
@@ -76,7 +76,7 @@ class GroupsController extends Controller
      * @param  \App\Group  $group
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Group $group)
+    public function update(Request $request,Reservation $re, Group $group)
     {
        $group->update($this->validateData());
         return redirect(route('res.show',['re'=>$group->reservation]));
@@ -88,7 +88,7 @@ class GroupsController extends Controller
      * @param  \App\Group  $group
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Group $group)
+    public function destroy(Reservation $re,Group $group)
     {
 
        // $group->delete();

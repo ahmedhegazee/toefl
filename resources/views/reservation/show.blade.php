@@ -21,8 +21,8 @@
                     <td>{{$group->students->count()}}</td>
                     <td>
 {{--                        <a href="{{route('grammarExam.show',['grammarExam'=>$group->exam])}}" class="btn btn-primary">Show Grammar Exam</a>--}}
-                        <a href="{{route('group.show',['group'=>$group])}}" class="btn btn-primary">Show Students</a>
-                        <a href="{{route('group.edit',['group'=>$group])}}" class="btn btn-success">Edit Group</a>
+                        <a href="{{route('group.show',['group'=>$group->id,'re'=>$re])}}" class="btn btn-primary">Show Students</a>
+                        <a href="{{route('group.edit',['group'=>$group->id,'re'=>$re])}}" class="btn btn-success">Edit Group</a>
                                                 <form style="display: inline;" method="post" action="{{route('group.generate.exam',['group'=>$group])}}">
 
                                                     <button type="submit" class="btn btn-danger">Generate Exam</button>

@@ -51,29 +51,39 @@ Route::get('/st',function (){
 //Route::get('/rule',function(){
 //   dd(auth()->user()->getRoleID());
 //});
-Route::view('/cpanel/questions','questions.index')->name('questions.index')->middleware(['auth','admin']);
+Route::view('/cpanel/questions','questions')->name('questions.index')->middleware(['auth','admin']);
+Route::view('/cpanel/reading','reading.index')->name('reading.index')->middleware(['auth','admin']);
 Route::resource('res','ReservationsController')->middleware(['auth','admin']);
-Route::resource('grammar','GrammarQuestionsController')->middleware(['auth','admin'])->except(['show']);
-Route::resource('paragraph','ParagraphsController')->middleware(['auth','admin']);
-//Route::resource('group','GroupsController')->middleware(['auth','admin'])->except('create','store');
+Route::resource('grammar/question','GrammarQuestionsController')
+    ->middleware(['auth','admin'])->except(['show'])
+    ->names([
+        'create' => 'grammar.question.create',
+        'store' => 'grammar.question.store',
+        'update' => 'grammar.question.update',
+        'edit' => 'grammar.question.edit',
+        'index' => 'grammar.question.index',
+        'destroy' => 'grammar.question.destroy',
+    ]);;
+Route::resource('reading/paragraph','ParagraphsController')->middleware(['auth','admin']);
+Route::resource('res/{re}/group','GroupsController')->middleware(['auth','admin']);
 Route::resource('grammarExam','GrammarExamController')->middleware(['auth','admin']);
 
 //Groups Section
-Route::get('res/{re}/group/create','GroupsController@create')->name('group.create')->middleware(['auth','admin']);
-Route::post('res/{re}/group','GroupsController@store')->name('group.store')->middleware(['auth','admin']);
 Route::get('/group/{group}/students','GroupsController@showStudents')->name('group.students.show')->middleware(['auth','admin']);
-Route::get('/group/{group}','GroupsController@show')->name('group.show')->middleware(['auth','admin']);
-Route::get('/group/{group}/edit','GroupsController@edit')->name('group.edit')->middleware(['auth','admin']);
-Route::put('/group/{group}','GroupsController@update')->name('group.update')->middleware(['auth','admin']);
 Route::post('/group/{group}/students','GroupsController@addStudents')->name('group.students.store')->middleware(['auth','admin']);
 Route::post('/group/{group}/exam/create','GroupsController@generateExam')->name('group.generate.exam')->middleware(['auth','admin']);
-//Route::resource('reading','ReadingQuestionsController')->middleware(['auth','admin'])->except(['show','index']);
-
-Route::get('/paragraph/{paragraph}/reading/create','ReadingQuestionsController@create')->name('reading.create');
-Route::POST('/paragraph/{paragraph}/reading','ReadingQuestionsController@store')->name('reading.store');
-Route::put('/paragraph/{paragraph}/reading/{question}','ReadingQuestionsController@update')->name('reading.update');
-Route::get('/paragraph/{paragraph}/reading/{question}/edit','ReadingQuestionsController@edit')->name('reading.edit');
-Route::delete('/paragraph/{paragraph}/reading/{question}','ReadingQuestionsController@destroy')->name('reading.destroy');
 
 
-//Route::post('res/{re}','ReservationsController@generateGroups')->name('res.generate.group');
+//Paragraphs Questions
+
+Route::resource('reading/{paragraph}/question','ParagraphQuestionsController')
+    ->except(['index','show'])
+    ->names([
+        'create' => 'paragraph.question.create',
+        'store' => 'paragraph.question.store',
+        'update' => 'paragraph.question.update',
+        'edit' => 'paragraph.question.edit',
+        'destroy' => 'paragraph.question.destroy',
+    ]);
+
+Route::resource('reading/vocab','VocabQuestionsController')->except(['show']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Reading\Paragraph;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class ParagraphsController extends Controller
 {
@@ -15,7 +16,7 @@ class ParagraphsController extends Controller
     public function index()
     {
         $paragraphs=Paragraph::all();
-        return view('questions.reading.paragraph.index',compact('paragraphs'));
+        return view('reading.paragraph.index',compact('paragraphs'));
     }
 
     /**
@@ -25,19 +26,19 @@ class ParagraphsController extends Controller
      */
     public function create()
     {
-        return view('questions.reading.paragraph.create');
+        return view('reading.paragraph.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         Paragraph::create($this->validateData());
-        return redirect(route('paragraph.index'));
+        return Redirect::route('paragraph.index');
     }
 
     /**
@@ -48,7 +49,8 @@ class ParagraphsController extends Controller
      */
     public function show(Paragraph $paragraph)
     {
-        return view ('questions.reading.paragraph.show',compact('paragraph'));
+        $questions=$paragraph->questions()->paginate(15);
+        return view ('reading.paragraph.show',compact('paragraph','questions'));
 
     }
 
@@ -60,7 +62,7 @@ class ParagraphsController extends Controller
      */
     public function edit(Paragraph $paragraph)
     {
-        return view ('questions.reading.paragraph.update',compact('paragraph'));
+        return view ('reading.paragraph.update',compact('paragraph'));
     }
 
     /**
@@ -68,12 +70,12 @@ class ParagraphsController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Paragraph  $paragraph
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Paragraph $paragraph)
     {
         $paragraph->update($this->validateData());
-        return redirect(route('paragraph.index'));
+        return Redirect::route('paragraph.index');
 
     }
 
@@ -81,12 +83,16 @@ class ParagraphsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Paragraph  $paragraph
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Paragraph $paragraph)
     {
+        foreach ($paragraph->questions as $question){
+            $question->options()->delete();
+        }
+        $paragraph->questions()->delete();
         $paragraph->delete();
-        return redirect(route('paragraph.index'));
+        return Redirect::route('paragraph.index');
 
     }
 
