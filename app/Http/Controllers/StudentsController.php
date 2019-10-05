@@ -8,9 +8,17 @@ use App\Student;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class StudentsController extends Controller
 {
+    public function verifiedOptions()
+    {
+        return [
+            1=>'Verified',
+            0=>'Not Verified',
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -28,10 +36,12 @@ class StudentsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        return view('students.create');
-    }
+//    public function create()
+//    {
+//        $reservations =$this->getAvailableReservations();
+//       $options=$this->verifiedOptions();
+//        return view('students.create',compact('reservations','options'));
+//    }
 
 
 
@@ -67,7 +77,8 @@ class StudentsController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        //
+            $student->update(['verified'=>1]);
+            return redirect(route('student.index'));
     }
 
     /**
@@ -80,94 +91,142 @@ class StudentsController extends Controller
     {
         //
     }
+
+//    public function validator(array $data)
+//    {
+//        return Validator::make($data, [
+//            'name' => 'required|string|max:255',
+//            'email' => 'required|string|email|unique:users',
+//            'phone'=>'required|string|unique:students',
+//            'personalimage'=>'required|image|max:5120',
+//            'nidimage'=>'required|image|max:5120',
+//            'certificateimage'=>'required|image|max:5120',
+//            'messageimage'=>'required|image|max:5120',
+//            'reservation'=>'required|numeric',
+//        ]);}
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $user= $this->createUser($this->validateUserData());
-        $this->createStudent($user,$this->validateStudentData());
+//    public function store(Request $request)
+//    {
+//        //dd($request->all());
+//        $vali=$this->validator($request->all())->validate();
+////        $vali=$this->validator($request->all());
+//
+//        $user= $this->createUser($request);
+//        $this->createStudent($user,$request);
+//
+//        return redirect(route('student.index'));
+//    }
+//    public function createUser($data)
+//    {
+//        $user=  User::create([
+//            'name' => $data['name'],
+//            'email'=>$data['email'],
+////            'password' => Hash::make('password'),
+//            'password' => Hash::make($data['phone']),
+//            'role_id'=>2
+//        ]);
+//        return $user;
+//    }
+//    public function createStudent($user,$data)
+//    {
+//
+//        $res = $this->getAvailableReservation();
+//        $groupID=$this->getAvailableGroup($res);
+//       $st= Student::create([
+//            'uid'=> $user->id,
+//            'phone'=>$data['phone'],
+//            'personalimage'=>'',
+//            'nidimage'=>"",
+//            'certificateimage'=>"",
+//            'messageimage'=>"",
+//            'res_id'=>$res->id,
+//            'group_id'=>$groupID
+//
+//        ]);
+//        $this->storeImages($st);
+//    }
+//
+//    public function getAvailableReservation()
+//{
+//    $reservations= Reservation::where('start','<=',now()->toDateString())
+//        ->where('done','!=',1)->get();
+//    $res= $reservations->first();
+//
+//    return $res;
+//
+//}
+//public function getAvailableReservations()
+//{
+//    $reservations= Reservation::where('start','<=',now()->toDateString())
+//        ->where('done','!=',1)->get();
+//
+//    return $reservations;
+//
+//}
+//
+//    public function getAvailableGroup(Reservation $res)
+//    {
+//        $computers = Config::first()->value;
+//        $groupID=0;
+//        $groups=$res->groups;
+//
+//        foreach ($groups as $group){
+//            if($group->students->count()<$computers){
+//                $groupID=$group->id;
+//                break;
+//            }
+//        }
+//        return $groupID;
+//}
+//
+//    public function storeImages(Student $student)
+//    {
+//        if(\request()->has('personalimage')){
+//
+//            $student->update([
+//                'personalimage'=>\request()->personalimage->store('personalimages','public')
+//            ]);
+//        }
+//        if(\request()->has('nidimage')){
+//
+//            $student->update([
+//                'nidimage'=>\request()->nidimage->store('nidimages','public')
+//            ]);
+//        }
+//        if(\request()->has('certificateimage')){
+//
+//            $student->update([
+//                'certificateimage'=>\request()->personalimage->store('certificateimages','public')
+//            ]);
+//        }
+//        if(\request()->has('messageimage')){
+//
+//            $student->update([
+//                'messageimage'=>\request()->nidimage->store('messageimages','public')
+//            ]);
+//        }
+//}
 
-        return view('students.index');
-    }
-    public function createUser($data)
-    {
-        $user=  User::create([
-            'name' => $data['name'],
-            'email'=>$data['email'],
-//            'password' => Hash::make('password'),
-            'password' => Hash::make($data['phone']),
-            'role_id'=>2
-        ]);
-        return $user;
-    }
-    public function createStudent($user,$data)
-    {
-        $res = $this->getAvailableReservation();
-        $groupID=$this->getAvailableGroup($res);
-        Student::create([
-            'uid'=> $user->id,
-            'phone'=>$data['phone'],
-            'personalimage'=>$data['personalimage']->store('personalimages','public'),
-            'nidimage'=>$data['nidimage']->store('nidimages','public'),
-            'certificateimage'=>$data['certificateimage']->store('certificateimages','public'),
-            'messageimage'=>$data['messageimage']->store('messageimages','public'),
-            'res_id'=>$res->id,
-            'group_id'=>$groupID
 
-        ]);
-    }
 
-    public function getAvailableReservation()
-    {
-        $reservations= Reservation::where('start','<=',now()->toDateString())
-            ->where('end','>=',now()->toDateString())
-            ->where('done','!=',1)->get();
-        $res= $reservations->first()->id;
 
-        return $res;
-
-}
-
-    public function getAvailableGroup(Reservation $res)
-    {
-        $computers = Config::first()->value;
-        $groupID=0;
-        $groups=$res->groups;
-
-        foreach ($groups as $group){
-            if($group->students->count()<$computers){
-                $groupID=$group->id;
-                break;
-            }
-        }
-        return $groupID;
-}
-
-    public function storePersonalImage()
-    {
-
-}
-    public function validateUserData()
+    public function validateData()
     {
         return \request()->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
             'phone'=>'required|string|unique:students',
+            'personalimage'=>'sometimes|file|image|max:5120',
+            'nidimage'=>'sometimes|file|image|max:5120',
+            'certificateimage'=>'sometimes|file|image|max:5120',
+            'messageimage'=>'sometimes|file|image|max:5120',
         ]);
     }
 
-    public function validateStudentData()
-    {
-        return \request()->validate([
-            'phone'=>'required|string|unique:students',
-            'personalimage'=>'required|file|image|max:5120',
-            'nidimage'=>'required|file|image|max:5120',
-            'certificateimage'=>'required|file|image|max:5120',
-            'messageimage'=>'required|file|image|max:5120',
-        ]);
-    }
+
 }

@@ -28,12 +28,23 @@ Route::get('/home', 'HomeController@index')->name('home')->middleware('check_rol
 //    ]);
 //   dd($res);
 //});
+//search bar functionality to search for students by phone number
+Route::any('/search',function(){
+    $q = request()->get ( 'q' );
+    $student = \App\Student::where('phone','LIKE','%'.$q.'%')->get();
+    if(count($student) > 0)
+        return redirect()->back()->with('details',$student);
+    else return redirect()->back()->with('message','No Students found. Try to search again !');
+})->name('student.search');
+Route::get('/result',function (){
+    dd(session()->all());
+})->name('result');
 Route::view('/error','error')->name('error');
 Route::view('/cpanel','cpanel.index')->name('admin')->middleware(['auth','admin']);
-Route::resource('student','StudentsController')->middleware(['auth','admin']);
-//Route::get('/student','StudentsController@index')->name('student.index');
-//Route::get('/student/{student}','StudentsController@show')->name('student.show');
-//Route::put('/student/{student}','StudentsController@update')->name('student.update');
+//Route::resource('student','StudentsController')->middleware(['auth','admin']);
+Route::get('/student','StudentsController@index')->name('student.index');
+Route::get('/student/{student}','StudentsController@show')->name('student.show');
+Route::put('/student/{student}','StudentsController@update')->name('student.update');
 Route::get('/st',function (){
     return 'Welcome Student';
 })->name('student')->middleware('check_student');

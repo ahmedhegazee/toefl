@@ -127,18 +127,27 @@ class GroupsController extends Controller
 
     public function generateExam(Group $group)
     {
-        if($group->exam()->count()==0){
-            //        create exam for this group
-            $group->exam()->create();
-            $this->generateRandomQuestions($group);
-        }
-        else
-        {
+        $questionsCount= GrammarQuestion::all()->count();
+       $fillQuestionCount= GrammarQuestion::where('grammar_question_type_id',1)->count();
+       $findQuestionCount= GrammarQuestion::where('grammar_question_type_id',2)->count();
+       if($questionsCount>40 &&$fillQuestionCount>15&&$findQuestionCount>25) {
+           if($group->exam()->count()==0){
+               //        create exam for this group
+               $group->exam()->create();
+               $this->generateRandomQuestions($group);
+           }
+           else
+           {
 
-            $group->exam->questions()->detach($group->exam->questions);
-            $this->generateRandomQuestions($group);
-        }
-        return redirect()->back();
+               $group->exam->questions()->detach($group->exam->questions);
+               $this->generateRandomQuestions($group);
+           }
+           return redirect()->back();
+       }
+       else{
+           return redirect()->back()->with('error','there is no enough questions');
+       }
+
     }
 
     /**

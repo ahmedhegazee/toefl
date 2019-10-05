@@ -148,10 +148,42 @@ endif; ?>
 </div>
 
 
+<div class="form-group row">
+    <label for="correct" class="col-md-4 col-form-label text-md-right">Reservation Date</label>
+    <div class="col-md-6">
+        <select id="correct" name="reservation" class="form-control">
+            <option value="" disabled>Select Reservation Date</option>
+
+            <?php $__currentLoopData = $reservations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $res): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+
+                <option value="<?php echo e($res->id); ?>" ><?php echo e($res->start.' '.$res->students->count().' Students'); ?></option>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 
+        </select>
 
 
+    </div>
+</div>
+
+
+<div class="form-group row">
+    <label for="correct" class="col-md-4 col-form-label text-md-right">Student Status</label>
+    <div class="col-md-6">
+        <select id="correct" name="reservation" class="form-control">
+            <option value="" disabled>Select Student Status</option>
+
+            <?php $__currentLoopData = $options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $optionKey=>$optionValue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+
+                <option value="<?php echo e($optionKey); ?>" ><?php echo e($optionValue); ?></option>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+
+        </select>
+
+
+    </div>
+</div>
 
 
 

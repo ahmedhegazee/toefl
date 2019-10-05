@@ -2,7 +2,9 @@
     <div class="container ">
         <h2>Groups in this Reservation </h2>
         <a href="<?php echo e(route('group.create',['re'=>$re])); ?>" class="btn btn-primary">Add Group</a>
-
+        <?php if(session()->has('error')): ?>
+        <div class="row alert alert-danger"><?php echo e(session()->get('error')); ?></div>
+        <?php endif; ?>
         <table border="2px solid">
             <tr>
                 <th>ID</th>

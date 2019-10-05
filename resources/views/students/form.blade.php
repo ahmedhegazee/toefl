@@ -92,10 +92,42 @@
 </div>
 
 
+<div class="form-group row">
+    <label for="correct" class="col-md-4 col-form-label text-md-right">Reservation Date</label>
+    <div class="col-md-6">
+        <select id="correct" name="reservation" class="form-control">
+            <option value="" disabled>Select Reservation Date</option>
+
+            @foreach($reservations as $res)
+
+                <option value="{{$res->id}}" >{{$res->start.' '.$res->students->count().' Students'}}</option>
+            @endforeach
 
 
+        </select>
 
 
+    </div>
+</div>
+
+
+<div class="form-group row">
+    <label for="correct" class="col-md-4 col-form-label text-md-right">Student Status</label>
+    <div class="col-md-6">
+        <select id="correct" name="verified" class="form-control">
+            <option value="" disabled>Select Student Status</option>
+
+            @foreach($options as $optionKey=>$optionValue)
+
+                <option value="{{$optionKey}}" >{{$optionValue}}</option>
+            @endforeach
+
+
+        </select>
+
+
+    </div>
+</div>
 
 
 

@@ -4,7 +4,9 @@
     <div class="container ">
         <h2>Groups in this Reservation </h2>
         <a href="{{route('group.create',['re'=>$re])}}" class="btn btn-primary">Add Group</a>
-
+        @if(session()->has('error'))
+        <div class="row alert alert-danger">{{session()->get('error')}}</div>
+        @endif
         <table border="2px solid">
             <tr>
                 <th>ID</th>

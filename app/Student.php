@@ -21,8 +21,9 @@ class Student extends Model
     public function verifiedOptions()
     {
         return [
-            1=>'Verified',
+
             0=>'Not Verified',
+            1=>'Verified',
         ];
     }
 
