@@ -15,10 +15,9 @@
                             {{--                            @endcan--}}
 {{--                            <a href="{{route('group.index')}}" class="btn btn-primary ">Groups</a>--}}
 
-                            <a href="{{route('questions.index')}}" class="btn btn-primary ">Questions</a>
-                            <a href="{{route('student.index')}}" class="btn btn-primary ">Students</a>
-                            <a href="{{route('res.index')}}" class="btn btn-primary ">Reservations </a>
-                            <a href="{{route('exams.index')}}" class="btn btn-primary ">Exams </a>
+                            <a href="{{route('reading.exam.index')}}" class="btn btn-primary ">Reading Exams</a>
+                            <a href="{{route('grammar.exam.index')}}" class="btn btn-primary ">Grammar Exams</a>
+{{--                            <a href="{{route('res.index')}}" class="btn btn-primary ">Listening Exams </a>--}}
 
                         </div>
                     </div>

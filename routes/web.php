@@ -57,6 +57,9 @@ Route::get('/st', function () {
 Route::view('/cpanel/questions', 'questions')->name('questions.index')->middleware(['auth', 'admin']);
 Route::view('/cpanel/reading', 'reading.index')->name('reading.index')->middleware(['auth', 'admin']);
 Route::resource('res', 'ReservationsController')->middleware(['auth', 'admin']);
+
+Route::resource('res/{re}/group', 'GroupsController')->middleware(['auth', 'admin']);
+#region grammar
 Route::resource('grammar/question', 'GrammarQuestionsController')
     ->middleware(['auth', 'admin'])->except(['show'])
     ->names([
@@ -67,8 +70,6 @@ Route::resource('grammar/question', 'GrammarQuestionsController')
         'index' => 'grammar.question.index',
         'destroy' => 'grammar.question.destroy',
     ]);
-Route::resource('reading/paragraph', 'ParagraphsController')->middleware(['auth', 'admin']);
-Route::resource('res/{re}/group', 'GroupsController')->middleware(['auth', 'admin']);
 Route::resource('grammar/exam', 'GrammarExamController')
     ->middleware(['auth', 'admin'])
     ->names([
@@ -80,7 +81,7 @@ Route::resource('grammar/exam', 'GrammarExamController')
         'destroy' => 'grammar.exam.destroy',
         'show' => 'grammar.exam.show',
     ]);;
-
+#endregion
 //Groups Section
 Route::get('/group/{group}/students', 'GroupsController@showStudents')->name('group.students.show')->middleware(['auth', 'admin']);
 Route::post('/group/{group}/students', 'GroupsController@addStudents')->name('group.students.store')->middleware(['auth', 'admin']);
@@ -89,6 +90,7 @@ Route::post('/group/{group}/exam/create', 'GroupsController@generateExam')->name
 
 //Paragraphs Questions
 
+Route::resource('reading/paragraph', 'ParagraphsController')->middleware(['auth', 'admin']);
 Route::resource('reading/{paragraph}/question', 'ParagraphQuestionsController')
     ->except(['index', 'show'])
     ->names([
@@ -98,5 +100,17 @@ Route::resource('reading/{paragraph}/question', 'ParagraphQuestionsController')
         'edit' => 'paragraph.question.edit',
         'destroy' => 'paragraph.question.destroy',
     ]);
+Route::resource('reading/exam', 'ReadingExamsController')
+    ->names([
+        'create' => 'reading.exam.create',
+        'store' => 'reading.exam.store',
+        'update' => 'reading.exam.update',
+        'edit' => 'reading.exam.edit',
+        'destroy' => 'reading.exam.destroy',
+        'index' => 'reading.exam.index',
+        ]);
+Route::get('reading/exam/{exam}/paragraphs','ReadingExamsController@showParagraphs')->name('reading.exam.show.paragraphs');
+Route::get('reading/exam/{exam}/vocab','ReadingExamsController@showVocab')->name('reading.exam.show.vocab');
+Route::view('cpanel/exams','cpanel.exams')->name('exams.index');
 
 Route::resource('reading/vocab', 'VocabQuestionsController')->except(['show']);
