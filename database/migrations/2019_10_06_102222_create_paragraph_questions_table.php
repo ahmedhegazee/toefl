@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateReadingQuestionTypesTable extends Migration
+class CreateParagraphQuestionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateReadingQuestionTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('reading_question_types', function (Blueprint $table) {
+        Schema::create('paragraph_questions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
-
+            $table->unsignedBigInteger('paragraph_id');
+            $table->string('content');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateReadingQuestionTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reading_question_types');
+        Schema::dropIfExists('paragraph_questions');
     }
 }

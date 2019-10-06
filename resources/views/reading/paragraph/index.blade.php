@@ -31,6 +31,8 @@
                 </tr>
             @endforeach
         </table>
-
+<div class="row">
+    {{$paragraphs->links()}}
+</div>
     </div>
 @endsection

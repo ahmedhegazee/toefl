@@ -6,7 +6,7 @@
         <form action="{{route('paragraph.question.store',['paragraph'=>$paragraph])}}" method="post">
             @include('layouts.questions')
             <button type="submit" class="btn btn-primary">
-                {{ __('Add Reading Question') }}
+                {{ __('Add Paragraph Question') }}
             </button>
         </form>
     </div>

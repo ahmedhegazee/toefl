@@ -11,6 +11,6 @@ class ParagraphsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Reading\Paragraph::class,5)->create();
+        factory(\App\Reading\Paragraph::class,30)->create();
     }
 }

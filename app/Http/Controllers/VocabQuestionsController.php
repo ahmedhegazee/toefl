@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Reading\ReadingQuestion;
+use App\Reading\VocabQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +16,7 @@ class VocabQuestionsController extends Controller
      */
     public function index()
     {
-      $questions=  ReadingQuestion::where('reading_question_type_id',1)->paginate(15);
+      $questions=  VocabQuestion::paginate(15);
       return view('reading.vocab.index',compact('questions'));
     }
 
@@ -46,9 +46,8 @@ class VocabQuestionsController extends Controller
     {
         $this->validator($request->all())->validate();
 
-        $question= ReadingQuestion::create([
+        $question= VocabQuestion::create([
             'content'=>$request['content'],
-            'reading_question_type_id'=>1,
         ]);
 
         foreach($request->options as $option){
@@ -64,10 +63,10 @@ class VocabQuestionsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param ReadingQuestion $vocab
+     * @param VocabQuestion $vocab
      * @return void
      */
-    public function edit(ReadingQuestion $vocab)
+    public function edit(VocabQuestion $vocab)
     {
         $options = [
             0=>'First Option',
@@ -83,10 +82,10 @@ class VocabQuestionsController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param ReadingQuestion $vocab
+     * @param VocabQuestion $vocab
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, ReadingQuestion $vocab)
+    public function update(Request $request, VocabQuestion $vocab)
     {
         $this->validator($request->all())->validate();
 
@@ -107,11 +106,11 @@ class VocabQuestionsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param ReadingQuestion $vocab
+     * @param VocabQuestion $vocab
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Exception
      */
-    public function destroy(ReadingQuestion $vocab)
+    public function destroy(VocabQuestion $vocab)
     {
         $question=$vocab;
 
@@ -139,7 +138,6 @@ class VocabQuestionsController extends Controller
             'options' => 'required|array|min:4',
             'options.*' => 'required|string|distinct',
             'correct'=>'required|numeric',
-            'type'=>'required|numeric'
         ];
         return Validator::make($data,$roles,$message);
 

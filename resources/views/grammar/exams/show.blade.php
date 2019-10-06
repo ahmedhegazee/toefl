@@ -14,16 +14,16 @@
                 <th>Third Option</th>
                 <th>Fourth Option</th>
                 <th>Correct Answer</th>
-{{--                <th></th>--}}
+                <th></th>
 
             </tr>
             @foreach($questions as $question)
                 <tr>
                     <td>{{$question->id}}</td>
-                    <td>{{$question->question_text}}</td>
+                    <td>{{$question->content}}</td>
                     <td>{{$question->type->name}}</td>
                     @foreach($question->options as $option)
-                        <td>{{$option->option_text}}</td>
+                        <td>{{$option->content}}</td>
 
                     @endforeach
                     @foreach($question->options as $option)
@@ -31,15 +31,14 @@
                             <td>{{$option->getCorrectOption($option->id%4==0?4:$option->id%4)}}</td>
                         @endif
                     @endforeach
-{{--                    <td>--}}
-{{--                        --}}{{--                        <a href="{{route('res.show',['res'=>$res])}}" class="btn btn-primary">Show</a>--}}
-{{--                        <a href="{{route('grammar.edit',['grammar'=>$question])}}" class="btn btn-success">Edit</a>--}}
+                    <td>
+                        <a href="{{route('grammar.question.edit',['question'=>$question])}}" class="btn btn-success">Edit Question</a>
 {{--                        <form style="display: inline;" method="post" action="{{route('grammar.destroy',['grammar'=>$question->id])}}">--}}
 {{--                            @method('delete')--}}
 {{--                            <button type="submit" class="btn btn-danger">Delete</button>--}}
 {{--                            @csrf--}}
 {{--                        </form>--}}
-{{--                    </td>--}}
+                    </td>
                 </tr>
             @endforeach
         </table>

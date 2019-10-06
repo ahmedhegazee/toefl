@@ -13,9 +13,8 @@ class VocabQuestionsTableSeeder extends Seeder
     {
         for($i=0;$i<50;$i++){
            $correct= array_rand([1,2,3,4]);
-           $question= \App\Reading\ReadingQuestion::create([
+           $question= \App\Reading\VocabQuestion::create([
                 'content'=>'Question 2',
-                'reading_question_type_id'=>1
             ]);
             for ($j=0;$j<4;$j++){
                 $question->options()->create(['content'=>'Option '.($j+1)]);

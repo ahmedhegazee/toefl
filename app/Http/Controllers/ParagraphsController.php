@@ -15,7 +15,7 @@ class ParagraphsController extends Controller
      */
     public function index()
     {
-        $paragraphs=Paragraph::all();
+        $paragraphs=Paragraph::paginate(15);
         return view('reading.paragraph.index',compact('paragraphs'));
     }
 
@@ -37,8 +37,8 @@ class ParagraphsController extends Controller
      */
     public function store(Request $request)
     {
-        Paragraph::create($this->validateData());
-        return Redirect::route('paragraph.index');
+        $paragraph=Paragraph::create($this->validateData());
+        return Redirect::route('paragraph.question.create',['paragraph'=>$paragraph]);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Grammar\GrammarExam;
+use App\Reading\ReadingExam;
 use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
@@ -14,11 +15,14 @@ class Group extends Model
        return $this->hasMany(Student::class);
     }
 
-    public function exam()
+    public function grammarExam()
     {
         return $this->hasOne(GrammarExam::class);
     }
-
+    public function readingExam()
+    {
+        return $this->hasOne(ReadingExam::class);
+    }
     public function reservation()
     {
         return $this->belongsTo(Reservation::class);

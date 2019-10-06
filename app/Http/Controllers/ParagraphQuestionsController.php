@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Reading\Paragraph;
-use App\Reading\ReadingQuestion;
+use App\Reading\VocabQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,7 +27,7 @@ class ParagraphQuestionsController extends Controller
             2=>'Third Option',
             3=>'Fourth Option',
         ];
-        return view('.reading.questions.create',compact('options','paragraph'));
+        return view('reading.questions.create',compact('options','paragraph'));
     }
 
     /**
@@ -43,7 +43,6 @@ class ParagraphQuestionsController extends Controller
 
         $question= $paragraph->questions()->create([
             'content'=>$request['content'],
-            'reading_question_type_id'=>2,
         ]);
 
         foreach($request->options as $option){
@@ -60,10 +59,10 @@ class ParagraphQuestionsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param Paragraph $paragraph
-     * @param ReadingQuestion $question
+     * @param VocabQuestion $question
      * @return void
      */
-    public function edit(Paragraph $paragraph,ReadingQuestion $question)
+    public function edit(Paragraph $paragraph, VocabQuestion $question)
     {
         $options = [
             0=>'First Option',
@@ -79,10 +78,10 @@ class ParagraphQuestionsController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param Paragraph $paragraph
-     * @param ReadingQuestion $question
+     * @param VocabQuestion $question
      * @return void
      */
-    public function update(Request $request,Paragraph $paragraph, ReadingQuestion $question)
+    public function update(Request $request, Paragraph $paragraph, VocabQuestion $question)
     {
         $this->validator($request->all())->validate();
 
@@ -103,11 +102,11 @@ class ParagraphQuestionsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Paragraph $paragraph
-     * @param ReadingQuestion $question
+     * @param VocabQuestion $question
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
-    public function destroy(Paragraph $paragraph,ReadingQuestion $question)
+    public function destroy(Paragraph $paragraph, VocabQuestion $question)
     {
         $question->options()->delete();
         $question->delete();
@@ -132,7 +131,6 @@ class ParagraphQuestionsController extends Controller
             'options' => 'required|array|min:4',
             'options.*' => 'required|string|distinct',
             'correct'=>'required|numeric',
-            'type'=>'required|numeric'
         ];
         return Validator::make($data,$roles,$message);
 

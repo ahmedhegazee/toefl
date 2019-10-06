@@ -57,13 +57,14 @@ class GrammarExamController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param GrammarExam $grammarExam
+     * @param GrammarExam $exam
      * @return void
      */
-    public function show(GrammarExam $grammarExam)
+    public function show(GrammarExam $exam)
     {
+
 //        $questions = $grammarExam->questions()->orderBy('id', 'asc')->paginate(15);;
-        $questions = $grammarExam->questions()->paginate(15);;
+        $questions = $exam->questions()->paginate(15);
         return view('grammar.exams.show',compact('questions'));
     }
 

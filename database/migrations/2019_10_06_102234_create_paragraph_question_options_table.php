@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateReadingOptionsTable extends Migration
+class CreateParagraphQuestionOptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateReadingOptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('reading_options', function (Blueprint $table) {
+        Schema::create('paragraph_question_options', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('reading_question_id');
+            $table->unsignedBigInteger('paragraph_question_id');
             $table->string('content');
             $table->unsignedInteger('correct')->default(0);
-            $table->foreign('reading_question_id')->on('reading_questions')->references('id');
+            $table->foreign('paragraph_question_id')->on('paragraph_questions')->references('id');
+
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateReadingOptionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reading_options');
+        Schema::dropIfExists('paragraph_question_options');
     }
 }

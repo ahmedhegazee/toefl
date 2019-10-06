@@ -1,7 +1,7 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
         <h2>Grammar Exams </h2>
-        <a href="<?php echo e(route('grammarExam.create')); ?>" class="btn btn-primary">Add Exam</a>
+
         <table border="2px solid">
             <tr>
                 <th>ID</th>
@@ -20,13 +20,13 @@
                     <td><?php echo e($exam->getFindQuestions()->count()); ?></td>
 
                     <td>
-                        <a href="<?php echo e(route('grammarExam.show',['grammarExam'=>$exam])); ?>" class="btn btn-primary">Show</a>
-                        <a href="<?php echo e(route('grammarExam.edit',['grammarExam'=>$exam])); ?>" class="btn btn-success">Edit</a>
-                        <form style="display: inline;" method="post" action="<?php echo e(route('grammarExam.destroy',['grammarExam'=>$exam])); ?>">
-                            <?php echo method_field('delete'); ?>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                            <?php echo csrf_field(); ?>
-                        </form>
+                        <a href="<?php echo e(route('grammar.exam.show',['exam'=>$exam])); ?>" class="btn btn-primary">Show</a>
+
+
+
+
+
+
                     </td>
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

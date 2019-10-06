@@ -35,5 +35,13 @@ class GrammarQuestion extends Model
         return $this->belongsToMany(GrammarExam::class);
 }
 
+    public function scopeFillQuestions($query)
+    {
+        return $query->where('grammar_question_type_id',1)->get();
+}
+public function scopeFindQuestions($query)
+    {
+        return $query->where('grammar_question_type_id',2)->get();
+}
 
 }

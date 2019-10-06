@@ -7,7 +7,7 @@
             @include('layouts.questions')
             @method('put')
             <button type="submit" class="btn btn-primary">
-                {{ __('Update Reading Question') }}
+                {{ __('Update Paragraph Question') }}
             </button>
         </form>
     </div>

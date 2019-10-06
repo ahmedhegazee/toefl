@@ -6,7 +6,7 @@
         <p>
             {{$paragraph->content}}
         </p>
-        <a href="{{route('paragraph.question.create',['paragraph'=>$paragraph])}}" class="btn btn-primary mb-5">Add Reading Question</a>
+        <a href="{{route('paragraph.question.create',['paragraph'=>$paragraph])}}" class="btn btn-primary mb-5">Add Paragraph Question</a>
 
         <table border="2px solid">
 

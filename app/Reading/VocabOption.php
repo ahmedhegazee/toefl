@@ -4,13 +4,13 @@ namespace App\Reading;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ReadingOption extends Model
+class VocabOption extends Model
 {
     protected $guarded=[];
 
     public function question()
     {
-        return $this->belongsTo(ReadingQuestion::class);
+        return $this->belongsTo(VocabQuestion::class);
     }
     public function getCorrectOption($option)
     {

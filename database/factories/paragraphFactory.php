@@ -8,6 +8,6 @@ use Faker\Generator as Faker;
 $factory->define(Paragraph::class, function (Faker $faker) {
     return [
         'title'=>$faker->text(30),
-        'content'=>$faker->paragraph,
+        'content'=>$faker->paragraph(20),
     ];
 });

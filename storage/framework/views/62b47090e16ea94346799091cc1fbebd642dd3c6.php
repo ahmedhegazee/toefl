@@ -12,16 +12,16 @@
                 <th>Third Option</th>
                 <th>Fourth Option</th>
                 <th>Correct Answer</th>
-
+                <th></th>
 
             </tr>
             <?php $__currentLoopData = $questions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $question): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr>
                     <td><?php echo e($question->id); ?></td>
-                    <td><?php echo e($question->question_text); ?></td>
+                    <td><?php echo e($question->content); ?></td>
                     <td><?php echo e($question->type->name); ?></td>
                     <?php $__currentLoopData = $question->options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <td><?php echo e($option->option_text); ?></td>
+                        <td><?php echo e($option->content); ?></td>
 
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php $__currentLoopData = $question->options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -29,15 +29,14 @@
                             <td><?php echo e($option->getCorrectOption($option->id%4==0?4:$option->id%4)); ?></td>
                         <?php endif; ?>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <td>
+                        <a href="<?php echo e(route('grammar.question.edit',['question'=>$question])); ?>" class="btn btn-success">Edit Question</a>
 
 
 
 
 
-
-
-
-
+                    </td>
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </table>

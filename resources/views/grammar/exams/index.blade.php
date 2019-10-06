@@ -3,7 +3,7 @@
 @section('content')
     <div class="container ">
         <h2>Grammar Exams </h2>
-        <a href="{{route('grammarExam.create')}}" class="btn btn-primary">Add Exam</a>
+{{--        <a href="{{route('grammarExam.create')}}" class="btn btn-primary">Add Exam</a>--}}
         <table border="2px solid">
             <tr>
                 <th>ID</th>
@@ -22,13 +22,13 @@
                     <td>{{$exam->getFindQuestions()->count()}}</td>
 
                     <td>
-                        <a href="{{route('grammarExam.show',['grammarExam'=>$exam])}}" class="btn btn-primary">Show</a>
-                        <a href="{{route('grammarExam.edit',['grammarExam'=>$exam])}}" class="btn btn-success">Edit</a>
-                        <form style="display: inline;" method="post" action="{{route('grammarExam.destroy',['grammarExam'=>$exam])}}">
-                            @method('delete')
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                            @csrf
-                        </form>
+                        <a href="{{route('grammar.exam.show',['exam'=>$exam])}}" class="btn btn-primary">Show</a>
+{{--                        <a href="{{route('grammarExam.edit',['grammarExam'=>$exam])}}" class="btn btn-success">Edit</a>--}}
+{{--                        <form style="display: inline;" method="post" action="{{route('grammarExam.destroy',['grammarExam'=>$exam])}}">--}}
+{{--                            @method('delete')--}}
+{{--                            <button type="submit" class="btn btn-danger">Delete</button>--}}
+{{--                            @csrf--}}
+{{--                        </form>--}}
                     </td>
                 </tr>
             @endforeach
