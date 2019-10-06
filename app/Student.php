@@ -21,8 +21,19 @@ class Student extends Model
     public function verifiedOptions()
     {
         return [
-            1=>'Verified',
+
             0=>'Not Verified',
+            1=>'Verified',
         ];
+    }
+
+    public function reservation()
+    {
+        return $this->belongsTo(Reservation::class);
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
     }
 }

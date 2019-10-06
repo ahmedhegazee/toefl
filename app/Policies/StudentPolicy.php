@@ -19,7 +19,7 @@ class StudentPolicy
     public function viewAny(User $user)
     {
 
-        return $user->getRoleID()==3;
+        return $user->getRoleID()==2;
     }
 
     /**

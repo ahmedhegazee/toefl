@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Resarvation;
+use App\Config;
+use App\Grammar\GrammarQuestion;
+use App\Group;
+use App\Reservation;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
@@ -16,8 +19,8 @@ class ReservationsController extends Controller
      */
     public function index()
     {
-        $reservations = Resarvation::all();
-        return view('reservation.index',compact('reservations'));
+        $reservations = Reservation::all();
+        return view('reservation.index', compact('reservations'));
     }
 
     /**
@@ -33,84 +36,109 @@ class ReservationsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        if(! $this->validateInterval()){
-            Resarvation::create($this->validateData());
+        if (!$this->isAvailableOpenedReservation()) {
+          $res= Reservation::create($this->validateData());
+            $this->generateGroups($res);
             return redirect()->to(route('res.index'));
-        }
-    else
-        return redirect()->back()->with('error','Choose Correct Dates');
+        } else
+            return redirect()->back()->with('error', 'You can\'t create another reservation' );
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Resarvation  $resarvation
+     * @param Reservation $re
      * @return \Illuminate\Http\Response
      */
-    public function show(Resarvation $re)
+    public function show(Reservation $re)
     {
-        return redirect()->to(route('res.index'));
+       $groups= $re->groups;
+        return view('reservation.show',compact('groups','re'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Resarvation  $resarvation
+     * @param \App\Reservation $resarvation
      * @return \Illuminate\Http\Response
      */
-    public function edit(Resarvation $re)
+    public function edit(Reservation $re)
     {
 
-        return view('reservation.update',compact('re'));
+        return view('reservation.update', compact('re'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Resarvation  $resarvation
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Reservation $resarvation
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Resarvation $re)
+    public function update(Request $request, Reservation $re)
     {
-        $re->update($this->validateData());
+        $re->update($this->validateUpdateData());
         return redirect()->to(route('res.index'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Resarvation  $resarvation
+     * @param \App\Reservation $resarvation
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Resarvation $re)
+//    public function destroy(Reservation $re)
+//    {
+//        $re->delete();
+//        return redirect()->to(route('res.index'));
+//    }
+    /**
+     * @param Reservation $re
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function generateGroups(Reservation $re)
     {
-        $re->delete();
+        //get the maximum number of students in this reservation
+        $max=$re->max_students;
+        //get the value of computers count in labs
+        $computers = Config::first()->value;
+        //divide the max number on the computers number to get the groups number
+        $groupsNumber = ceil($max/$computers);
+        //for this reservation create number of groups
+
+        for($i=0;$i<$groupsNumber;$i++){
+            $group= $re->groups()->create([
+                'name'=>'Group '.($i+1),
+            ]);
+               }
         return redirect()->to(route('res.index'));
+
+    }
+    public function isAvailableOpenedReservation()
+    {
+      return Reservation::where('done',0)->count()>0;
     }
 
-    public function validateInterval()
+    public function validateUpdateData()
     {
-        $fdate = request('start');
-        $tdate = request('end');
-        $datetime1 = new DateTime($fdate);
-        $datetime2 = new DateTime($tdate);
-        $interval = $datetime1->diff($datetime2);
-        return $interval->invert;
-}
+        return request()->validate([
+            'start' => 'required|date',
+            'done'=>'required'
+        ]);
+    }
 
     public function validateData()
     {
 
-
         return request()->validate([
-        'start'=>'required|date',
-        'end'=>'required|date|different:start',
-    ]);
+            'start' => 'required|date',
+            'max_students'=>'required|numeric|min:1',
+            'done'=>'sometimes'
+        ]);
     }
 }

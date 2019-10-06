@@ -8,11 +8,13 @@
                     <div class="card-body">
 
                         <div class="row justify-content-between p-2">
-                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('viewAny',\App\Student::class)): ?>
-                            <a href="<?php echo e(route('student.index')); ?>" class="btn btn-primary ">Verify Students</a>
-                            <?php endif; ?>
-                            <a href="" class="btn btn-primary ">Questions</a>
-                            <a href="" class="btn btn-primary ">Students</a>
+                            
+                            
+                            
+
+
+                            <a href="<?php echo e(route('questions.index')); ?>" class="btn btn-primary ">Questions</a>
+                            <a href="<?php echo e(route('student.index')); ?>" class="btn btn-primary ">Students</a>
                             <a href="<?php echo e(route('res.index')); ?>" class="btn btn-primary ">Reservations </a>
 
                         </div>

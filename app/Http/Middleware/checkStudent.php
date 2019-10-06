@@ -9,11 +9,12 @@ class checkStudent
 {
     public function isVerified()
     {
-        return  Student::where('uid',auth()->user()->id)->get()[0]->verified==1;
+
+        return  Student::where('uid',auth()->user()->id)->get()->first()->verified=='Verified';
     }
     public function CanEnterExam()
     {
-        return  Student::where('uid',auth()->user()->id)->get()[0]->enterexam==1;
+        return  Student::where('uid',auth()->user()->id)->get()->first()->enterexam==1;
     }
     /**
      * Handle an incoming request.
@@ -24,12 +25,14 @@ class checkStudent
      */
     public function handle($request, Closure $next)
     {
+
+
         if(!$this->isVerified()){
             auth()->logout();
-            return redirect('/error')->with('error','You Are Not Verified');
+            return redirect(route('error'))->with('error','You Are Not Verified');
         }else if( !$this->canEnterExam()){
             auth()->logout();
-            return redirect('/error')->with('error','You Are Not Allowed to Enter Exam');
+            return redirect(route('error'))->with('error','You Are Not Allowed to Enter Exam');
         }
         else
         return $next($request);

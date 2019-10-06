@@ -16,7 +16,9 @@ class CreateStudentsTable extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('uid');
-            $table->string('phone');
+            $table->unsignedBigInteger('res_id');
+            $table->unsignedBigInteger('group_id');
+            $table->string('phone')->unique();
             $table->string('personalimage');
             $table->string('nidimage');
             $table->string('certificateimage');
@@ -25,7 +27,9 @@ class CreateStudentsTable extends Migration
             $table->integer('active')->default(0);//is log in or not
             $table->integer('startexam')->default(0); // the student can start the exam or not
             $table->integer('enterexam')->default(0); // the student can enter the exam or not
-            $table->foreign('uid', 'fk_253_students_users_id_user')->references('id')->on('users');
+            $table->foreign('uid')->references('id')->on('users');
+            $table->foreign('res_id')->references('id')->on('reservations');
+            $table->foreign('group_id')->references('id')->on('groups');
 
             $table->timestamps();
         });

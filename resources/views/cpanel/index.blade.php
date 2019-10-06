@@ -10,11 +10,13 @@
                     <div class="card-body">
 
                         <div class="row justify-content-between p-2">
-                            @can('viewAny',\App\Student::class)
-                            <a href="{{route('student.index')}}" class="btn btn-primary ">Verify Students</a>
-                            @endcan
-                            <a href="" class="btn btn-primary ">Questions</a>
-                            <a href="" class="btn btn-primary ">Students</a>
+                            {{--                            @can('viewAny',\App\Student::class)--}}
+                            {{--                            <a href="{{route('student.index')}}" class="btn btn-primary ">Verify Students</a>--}}
+                            {{--                            @endcan--}}
+{{--                            <a href="{{route('group.index')}}" class="btn btn-primary ">Groups</a>--}}
+
+                            <a href="{{route('questions.index')}}" class="btn btn-primary ">Questions</a>
+                            <a href="{{route('student.index')}}" class="btn btn-primary ">Students</a>
                             <a href="{{route('res.index')}}" class="btn btn-primary ">Reservations </a>
 
                         </div>

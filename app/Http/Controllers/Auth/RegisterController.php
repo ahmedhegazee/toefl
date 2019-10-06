@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Config;
+use App\Group;
+use App\Reservation;
 use App\Student;
 use App\User;
 use App\Http\Controllers\Controller;
@@ -50,15 +53,30 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'unique:users'],
-            'phone'=>['required', 'string' ],
-            'personalimage'=>['required','image','max:5120'],
-            'nidimage'=>['required','image','max:5120'],
-            'certificateimage'=>['required','image','max:5120'],
-            'messageimage'=>['required','image','max:5120'],
-        ]);
+        $rules =[
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users',
+            'phone'=>'required|string|unique:students',
+            'personalimage'=>'required|image|max:5120',
+            'nidimage'=>'required|image|max:5120',
+            'certificateimage'=>'required|image|max:5120',
+            'messageimage'=>'required|image|max:5120',
+        ];
+        $messages=[
+            'personalimage.required'=>'personal image field is required',
+            'nidimage.required'=>'national id image field is required',
+            'certificateimage.required'=>'certificate image field is required',
+            'messageimage.required'=>'message image field is required',
+            'name.required'=>'full name field is required',
+            'personalimage.image'=>'you have to upload image to personal image field ',
+            'nidimage.image'=>'you have to upload image to national id image field ',
+            'certificateimage.image'=>'you have to upload image to certificate image field ',
+            'messageimage.image'=>'you have to upload image to message image field ',
+            'phone.unique'=>'this phone number is token',
+            'email.unique'=>'this email is token',
+        ];
+//        dd($data['name']);
+        return Validator::make($data,$rules,$messages );
     }
 
     /**
@@ -83,13 +101,17 @@ class RegisterController extends Controller
       $user=  User::create([
             'name' => $data['name'],
             'email'=>$data['email'],
-            'password' => Hash::make('password'),
+//            'password' => Hash::make('password'),
+            'password' => Hash::make($data['phone']),
             'role_id'=>2
         ]);
         return $user;
     }
     public function createStudent($user,$data)
     {
+        $res = $this->getAvailableReservation();
+        $groupID=$this->getAvailableGroup($res);
+
         Student::create([
             'uid'=> $user->id,
             'phone'=>$data['phone'],
@@ -97,7 +119,35 @@ class RegisterController extends Controller
             'nidimage'=>$data['nidimage']->store('nidimages','public'),
             'certificateimage'=>$data['certificateimage']->store('certificateimages','public'),
             'messageimage'=>$data['messageimage']->store('messageimages','public'),
+            'res_id'=>$res->id,
+            'group_id'=>$groupID,
+
         ]);
 }
+    public function getAvailableReservation()
+    {
+        $reservations= Reservation::where('start','<=',now()->toDateString())
+            ->where('end','>=',now()->toDateString())
+            ->where('done','!=',1)->get();
+        $res= $reservations->first();
+
+        return $res;
+
+    }
+
+    public function getAvailableGroup(Reservation $res)
+    {
+        $computers = Config::first()->value;
+        $groupID=0;
+        $groups=$res->groups;
+
+        foreach ($groups as $group){
+            if($group->students->count()<$computers){
+                $groupID=$group->id;
+                break;
+            }
+        }
+        return $groupID;
+    }
 
 }

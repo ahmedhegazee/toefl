@@ -17,8 +17,6 @@ class RolesTableSeeder extends Seeder
         \App\Role::create([
             'title'=>'Student'
         ]);
-        \App\Role::create([
-            'title'=>'Verifier'
-        ]);
+
     }
 }
