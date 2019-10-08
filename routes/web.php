@@ -114,3 +114,17 @@ Route::get('reading/exam/{exam}/vocab','ReadingExamsController@showVocab')->name
 Route::view('cpanel/exams','cpanel.exams')->name('exams.index');
 
 Route::resource('reading/vocab', 'VocabQuestionsController')->except(['show']);
+
+
+
+//listening section
+
+
+Route::resource('listening/audio', 'AudiosController');
+Route::resource('listening/audio/{audio}/question','ListeningQuestionsController')->names([
+    'create' => 'audio.question.create',
+    'store' => 'audio.question.store',
+    'update' => 'audio.question.update',
+    'edit' => 'audio.question.edit',
+    'destroy' => 'audio.question.destroy',
+]);;
