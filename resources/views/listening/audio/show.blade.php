@@ -19,7 +19,7 @@
                 <th>Third Option</th>
                 <th>Fourth Option</th>
                 <th>Correct Answer</th>
-{{--                <th></th>--}}
+                <th></th>
 
 
             </tr>
@@ -36,14 +36,14 @@
                             <td>{{$option->getCorrectOption($option->id%4==0?4:$option->id%4)}}</td>
                         @endif
                     @endforeach
-{{--                    <td>--}}
-{{--                        <a href="{{route('paragraph.question.edit',['question'=>$question,'paragraph'=>$paragraph])}}" class="btn btn-success">Edit</a>--}}
-{{--                        <form style="display: inline;" method="post" action="{{route('paragraph.question.destroy',['question'=>$question,'paragraph'=>$paragraph])}}">--}}
-{{--                            @method('delete')--}}
-{{--                            <button type="submit" class="btn btn-danger">Delete</button>--}}
-{{--                            @csrf--}}
-{{--                        </form>--}}
-{{--                    </td>--}}
+                    <td>
+                        <a href="{{route('audio.question.edit',['question'=>$question,'audio'=>$audio])}}" class="btn btn-success">Edit</a>
+                        <form style="display: inline;" method="post" action="{{route('audio.question.destroy',['question'=>$question,'audio'=>$audio])}}">
+                            @method('delete')
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                            @csrf
+                        </form>
+                    </td>
                 </tr>
             @endforeach
         </table>

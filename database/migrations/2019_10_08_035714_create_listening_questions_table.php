@@ -17,7 +17,7 @@ class CreateListeningQuestionsTable extends Migration
             $table->bigIncrements('id');
             $table->text('content');
             $table->unsignedBigInteger('audio_id');
-            $table->foreign('audio_id')->references('id')->on('audios');
+            $table->foreign('audio_id')->references('id')->on('audio');
             $table->timestamps();
         });
     }

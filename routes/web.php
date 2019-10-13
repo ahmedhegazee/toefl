@@ -127,4 +127,4 @@ Route::resource('listening/audio/{audio}/question','ListeningQuestionsController
     'update' => 'audio.question.update',
     'edit' => 'audio.question.edit',
     'destroy' => 'audio.question.destroy',
-]);;
+])->except(['show','index']);

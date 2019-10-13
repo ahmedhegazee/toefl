@@ -3,11 +3,11 @@
 @section('content')
     <div class="container">
         <h1></h1>
-        <form action="{{route('grammar.question.update',['question'=>$question])}}" method="post">
-            @include('grammar.questions.form')
+        <form action="{{route('audio.question.update',['question'=>$question,'audio'=>$audio])}}" method="post">
+            @include('layouts.questions')
             @method('put')
             <button type="submit" class="btn btn-primary">
-                {{ __('Update Grammar Question') }}
+                {{ __('Update Listening Question') }}
             </button>
         </form>
     </div>
