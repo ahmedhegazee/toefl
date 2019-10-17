@@ -7,6 +7,7 @@
         </audio>
         <a href="<?php echo e(route('audio.question.create',['audio'=>$audio])); ?>" class="btn btn-primary mb-5">Add Audio Question</a>
 
+
         <table border="2px solid">
 
             <tr>
@@ -33,8 +34,7 @@
                         <?php if($option->correct): ?>
                             <td><?php echo e($option->getCorrectOption($option->id%4==0?4:$option->id%4)); ?></td>
                         <?php endif; ?>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    <td>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>                    <td>
                         <a href="<?php echo e(route('audio.question.edit',['question'=>$question,'audio'=>$audio])); ?>" class="btn btn-success">Edit</a>
                         <form style="display: inline;" method="post" action="<?php echo e(route('audio.question.destroy',['question'=>$question,'audio'=>$audio])); ?>">
                             <?php echo method_field('delete'); ?>

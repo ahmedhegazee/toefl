@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Grammar\GrammarQuestion;
+use App\Grammar\GrammarQuestionType;
 use \Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -33,10 +34,7 @@ class GrammarQuestionsController extends Controller
             2=>'Third Option',
             3=>'Fourth Option',
         ];
-        $types=[
-            0=>'Fill in the space',
-            1=>'Find the mistake',
-        ];
+        $types=GrammarQuestionType::all();
         return view('grammar.questions.create',compact('options','types'));
     }
 

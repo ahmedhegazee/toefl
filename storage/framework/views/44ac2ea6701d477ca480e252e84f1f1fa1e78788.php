@@ -1,7 +1,7 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
         <h2>Grammar Exams </h2>
-
+        <a href="<?php echo e(route('grammar.exam.create')); ?>" class="btn btn-primary">Add Exam</a>
         <table border="2px solid">
             <tr>
                 <th>ID</th>

@@ -3,7 +3,7 @@
 @section('content')
     <div class="container ">
         <h2>Grammar Exams </h2>
-{{--        <a href="{{route('grammarExam.create')}}" class="btn btn-primary">Add Exam</a>--}}
+        <a href="{{route('grammar.exam.create')}}" class="btn btn-primary">Add Exam</a>
         <table border="2px solid">
             <tr>
                 <th>ID</th>

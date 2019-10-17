@@ -6,9 +6,9 @@
         <select id="correct" name="type" class="form-control">
             <option value="" disabled>Select Question Type</option>
 
-            <?php for($i=0;$i<2;$i++): ?>
-            <option value="<?php echo e($i+1); ?>" <?php echo e(isset($question)&&$question->type->id==($i+1)?'selected':''); ?>><?php echo e($types[$i]); ?></option>
-            <?php endfor; ?>
+            <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <option value="<?php echo e($type->id); ?>" <?php echo e(isset($question)&&$question->type->id==$type->id?'selected':''); ?>><?php echo e($type->name); ?></option>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 
         </select>

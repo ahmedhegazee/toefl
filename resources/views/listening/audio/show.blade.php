@@ -9,6 +9,7 @@
         </audio>
         <a href="{{route('audio.question.create',['audio'=>$audio])}}" class="btn btn-primary mb-5">Add Audio Question</a>
 
+
         <table border="2px solid">
 
             <tr>
@@ -35,8 +36,7 @@
                         @if($option->correct)
                             <td>{{$option->getCorrectOption($option->id%4==0?4:$option->id%4)}}</td>
                         @endif
-                    @endforeach
-                    <td>
+                    @endforeach                    <td>
                         <a href="{{route('audio.question.edit',['question'=>$question,'audio'=>$audio])}}" class="btn btn-success">Edit</a>
                         <form style="display: inline;" method="post" action="{{route('audio.question.destroy',['question'=>$question,'audio'=>$audio])}}">
                             @method('delete')
