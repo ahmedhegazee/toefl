@@ -25,6 +25,19 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="arabic_name" class="col-md-4 col-form-label text-md-right">Arabic Full Name</label>
+
+                            <div class="col-md-6">
+                                <input id="arabic_name" type="text" class="form-control @error('arabic_name') is-invalid @enderror" name="arabic_name" value="{{ old('arabic_name') }}" required  autofocus>
+
+                                @error('arabic_name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">Email</label>
 
                             <div class="col-md-6">
@@ -100,7 +113,22 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="type" class="col-md-4 col-form-label text-md-right">How to take exam</label>
+                            <div class="col-md-6">
+                                <select id="type" name="type" class="form-control">
+                                    <option value="" disabled>Select how to take exam</option>
 
+                                    @foreach($groups as $group)
+                                        <option value="{{$group->id}}" >{{$group->type->type}}</option>
+                                    @endforeach
+
+
+                                </select>
+
+
+                            </div>
+                        </div>
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">

@@ -31,4 +31,9 @@ class Group extends Model
     {
         return $this->belongsTo(Reservation::class);
     }
+
+    public function type()
+    {
+        return $this->belongsTo(GroupType::class,'group_type_id');
+    }
 }

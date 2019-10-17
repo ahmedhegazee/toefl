@@ -31,6 +31,27 @@ endif; ?>
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="arabic_name" class="col-md-4 col-form-label text-md-right">Arabic Full Name</label>
+
+                            <div class="col-md-6">
+                                <input id="arabic_name" type="text" class="form-control <?php if ($errors->has('arabic_name')) :
+if (isset($message)) { $messageCache = $message; }
+$message = $errors->first('arabic_name'); ?> is-invalid <?php unset($message);
+if (isset($messageCache)) { $message = $messageCache; }
+endif; ?>" name="arabic_name" value="<?php echo e(old('arabic_name')); ?>" required  autofocus>
+
+                                <?php if ($errors->has('arabic_name')) :
+if (isset($message)) { $messageCache = $message; }
+$message = $errors->first('arabic_name'); ?>
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong><?php echo e($message); ?></strong>
+                                    </span>
+                                <?php unset($message);
+if (isset($messageCache)) { $message = $messageCache; }
+endif; ?>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">Email</label>
 
                             <div class="col-md-6">
@@ -154,7 +175,22 @@ if (isset($messageCache)) { $message = $messageCache; }
 endif; ?>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="type" class="col-md-4 col-form-label text-md-right">How to take exam</label>
+                            <div class="col-md-6">
+                                <select id="type" name="type" class="form-control">
+                                    <option value="" disabled>Select how to take exam</option>
 
+                                    <?php $__currentLoopData = $groups; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($group->id); ?>" ><?php echo e($group->type->type); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+
+                                </select>
+
+
+                            </div>
+                        </div>
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">

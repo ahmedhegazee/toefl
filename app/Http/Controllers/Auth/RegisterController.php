@@ -55,6 +55,7 @@ class RegisterController extends Controller
     {
         $rules =[
             'name' => 'required|string|max:255',
+            'arabic_name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
             'phone'=>'required|string|unique:students',
             'personalimage'=>'required|image|max:5120',
@@ -68,6 +69,7 @@ class RegisterController extends Controller
             'certificateimage.required'=>'certificate image field is required',
             'messageimage.required'=>'message image field is required',
             'name.required'=>'full name field is required',
+            'arabic_name.required'=>'arabic full name field is required',
             'personalimage.image'=>'you have to upload image to personal image field ',
             'nidimage.image'=>'you have to upload image to national id image field ',
             'certificateimage.image'=>'you have to upload image to certificate image field ',
@@ -85,14 +87,13 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\User
      */
-    protected function create(array $data)
+    protected function create(array $data,Reservation $res)
     {
 
        $user= $this->createUser($data);
 
-        $this->createStudent($user,$data);
+        $this->createStudent($user,$data,$res);
 
-     //dd($st);
        return $user;
     }
 
@@ -107,47 +108,47 @@ class RegisterController extends Controller
         ]);
         return $user;
     }
-    public function createStudent($user,$data)
+    public function createStudent($user,$data,Reservation $res)
     {
-        $res = $this->getAvailableReservation();
-        $groupID=$this->getAvailableGroup($res);
+
 
         Student::create([
             'uid'=> $user->id,
             'phone'=>$data['phone'],
+            'arabic_name'=>$data['arabic_name'],
             'personalimage'=>$data['personalimage']->store('personalimages','public'),
             'nidimage'=>$data['nidimage']->store('nidimages','public'),
             'certificateimage'=>$data['certificateimage']->store('certificateimages','public'),
             'messageimage'=>$data['messageimage']->store('messageimages','public'),
             'res_id'=>$res->id,
-            'group_id'=>$groupID,
+            'group_id'=>intval($data['type']),
 
         ]);
 }
-    public function getAvailableReservation()
-    {
-        $reservations= Reservation::where('start','<=',now()->toDateString())
-            ->where('end','>=',now()->toDateString())
-            ->where('done','!=',1)->get();
-        $res= $reservations->first();
+//    public function getAvailableReservation()
+//    {
+//        $reservations= Reservation::where('start','<=',now()->toDateString())
+//            ->where('end','>=',now()->toDateString())
+//            ->where('done','!=',1)->get();
+//        $res= $reservations->first();
+//
+//        return $res;
+//
+//    }
 
-        return $res;
-
-    }
-
-    public function getAvailableGroup(Reservation $res)
-    {
-        $computers = Config::first()->value;
-        $groupID=0;
-        $groups=$res->groups;
-
-        foreach ($groups as $group){
-            if($group->students->count()<$computers){
-                $groupID=$group->id;
-                break;
-            }
-        }
-        return $groupID;
-    }
+//    public function getAvailableGroup(Reservation $res)
+//    {
+//        $computers = Config::first()->value;
+//        $groupID=0;
+//        $groups=$res->groups;
+//
+//        foreach ($groups as $group){
+//            if($group->students->count()<$computers){
+//                $groupID=$group->id;
+//                break;
+//            }
+//        }
+//        return $groupID;
+//    }
 
 }
