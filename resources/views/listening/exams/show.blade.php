@@ -2,48 +2,39 @@
 
 @section('content')
     <div class="container ">
-        <h2>Grammar Questions in this Exam </h2>
-
+        <h2>Audios in this Exam</h2>
+        <a href="{{route('listening.exam.audios.show',compact('exam'))}}" class="btn btn-primary">Add Audios to this Exam</a>
         <table border="2px solid">
             <tr>
                 <th>ID</th>
-                <th>Question</th>
-                <th>Question Type</th>
-                <th>First Option</th>
-                <th>Second Option</th>
-                <th>Third Option</th>
-                <th>Fourth Option</th>
-                <th>Correct Answer</th>
+                <th>title</th>
+                <th>type</th>
+                <th>Questions </th>
+
                 <th></th>
 
             </tr>
-            @foreach($questions as $question)
+            @foreach($audios as $audio)
                 <tr>
-                    <td>{{$question->id}}</td>
-                    <td>{{$question->content}}</td>
-                    <td>{{$question->type->name}}</td>
-                    @foreach($question->options as $option)
-                        <td>{{$option->content}}</td>
+                    <td>{{$audio->id}}</td>
+                    <td>{{$audio->title}}</td>
+                    <td>{{$audio->type->type}}</td>
+                    <td>{{$audio->questions->count()}}</td>
 
-                    @endforeach
-                    @foreach($question->options as $option)
-                        @if($option->correct)
-                            <td>{{$option->getCorrectOption($option->id%4==0?4:$option->id%4)}}</td>
-                        @endif
-                    @endforeach
                     <td>
-                        <a href="{{route('grammar.question.edit',['question'=>$question])}}" class="btn btn-success">Edit Question</a>
-{{--                        <form style="display: inline;" method="post" action="{{route('grammar.destroy',['grammar'=>$question->id])}}">--}}
-{{--                            @method('delete')--}}
-{{--                            <button type="submit" class="btn btn-danger">Delete</button>--}}
-{{--                            @csrf--}}
-{{--                        </form>--}}
+                        <a href="{{route('audio.show',['audio'=>$audio])}}" class="btn btn-primary">Show</a>
+                        <a href="{{route('audio.edit',['audio'=>$audio])}}" class="btn btn-success">Edit</a>
+                        <form style="display: inline;" method="post" action="{{route('listening.exam.audios.destroy',['audio'=>$audio,'exam'=>$exam])}}">
+                            @method('delete')
+                            <button type="submit" class="btn btn-danger">Remove Audio</button>
+                            @csrf
+                        </form>
                     </td>
                 </tr>
             @endforeach
         </table>
-<div class="row">
-    {{$questions->links()}}
-</div>
+        <div class="row">
+            {{$audios->links()}}
+        </div>
     </div>
 @endsection

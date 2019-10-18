@@ -133,11 +133,7 @@ class AudiosController extends Controller
     }
     public function updateValidator( $data)
     {
-        $message=[
 
-            'source.required'=>'Audio File field is required.',
-
-        ];
         $roles =[
             'title' => 'required|string|min:8',
             'source' => 'sometimes|file|mimetypes:audio/x-wav',

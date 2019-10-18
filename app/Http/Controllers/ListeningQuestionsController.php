@@ -79,13 +79,14 @@ class ListeningQuestionsController extends Controller
      */
     public function edit(Audio $audio,ListeningQuestion $question)
     {
+        $previous=url()->previous();
         $options = [
             0=>'First Option',
             1=>'Second Option',
             2=>'Third Option',
             3=>'Fourth Option',
         ];
-        return view('listening.questions.update',compact('audio','question','options'));
+        return view('listening.questions.update',compact('audio','question','options','previous'));
     }
 
     /**
@@ -109,7 +110,7 @@ class ListeningQuestionsController extends Controller
             ]);
         }
         $question->options[$request->correct-1]->update(['correct'=>1]);
-        return redirect(route('audio.show',['audio'=>$audio]));
+        return redirect()->to($request['previous']);
     }
 
     /**

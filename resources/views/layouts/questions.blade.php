@@ -59,4 +59,5 @@
 
 
 @csrf
+<input type="hidden" name="previous" value="{{isset($question)?$previous:''}}">
 

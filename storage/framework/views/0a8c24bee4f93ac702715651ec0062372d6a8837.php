@@ -16,7 +16,7 @@
 
 </div>
 </div>
-
+<input type="hidden" name="previous" value="<?php echo e($previous); ?>">
 
 <?php echo csrf_field(); ?>
 

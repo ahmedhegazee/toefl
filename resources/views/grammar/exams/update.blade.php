@@ -2,14 +2,13 @@
 
 @section('content')
     <div class="container">
-        <h1>Update Group</h1>
-        <form action="{{route('group.update',['group'=>$group])}}" method="post">
+        <h1>Update Grammar Exam</h1>
+        <form action="{{route('grammar.exam.update',['exam'=>$exam])}}" method="post">
             @method('put')
-            @include('group.form')
-
+            @include('layouts.exams')
 
             <button type="submit" class="btn btn-primary">
-                {{ __('Update Group') }}
+                {{ __('Update Exam') }}
             </button>
         </form>
     </div>

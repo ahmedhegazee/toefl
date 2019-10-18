@@ -15,7 +15,7 @@
 
                             <a href="<?php echo e(route('reading.exam.index')); ?>" class="btn btn-primary ">Reading Exams</a>
                             <a href="<?php echo e(route('grammar.exam.index')); ?>" class="btn btn-primary ">Grammar Exams</a>
-
+                            <a href="<?php echo e(route('listening.exam.index')); ?>" class="btn btn-primary ">Listening Exams </a>
 
                         </div>
                     </div>

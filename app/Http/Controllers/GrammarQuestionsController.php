@@ -79,17 +79,16 @@ class GrammarQuestionsController extends Controller
      */
     public function edit(GrammarQuestion $question)
     {
+
+        $previous=url()->previous();
         $options = [
             0=>'First Option',
             1=>'Second Option',
             2=>'Third Option',
             3=>'Fourth Option',
         ];
-        $types=[
-            0=>'Fill in the space',
-            1=>'Find the mistake',
-        ];
-        return view('grammar.questions.update',compact('question','options','types'));
+        $types=GrammarQuestionType::all();
+        return view('grammar.questions.update',compact('question','options','types','previous'));
 
     }
 
@@ -116,7 +115,7 @@ class GrammarQuestionsController extends Controller
             ]);
         }
         $question->options[$request->correct-1]->update(['correct'=>1]);
-        return Redirect::action('GrammarQuestionsController@index');
+        return redirect()->to($request['previous']);
     }
 
     /**

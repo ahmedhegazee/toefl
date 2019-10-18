@@ -17,7 +17,7 @@
 
                             <a href="{{route('reading.exam.index')}}" class="btn btn-primary ">Reading Exams</a>
                             <a href="{{route('grammar.exam.index')}}" class="btn btn-primary ">Grammar Exams</a>
-{{--                            <a href="{{route('res.index')}}" class="btn btn-primary ">Listening Exams </a>--}}
+                            <a href="{{route('listening.exam.index')}}" class="btn btn-primary ">Listening Exams </a>
 
                         </div>
                     </div>

@@ -2,33 +2,40 @@
 
 @section('content')
     <div class="container ">
-        <h2>Grammar Exams </h2>
-{{--        <a href="{{route('grammarExam.create')}}" class="btn btn-primary">Add Exam</a>--}}
+        @if(session()->has('error'))
+        <div class="alert alert-danger">
+            {{session()->get('error')}}
+        </div>
+        @endif
+        <h2>Listening Exams </h2>
+        <a href="{{route('listening.exam.create')}}" class="btn btn-primary">Add Exam</a>
         <table border="2px solid">
             <tr>
                 <th>ID</th>
-                <th>Name</th>
+                <th>Reservation Date</th>
+                <th>Group Type</th>
 
-                <th>Fill Questions Count</th>
-                <th>Find Questions Count</th>
+{{--                <th>Fill Questions Count</th>--}}
+{{--                <th>Find Questions Count</th>--}}
 
                 <th>Actions</th>
             </tr>
             @foreach($exams as $exam)
                 <tr>
                     <td>{{$exam->id}}</td>
-                    <td>{{$exam->group->name}}</td>
-                    <td>{{$exam->getFillQuestions()->count()}}</td>
-                    <td>{{$exam->getFindQuestions()->count()}}</td>
+                    <td>{{$exam->reservation->start}}</td>
+                    <td>{{$exam->groupType->type}}</td>
+{{--                    <td>{{$exam->getFillQuestions()->count()}}</td>--}}
+{{--                    <td>{{$exam->getFindQuestions()->count()}}</td>--}}
 
                     <td>
-                        <a href="{{route('grammar.exam.show',['exam'=>$exam])}}" class="btn btn-primary">Show</a>
-{{--                        <a href="{{route('grammarExam.edit',['grammarExam'=>$exam])}}" class="btn btn-success">Edit</a>--}}
-{{--                        <form style="display: inline;" method="post" action="{{route('grammarExam.destroy',['grammarExam'=>$exam])}}">--}}
-{{--                            @method('delete')--}}
-{{--                            <button type="submit" class="btn btn-danger">Delete</button>--}}
-{{--                            @csrf--}}
-{{--                        </form>--}}
+                        <a href="{{route('listening.exam.show',['exam'=>$exam])}}" class="btn btn-primary">Show</a>
+                        <a href="{{route('listening.exam.edit',['exam'=>$exam])}}" class="btn btn-success">Edit</a>
+                        <form style="display: inline;" method="post" action="{{route('listening.exam.destroy',['exam'=>$exam])}}">
+                            @method('delete')
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                            @csrf
+                        </form>
                     </td>
                 </tr>
             @endforeach

@@ -3,10 +3,11 @@
 @section('content')
     <div class="container ">
         <h2>Grammar Questions in this Exam </h2>
-        <a href="{{route('grammar.exam.questions.show',compact('exam'))}}" class="btn btn-primary">Add Questions to this Exam</a>
+        <form action="{{route('grammar.exam.questions.store',compact('exam'))}}" method="post">
 
         <table border="2px solid">
             <tr>
+                <th><input type="checkbox" ></th>
                 <th>ID</th>
                 <th>Question</th>
                 <th>Question Type</th>
@@ -20,6 +21,7 @@
             </tr>
             @foreach($questions as $question)
                 <tr>
+                    <td><input type="checkbox" name="questions[]" value="{{$question->id}}" {{$exam->questions->contains($question->id)?'checked':''}}></td>
                     <td>{{$question->id}}</td>
                     <td>{{$question->content}}</td>
                     <td>{{$question->type->name}}</td>
@@ -34,18 +36,23 @@
                     @endforeach
                     <td>
                         <a href="{{route('grammar.question.edit',['question'=>$question])}}" class="btn btn-success">Edit Question</a>
-                        <form style="display: inline;" method="post"
-                              action="{{route('grammar.exam.questions.destroy',compact('question','exam'))}}">
-                            @method('delete')
-                            <button type="submit" class="btn btn-danger">Remove Question</button>
-                            @csrf
-                        </form>
+                        {{--                        <form style="display: inline;" method="post" action="{{route('grammar.destroy',['grammar'=>$question->id])}}">--}}
+{{--                            @method('delete')--}}
+{{--                            <button type="submit" class="btn btn-danger">Delete</button>--}}
+{{--                            @csrf--}}
+{{--                        </form>--}}
                     </td>
                 </tr>
             @endforeach
         </table>
-<div class="row">
+            <button type="submit" class="btn btn-primary">Add Questions</button>
+            @csrf
+        </form>
+<div class="row justify-content-center">
     {{$questions->links()}}
+    <br>
+
 </div>
+
     </div>
 @endsection

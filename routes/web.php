@@ -80,12 +80,15 @@ Route::resource('grammar/exam', 'GrammarExamController')
         'index' => 'grammar.exam.index',
         'destroy' => 'grammar.exam.destroy',
         'show' => 'grammar.exam.show',
-    ]);;
+    ]);
+Route::get('/grammar/exam/{exam}/questions','GrammarExamController@showQuestions')->name('grammar.exam.questions.show');
+Route::post('/grammar/exam/{exam}/questions','GrammarExamController@storeQuestions')->name('grammar.exam.questions.store');
+Route::delete('/grammar/exam/{exam}/questions/{question}','GrammarExamController@destroyQuestions')->name('grammar.exam.questions.destroy');
 #endregion
 //Groups Section
 Route::get('/group/{group}/students', 'GroupsController@showStudents')->name('group.students.show')->middleware(['auth', 'admin']);
 Route::post('/group/{group}/students', 'GroupsController@addStudents')->name('group.students.store')->middleware(['auth', 'admin']);
-Route::post('/group/{group}/exam/create', 'GroupsController@generateExam')->name('group.generate.exam')->middleware(['auth', 'admin']);
+//Route::post('/group/{group}/exam/create', 'GroupsController@generateExam')->name('group.generate.exam')->middleware(['auth', 'admin']);
 
 
 //Paragraphs Questions
@@ -122,9 +125,23 @@ Route::resource('reading/vocab', 'VocabQuestionsController')->except(['show']);
 
 Route::resource('listening/audio', 'AudiosController');
 Route::resource('listening/audio/{audio}/question','ListeningQuestionsController')->names([
-    'create' => 'audio.question.create',
-    'store' => 'audio.question.store',
-    'update' => 'audio.question.update',
-    'edit' => 'audio.question.edit',
-    'destroy' => 'audio.question.destroy',
+    'create' => 'listening.question.create',
+    'store' => 'listening.question.store',
+    'update' => 'listening.question.update',
+    'edit' => 'listening.question.edit',
+    'destroy' => 'listening.question.destroy',
 ])->except(['show','index']);
+Route::resource('listening/exam', 'ListeningExamController')
+    ->middleware(['auth', 'admin'])
+    ->names([
+        'create' => 'listening.exam.create',
+        'store' => 'listening.exam.store',
+        'update' => 'listening.exam.update',
+        'edit' => 'listening.exam.edit',
+        'index' => 'listening.exam.index',
+        'destroy' => 'listening.exam.destroy',
+        'show' => 'listening.exam.show',
+    ]);;
+Route::get('/listening/exam/{exam}/audio','ListeningExamController@showAudios')->name('listening.exam.audios.show');
+Route::post('/listening/exam/{exam}/audio','ListeningExamController@storeAudios')->name('listening.exam.audios.store');
+Route::delete('/listening/exam/{exam}/audio/{audio}','ListeningExamController@destroyAudios')->name('listening.exam.audios.destroy');

@@ -13,7 +13,6 @@
 
                             <a href="{{route('vocab.index')}}" class="btn btn-primary ">Vocab Questions</a>
                             <a href="{{route('paragraph.index')}}" class="btn btn-primary ">Paragraphs</a>
-{{--                            <a href="{{route('listening.index')}}" class="btn btn-primary ">Listening Questions </a>--}}
 
                         </div>
                     </div>

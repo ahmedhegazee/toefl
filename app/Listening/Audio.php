@@ -14,7 +14,8 @@ class Audio extends Model
     }
     public function exam()
     {
-        return $this->belongsToMany(ListeningExam::class);
+        return $this->belongsToMany(ListeningExam::class,'audio_listening_exam')
+            ->withTimestamps();
 
     }
 

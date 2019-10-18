@@ -15,8 +15,10 @@ class CreateListeningExamsTable extends Migration
     {
         Schema::create('listening_exams', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('group_id');
-            $table->foreign('group_id')->references('id')->on('groups');
+            $table->unsignedBigInteger('reservation_id');
+            $table->unsignedBigInteger('group_type_id');
+            $table->foreign('reservation_id')->references('id')->on('reservations');
+            $table->foreign('group_type_id')->references('id')->on('group_types');
 
             $table->timestamps();
         });

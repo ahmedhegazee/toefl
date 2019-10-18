@@ -7,7 +7,7 @@
             <source src="/storage/{{$audio->source}}" type="audio/wav">
             Your browser does not support the audio element.
         </audio>
-        <a href="{{route('audio.question.create',['audio'=>$audio])}}" class="btn btn-primary mb-5">Add Audio Question</a>
+        <a href="{{route('listening.question.create',['audio'=>$audio])}}" class="btn btn-primary mb-5">Add Audio Question</a>
 
 
         <table border="2px solid">
@@ -37,8 +37,8 @@
                             <td>{{$option->getCorrectOption($option->id%4==0?4:$option->id%4)}}</td>
                         @endif
                     @endforeach                    <td>
-                        <a href="{{route('audio.question.edit',['question'=>$question,'audio'=>$audio])}}" class="btn btn-success">Edit</a>
-                        <form style="display: inline;" method="post" action="{{route('audio.question.destroy',['question'=>$question,'audio'=>$audio])}}">
+                        <a href="{{route('listening.question.edit',['question'=>$question,'audio'=>$audio])}}" class="btn btn-success">Edit</a>
+                        <form style="display: inline;" method="post" action="{{route('listening.question.destroy',['question'=>$question,'audio'=>$audio])}}">
                             @method('delete')
                             <button type="submit" class="btn btn-danger">Delete</button>
                             @csrf
