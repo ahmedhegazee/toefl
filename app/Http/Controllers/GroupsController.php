@@ -56,7 +56,7 @@ class GroupsController extends Controller
      */
     public function show(Reservation $re, Group $group)
     {
-        $students = $group->students;
+        $students = $group->students()->paginate(15);
         return view('group.show', compact('students', 'group'));
     }
 

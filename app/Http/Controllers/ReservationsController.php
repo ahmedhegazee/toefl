@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Config;
 use App\Grammar\GrammarQuestion;
 use App\Group;
+use App\GroupType;
 use App\Reservation;
 use DateTime;
 use Illuminate\Http\Request;
@@ -42,11 +43,11 @@ class ReservationsController extends Controller
     public function store(Request $request)
     {
         if (!$this->isAvailableOpenedReservation()) {
-          $res= Reservation::create($this->validateData());
+            $res = Reservation::create($this->validateData());
             $this->generateGroups($res);
             return redirect()->to(route('res.index'));
         } else
-            return redirect()->back()->with('error', 'You can\'t create another reservation' );
+            return redirect()->back()->with('error', 'You can\'t create another reservation.There is another one is opened');
     }
 
     /**
@@ -57,8 +58,8 @@ class ReservationsController extends Controller
      */
     public function show(Reservation $re)
     {
-       $groups= $re->groups;
-        return view('reservation.show',compact('groups','re'));
+        $groups = $re->groups;
+        return view('reservation.show', compact('groups', 're'));
     }
 
     /**
@@ -82,9 +83,15 @@ class ReservationsController extends Controller
      */
     public function update(Request $request, Reservation $re)
     {
-        $re->update($this->validateUpdateData());
-        return redirect()->to(route('res.index'));
-    }
+//        dd($request['max_students']);
+
+            if ($re->done ==0) {
+                $re->update($this->validateData());
+                return redirect()->to(route('res.index'));
+            }
+            else
+                return redirect()->back()->with('error', 'You can\'t change number of students after the reservation is closed');
+           }
 
     /**
      * Remove the specified resource from storage.
@@ -103,42 +110,44 @@ class ReservationsController extends Controller
      */
     public function generateGroups(Reservation $re)
     {
-        //get the maximum number of students in this reservation
-        $max=$re->max_students;
-        //get the value of computers count in labs
-        $computers = Config::first()->value;
-        //divide the max number on the computers number to get the groups number
-        $groupsNumber = ceil($max/$computers);
-        //for this reservation create number of groups
-
-        for($i=0;$i<$groupsNumber;$i++){
-            $group= $re->groups()->create([
-                'name'=>'Group '.($i+1),
+//        //get the maximum number of students in this reservation
+//        $max=$re->max_students;
+//        //get the value of computers count in labs
+//        $computers = Config::first()->value;
+//        //divide the max number on the computers number to get the groups number
+//        $groupsNumber = ceil($max/$computers);
+//        //for this reservation create number of groups
+//
+//        for($i=0;$i<$groupsNumber;$i++){
+//            $group= $re->groups()->create([
+//                'name'=>'Group '.($i+1),
+//                'group_type_id'=>1,
+//            ]);
+//               }
+        $groups = GroupType::all()->count();
+        for ($i = 0; $i < $groups; $i++) {
+            $group = $re->groups()->create([
+                'name' => 'Group ' . ($i + 1),
+                'group_type_id' => $i + 1,
             ]);
-               }
+        }
         return redirect()->to(route('res.index'));
 
     }
+
     public function isAvailableOpenedReservation()
     {
-      return Reservation::where('done',0)->count()>0;
+        return Reservation::where('done', 0)->count() > 0;
     }
 
-    public function validateUpdateData()
-    {
-        return request()->validate([
-            'start' => 'required|date',
-            'done'=>'required'
-        ]);
-    }
+
 
     public function validateData()
     {
 
         return request()->validate([
             'start' => 'required|date',
-            'max_students'=>'required|numeric|min:1',
-            'done'=>'sometimes'
+            'max_students' => 'required|numeric|min:2',
         ]);
     }
 }

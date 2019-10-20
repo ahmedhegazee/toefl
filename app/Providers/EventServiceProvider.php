@@ -18,6 +18,12 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        ClosedReservation::class=>[
+            CloseReservation::class,
+            GenerateGroups::class,
+
+        ],
+
     ];
 
     /**

@@ -18,6 +18,7 @@
                             <a href="{{route('questions.index')}}" class="btn btn-primary ">Questions</a>
                             <a href="{{route('student.index')}}" class="btn btn-primary ">Students</a>
                             <a href="{{route('res.index')}}" class="btn btn-primary ">Reservations </a>
+                            <a href="{{route('exams.index')}}" class="btn btn-primary ">Exams </a>
 
                         </div>
                     </div>

@@ -32,7 +32,7 @@ class GrammarQuestion extends Model
 
     public function exam()
     {
-        return $this->belongsToMany(GrammarExam::class);
+        return $this->belongsToMany(GrammarExam::class)->withTimestamps();
 }
 
     public function scopeFillQuestions($query)

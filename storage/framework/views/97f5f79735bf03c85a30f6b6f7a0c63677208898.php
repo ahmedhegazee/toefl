@@ -16,6 +16,7 @@
                             <a href="<?php echo e(route('questions.index')); ?>" class="btn btn-primary ">Questions</a>
                             <a href="<?php echo e(route('student.index')); ?>" class="btn btn-primary ">Students</a>
                             <a href="<?php echo e(route('res.index')); ?>" class="btn btn-primary ">Reservations </a>
+                            <a href="<?php echo e(route('exams.index')); ?>" class="btn btn-primary ">Exams </a>
 
                         </div>
                     </div>

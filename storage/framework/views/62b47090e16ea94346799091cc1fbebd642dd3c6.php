@@ -1,6 +1,7 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
         <h2>Grammar Questions in this Exam </h2>
+        <a href="<?php echo e(route('grammar.exam.questions.show',compact('exam'))); ?>" class="btn btn-primary">Add Questions to this Exam</a>
 
         <table border="2px solid">
             <tr>
@@ -31,11 +32,12 @@
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <td>
                         <a href="<?php echo e(route('grammar.question.edit',['question'=>$question])); ?>" class="btn btn-success">Edit Question</a>
-
-
-
-
-
+                        <form style="display: inline;" method="post"
+                              action="<?php echo e(route('grammar.exam.questions.destroy',compact('question','exam'))); ?>">
+                            <?php echo method_field('delete'); ?>
+                            <button type="submit" class="btn btn-danger">Remove Question</button>
+                            <?php echo csrf_field(); ?>
+                        </form>
                     </td>
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

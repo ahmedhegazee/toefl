@@ -3,6 +3,7 @@
 @section('content')
     <div class="container ">
         <h2>Grammar Questions in this Exam </h2>
+        <a href="{{route('grammar.exam.questions.show',compact('exam'))}}" class="btn btn-primary">Add Questions to this Exam</a>
 
         <table border="2px solid">
             <tr>
@@ -33,11 +34,12 @@
                     @endforeach
                     <td>
                         <a href="{{route('grammar.question.edit',['question'=>$question])}}" class="btn btn-success">Edit Question</a>
-{{--                        <form style="display: inline;" method="post" action="{{route('grammar.destroy',['grammar'=>$question->id])}}">--}}
-{{--                            @method('delete')--}}
-{{--                            <button type="submit" class="btn btn-danger">Delete</button>--}}
-{{--                            @csrf--}}
-{{--                        </form>--}}
+                        <form style="display: inline;" method="post"
+                              action="{{route('grammar.exam.questions.destroy',compact('question','exam'))}}">
+                            @method('delete')
+                            <button type="submit" class="btn btn-danger">Remove Question</button>
+                            @csrf
+                        </form>
                     </td>
                 </tr>
             @endforeach

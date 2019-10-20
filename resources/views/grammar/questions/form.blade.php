@@ -6,9 +6,9 @@
         <select id="correct" name="type" class="form-control">
             <option value="" disabled>Select Question Type</option>
 
-            @for($i=0;$i<2;$i++)
-            <option value="{{$i+1}}" {{isset($question)&&$question->type->id==($i+1)?'selected':''}}>{{$types[$i]}}</option>
-            @endfor
+            @foreach($types as $type)
+            <option value="{{$type->id}}" {{isset($question)&&$question->type->id==$type->id?'selected':''}}>{{$type->name}}</option>
+            @endforeach
 
 
         </select>
@@ -18,5 +18,4 @@
 </div>
 
 
-@csrf
 

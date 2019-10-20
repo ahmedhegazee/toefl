@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Grammar\GrammarQuestion;
+use App\Grammar\GrammarQuestionType;
 use \Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -33,10 +34,7 @@ class GrammarQuestionsController extends Controller
             2=>'Third Option',
             3=>'Fourth Option',
         ];
-        $types=[
-            0=>'Fill in the space',
-            1=>'Find the mistake',
-        ];
+        $types=GrammarQuestionType::all();
         return view('grammar.questions.create',compact('options','types'));
     }
 
@@ -81,17 +79,16 @@ class GrammarQuestionsController extends Controller
      */
     public function edit(GrammarQuestion $question)
     {
+
+        $previous=url()->previous();
         $options = [
             0=>'First Option',
             1=>'Second Option',
             2=>'Third Option',
             3=>'Fourth Option',
         ];
-        $types=[
-            0=>'Fill in the space',
-            1=>'Find the mistake',
-        ];
-        return view('grammar.questions.update',compact('question','options','types'));
+        $types=GrammarQuestionType::all();
+        return view('grammar.questions.update',compact('question','options','types','previous'));
 
     }
 
@@ -118,7 +115,7 @@ class GrammarQuestionsController extends Controller
             ]);
         }
         $question->options[$request->correct-1]->update(['correct'=>1]);
-        return Redirect::action('GrammarQuestionsController@index');
+        return redirect()->to($request['previous']);
     }
 
     /**

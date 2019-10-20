@@ -19,6 +19,7 @@ class CreateStudentsTable extends Migration
             $table->unsignedBigInteger('res_id');
             $table->unsignedBigInteger('group_id');
             $table->string('phone')->unique();
+            $table->string('arabic_name');
             $table->string('personalimage');
             $table->string('nidimage');
             $table->string('certificateimage');

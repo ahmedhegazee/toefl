@@ -2,11 +2,11 @@
 
 @section('content')
     <div class="container">
-        <h1></h1>
-        <form action="{{route('group.store')}}" method="post">
-            @include('group.form')
+        <h1>Add New Grammar Exam</h1>
+        <form action="{{route('grammar.exam.store')}}" method="post">
+            @include('layouts.exams')
             <button type="submit" class="btn btn-primary">
-                {{ __('Add Group') }}
+                {{ __('Add Exam') }}
             </button>
         </form>
     </div>

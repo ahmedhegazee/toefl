@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ParagraphsTableSeeder::class);
         $this->call(ParagraphQuestionsTableSeeder::class);
         $this->call(VocabQuestionsTableSeeder::class);
+        $this->call(AudioTypesTableSeeder::class);
+        $this->call(GroupTypesTableSeeder::class);
 
 
     }
