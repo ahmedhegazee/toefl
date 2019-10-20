@@ -3,9 +3,11 @@
 @section('content')
     <div class="container ">
         <h2>Vocab Questions in this Exam</h2>
-        <a href="{{route('reading.exam.add.vocab',compact('exam'))}}" class="btn btn-primary">Add Vocab Questions to this Exam</a>
+        <form action="{{route('reading.exam.store.vocab',compact('exam'))}}" method="post">
         <table border="2px solid">
             <tr>
+                <th><input type="checkbox"></th>
+
                 <th>ID</th>
                 <th>Question</th>
                 <th>First Option</th>
@@ -18,10 +20,12 @@
             </tr>
             @foreach($questions as $question)
                 <tr>
+                    <td><input type="checkbox" name="questions[]" value="{{$question->id}}" {{$exam->vocabQuestions->contains($question->id)?'checked':''}}></td>
                     <td>{{$question->id}}</td>
                     <td>{{$question->content}}</td>
                     @foreach($question->options as $option)
                         <td>{{$option->content}}</td>
+
                     @endforeach
                     @foreach($question->options as $option)
                         @if($option->correct)
@@ -30,15 +34,14 @@
                     @endforeach
                     <td>
                         <a href="{{route('vocab.edit',['vocab'=>$question])}}" class="btn btn-success">Edit</a>
-                        <form style="display: inline;" method="post" action="{{route('reading.exam.destroy.vocab',['question'=>$question,'exam'=>$exam])}}">
-                            @method('delete')
-                            <button type="submit" class="btn btn-danger">Remove Question</button>
-                            @csrf
-                        </form>
+
                     </td>
                 </tr>
             @endforeach
         </table>
+            <button type="submit" class="btn btn-primary">Add Questions</button>
+            @csrf
+        </form>
         {{$questions->links()}}
     </div>
 @endsection

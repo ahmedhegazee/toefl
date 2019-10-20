@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <h1></h1>
+        <h1>Add New Reading Exam</h1>
         <form action="{{route('listening.exam.store')}}" method="post">
             @include('layouts.exams')
             <button type="submit" class="btn btn-primary">

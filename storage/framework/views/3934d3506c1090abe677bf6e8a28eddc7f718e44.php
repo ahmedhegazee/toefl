@@ -1,6 +1,6 @@
 <?php $__env->startSection('content'); ?>
     <div class="container">
-        <h1></h1>
+        <h1>Add New Reading Exam</h1>
         <form action="<?php echo e(route('listening.exam.store')); ?>" method="post">
             <?php echo $__env->make('layouts.exams', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             <button type="submit" class="btn btn-primary">

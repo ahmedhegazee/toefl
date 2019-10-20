@@ -2,7 +2,8 @@
 
 namespace App\Reading;
 
-use App\Group;
+use App\GroupType;
+use App\Reservation;
 use Illuminate\Database\Eloquent\Model;
 
 class ReadingExam extends Model
@@ -18,8 +19,13 @@ class ReadingExam extends Model
     {
         return $this->belongsToMany(Paragraph::class);
     }
-    public function group()
+    public function reservation()
     {
-        return $this->belongsTo(Group::class);
+        return $this->belongsTo(Reservation::class);
+    }
+
+    public function groupType()
+    {
+        return $this->belongsTo(GroupType::class);
     }
 }

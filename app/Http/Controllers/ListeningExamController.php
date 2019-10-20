@@ -132,7 +132,7 @@ if(empty($reservations->toArray()))
     public function storeAudios(Request $request,ListeningExam $exam)
     {
 //        dd($request['questions']);
-        $audios =Audio::whereIn('id',$request['audios'])->with('type')->get();
+        $audios =Audio::whereIn('id',$request['audios'])->get();
         $exam->audios()->syncWithoutDetaching($audios);
 //        dd($exam->questions);
         return redirect()->back();

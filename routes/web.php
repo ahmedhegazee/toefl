@@ -118,7 +118,12 @@ Route::view('cpanel/exams','cpanel.exams')->name('exams.index');
 
 Route::resource('reading/vocab', 'VocabQuestionsController')->except(['show']);
 
-
+Route::get('reading/exam/{exam}/create/paragraphs','ReadingExamsController@addParagraphs')->name('reading.exam.add.paragraphs');
+Route::post('reading/exam/{exam}/paragraphs','ReadingExamsController@storeParagraphs')->name('reading.exam.store.paragraphs');
+Route::delete('reading/exam/{exam}/paragraphs/{paragraph}','ReadingExamsController@destroyParagraphs')->name('reading.exam.destroy.paragraphs');
+Route::get('reading/exam/{exam}/create/vocab','ReadingExamsController@addVocabQuestions')->name('reading.exam.add.vocab');
+Route::post('reading/exam/{exam}/vocab','ReadingExamsController@storeVocabQuestions')->name('reading.exam.store.vocab');
+Route::delete('reading/exam/{exam}/vocab/{question}','ReadingExamsController@destroyVocabQuestionss')->name('reading.exam.destroy.vocab');
 
 //listening section
 

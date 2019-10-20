@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container ">
-        <h2>Grammar Questions in this Exam </h2>
+        <h2>Audios in this Exam </h2>
         <form action="{{route('listening.exam.audios.store',compact('exam'))}}" method="post">
 
         <table border="2px solid">

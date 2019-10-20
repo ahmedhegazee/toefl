@@ -1,9 +1,11 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
         <h2>Vocab Questions in this Exam</h2>
-        <a href="<?php echo e(route('reading.exam.add.vocab',compact('exam'))); ?>" class="btn btn-primary">Add Vocab Questions to this Exam</a>
+        <form action="<?php echo e(route('reading.exam.store.vocab',compact('exam'))); ?>" method="post">
         <table border="2px solid">
             <tr>
+                <th><input type="checkbox"></th>
+
                 <th>ID</th>
                 <th>Question</th>
                 <th>First Option</th>
@@ -16,10 +18,12 @@
             </tr>
             <?php $__currentLoopData = $questions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $question): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr>
+                    <td><input type="checkbox" name="questions[]" value="<?php echo e($question->id); ?>" <?php echo e($exam->vocabQuestions->contains($question->id)?'checked':''); ?>></td>
                     <td><?php echo e($question->id); ?></td>
                     <td><?php echo e($question->content); ?></td>
                     <?php $__currentLoopData = $question->options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <td><?php echo e($option->content); ?></td>
+
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php $__currentLoopData = $question->options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <?php if($option->correct): ?>
@@ -28,18 +32,17 @@
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <td>
                         <a href="<?php echo e(route('vocab.edit',['vocab'=>$question])); ?>" class="btn btn-success">Edit</a>
-                        <form style="display: inline;" method="post" action="<?php echo e(route('reading.exam.destroy.vocab',['question'=>$question,'exam'=>$exam])); ?>">
-                            <?php echo method_field('delete'); ?>
-                            <button type="submit" class="btn btn-danger">Remove Question</button>
-                            <?php echo csrf_field(); ?>
-                        </form>
+
                     </td>
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </table>
+            <button type="submit" class="btn btn-primary">Add Questions</button>
+            <?php echo csrf_field(); ?>
+        </form>
         <?php echo e($questions->links()); ?>
 
     </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/ahmedhegazy/Desktop/toefl/toeflsystem/resources/views/reading/exams/vocab.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/ahmedhegazy/Desktop/toefl/toeflsystem/resources/views/reading/exams/addvocab.blade.php ENDPATH**/ ?>
