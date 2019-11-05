@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGrammarAnswersTable extends Migration
+class CreateVocabAnswersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateGrammarAnswersTable extends Migration
      */
     public function up()
     {
-        Schema::create('grammar_answers', function (Blueprint $table) {
+        Schema::create('vocab_answers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('student_id');
-            $table->unsignedBigInteger('grammar_question_id');
-            $table->unsignedBigInteger('grammar_option_id')->nullable();
-            $table->foreign('grammar_question_id')->references('id')->on('grammar_questions');
+            $table->unsignedBigInteger('vocab_question_id');
+            $table->unsignedBigInteger('vocab_option_id')->nullable();
+            $table->foreign('vocab_question_id')->references('id')->on('vocab_questions');
             $table->foreign('student_id')->references('id')->on('students');
-            $table->foreign('grammar_option_id')->references('id')->on('grammar_options');
+            $table->foreign('vocab_option_id')->references('id')->on('vocab_options');
 
             $table->timestamps();
         });
@@ -33,6 +33,6 @@ class CreateGrammarAnswersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('grammar_answers');
+        Schema::dropIfExists('vocab_answers');
     }
 }

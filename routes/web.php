@@ -48,9 +48,6 @@ Route::resource('student', 'StudentsController')
 //Route::get('/student','StudentsController@index')->name('student.index');
 //Route::get('/student/{student}','StudentsController@show')->name('student.show');
 //Route::put('/student/{student}','StudentsController@update')->name('student.update');
-Route::get('/st', function () {
-    return 'Welcome Student';
-})->name('student')->middleware('check_student');
 //Route::get('/rule',function(){
 //   dd(auth()->user()->getRoleID());
 //});
@@ -150,3 +147,11 @@ Route::resource('listening/exam', 'ListeningExamController')
 Route::get('/listening/exam/{exam}/audio','ListeningExamController@showAudios')->name('listening.exam.audios.show');
 Route::post('/listening/exam/{exam}/audio','ListeningExamController@storeAudios')->name('listening.exam.audios.store');
 Route::delete('/listening/exam/{exam}/audio/{audio}','ListeningExamController@destroyAudios')->name('listening.exam.audios.destroy');
+
+
+//Exams
+Route::get('/exam/home', 'ExamsController@showStudentHome')->name('student.home');
+Route::get('/exam', 'ExamsController@showGrammarExam')->name('exam.start')->middleware('can_start_exam');
+Route::post('/exam', 'ExamsController@storeGrammarExamAttempt')->name('grammar.exam.submit')->middleware('can_start_exam');
+Route::get('/exam/reading', 'ExamsController@showReadingExam')->name('reading.exam.start')->middleware('can_start_exam');
+Route::post('/exam/reading', 'ExamsController@storeReadingExamAttempt')->name('reading.exam.submit')->middleware('can_start_exam');

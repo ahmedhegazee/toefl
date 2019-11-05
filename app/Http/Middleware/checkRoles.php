@@ -31,7 +31,7 @@ class checkRoles
         {
             Student::where('uid',auth()->user()->id)
                 ->update(['active'=>1]);
-            return redirect()->route('student');}
+            return redirect()->route('student.home');}
 
 
 
