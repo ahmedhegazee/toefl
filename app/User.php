@@ -57,4 +57,9 @@ protected $guarded=[];
         return false;
        //return $this->role();
     }
+
+    public function getStudent()
+    {
+        return Student::where('uid',$this->id)->get()->first();
+    }
 }

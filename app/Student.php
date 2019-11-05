@@ -2,6 +2,11 @@
 
 namespace App;
 
+use App\Grammar\GrammarAnswer;
+use App\Grammar\GrammarResult;
+use App\Reading\ParagraphAnswer;
+use App\Reading\ReadingResult;
+use App\Reading\VocabAnswer;
 use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
@@ -29,11 +34,33 @@ class Student extends Model
 
     public function reservation()
     {
-        return $this->belongsTo(Reservation::class);
+        return $this->belongsTo(Reservation::class,'res_id');
     }
 
     public function group()
     {
         return $this->belongsTo(Group::class);
+    }
+
+    public function grammarAnswers()
+    {
+        return $this->hasMany(GrammarAnswer::class);
+    }
+    public function vocabAnswers()
+    {
+        return $this->hasMany(VocabAnswer::class);
+    }
+    public function paragraphAnswers()
+    {
+        return $this->hasMany(ParagraphAnswer::class);
+    }
+
+    public function grammarResults()
+    {
+        return $this->hasMany(GrammarResult::class);
+    }
+    public function readingResults()
+    {
+        return $this->hasMany(ReadingResult::class);
     }
 }

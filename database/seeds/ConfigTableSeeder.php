@@ -15,5 +15,16 @@ class ConfigTableSeeder extends Seeder
             'name'=>'computers_count',
             'value'=>'30',
         ]);
+        \App\Config::create([
+            'name'=>'grammar_exam_time',
+            'value'=>'45m',
+        ]);
+        \App\Config::create([
+            'name'=>'reading_exam_time',
+            'value'=>'1h',
+        ]);\App\Config::create([
+            'name'=>'listening_exam_time',
+            'value'=>'1h',
+        ]);
     }
 }
