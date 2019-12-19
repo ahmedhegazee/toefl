@@ -11,6 +11,9 @@
 |
 */
 
+
+use App\Attempt;
+
 Route::get('/', function () {
     return view('welcome');
 })->name('/');
@@ -40,6 +43,7 @@ Route::any('/search', function () {
 //    dd(session()->all());
 //})->name('result');
 Route::view('/error', 'error')->name('error');
+Route::view('/success', 'success')->name('success');
 Route::view('/cpanel', 'cpanel.index')->name('admin')->middleware(['auth', 'admin']);
 //Route::resource('student','StudentsController')->middleware(['auth','admin']);
 Route::resource('student', 'StudentsController')
@@ -150,8 +154,90 @@ Route::delete('/listening/exam/{exam}/audio/{audio}','ListeningExamController@de
 
 
 //Exams
-Route::get('/exam/home', 'ExamsController@showStudentHome')->name('student.home');
-Route::get('/exam', 'ExamsController@showGrammarExam')->name('exam.start')->middleware('can_start_exam');
-Route::post('/exam', 'ExamsController@storeGrammarExamAttempt')->name('grammar.exam.submit')->middleware('can_start_exam');
-Route::get('/exam/reading', 'ExamsController@showReadingExam')->name('reading.exam.start')->middleware('can_start_exam');
-Route::post('/exam/reading', 'ExamsController@storeReadingExamAttempt')->name('reading.exam.submit')->middleware('can_start_exam');
+Route::get('/exam/home', 'ExamsController@showStudentHome')->name('student.home')->middleware('has_only_one_attempt');
+Route::get('/exam/grammar', 'ExamsController@showGrammarExam')->name('grammar.exam.start')->middleware(['can_start_exam']);
+Route::post('/exam/grammar', 'ExamsController@storeGrammarExamAttempt')->name('grammar.exam.submit')->middleware(['can_start_exam']);
+Route::get('/exam/reading', 'ExamsController@showReadingExam')->name('reading.exam.start')->middleware(['can_start_exam']);
+Route::post('/exam/reading', 'ExamsController@storeReadingExamAttempt')->name('reading.exam.submit')->middleware(['can_start_exam']);
+Route::get('/exam/listening', 'ExamsController@showListeningExam')->name('listening.exam.start')->middleware(['can_start_exam']);
+Route::post('/exam/listening', 'ExamsController@storeListeningExamAttempt')->name('listening.exam.submit')->middleware(['can_start_exam']);
+Route::get('/reservations/','ReservationsController@getReservations');
+Route::get('/groups/{res}','ReservationsController@getGroups');
+Route::get('/students/{group}','GroupsController@getStudents');
+Route::get('/students/{group}/enter',function(App\Group $group){
+    $group->students()->update(['enterexam'=>1]);
+});
+Route::get('/students/{group}/start',function(App\Group $group){
+    $group->students()->update(['startexam'=>1]);
+});
+Route::get('/students/{group}/stop',function(App\Group $group){
+    if($group->students->first->enterexam===1){
+        $group->students()->each(function ($student){
+            $count= Attempt::where('student_id',$student->id)
+                ->where('reservation_id',$student->reservation->id)
+                ->where('group_id',$student->group->id)->get()->count();
+            if($count==0){
+                $student->sumAllMarks(0,0,0);
+            }
+        });
+        $group->students()->update(['startexam'=>0]);
+        $group->students()->update(['enterexam'=>0]);
+    }
+
+
+});
+//live exams
+Route::view('/exam/cpanel','exams.examControlPanel');
+Route::get('/live/{exam}/grammar', 'LiveExamsController@showGrammarExam')->name('grammar.live.exam.start');
+Route::post('/live/grammar', 'LiveExamsController@storeGrammarExamAttempt')->name('grammar.live.exam.submit');
+Route::get('/live/{exam}/reading', 'LiveExamsController@showReadingExam')->name('reading.live.exam.start');
+Route::post('/live/reading', 'LiveExamsController@storeReadingExamAttempt')->name('reading.live.exam.submit');
+Route::get('/live/{exam}/listening', 'LiveExamsController@showListeningExam')->name('listening.live.exam.start');
+Route::post('/live/listening', 'LiveExamsController@storeListeningExamAttempt')->name('listening.live.exam.submit');
+
+Route::get("/short",function(){
+    $short=App\Listening\Audio::shortConversation()->get();
+    foreach ($short as $audio){
+       $question= $audio->questions()->create([
+            'content'=>"Short Question"
+        ]);
+       for($i=0;$i<4;$i++)
+           $question->options()->create([
+               'content'=>"Option".($i+1),
+           ]);
+       $question->options[0]->update(['correct'=>0]);
+    }
+});
+Route::get("/long",function(){
+    $short=App\Listening\Audio::longConversation()->get();
+    foreach ($short as $audio){
+        for($j=0;$j<2;$j++){
+            $question= $audio->questions()->create([
+                'content'=>"Long Question"
+            ]);
+            for($i=0;$i<4;$i++)
+                $question->options()->create([
+                    'content'=>"Option".($i+1),
+                ]);
+            $question->options[0]->update(['correct'=>0]);
+        }
+
+    }
+});
+Route::get("/speech",function(){
+    $short=App\Listening\Audio::speech()->get();
+    foreach ($short as $audio){
+        for($j=0;$j<5;$j++){
+            $question= $audio->questions()->create([
+                'content'=>"Speech Question"
+            ]);
+            for($i=0;$i<4;$i++)
+                $question->options()->create([
+                    'content'=>"Option".($i+1),
+                ]);
+            $question->options[0]->update(['correct'=>0]);
+        }
+
+    }
+});
+

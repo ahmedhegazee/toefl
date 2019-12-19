@@ -59,5 +59,6 @@
 
 
 @csrf
+@if(strpos(request()->route()->action['uses'],'edit')<0)
 <input type="hidden" name="previous" value="{{isset($question)?$previous:''}}">
-
+@endif

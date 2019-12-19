@@ -3,7 +3,7 @@
         <div class="row justify-content-center"><p id="timer"></p></div>
 
         <input type="hidden" id="time" value="<?php echo e($time); ?>">
-        <form action="<?php echo e(route('reading.exam.submit')); ?>" method="post">
+        <form action="<?php echo e($route); ?>" method="post">
             <?php echo csrf_field(); ?>
 
             <?php $__currentLoopData = $vocabQuestions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $question): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -13,8 +13,6 @@
                             <div class="card ">
                                 <div class="card-header">
                                     <h3><?php echo e($question->content); ?></h3>
-
-                                    <input type="hidden" name="vocabQuestions[]" value="<?php echo e($question->id); ?>">
                                 </div>
                                 <div class="card-body">
                                     <?php $__currentLoopData = $question->options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -44,7 +42,6 @@
             <?php $__currentLoopData = $paragraphs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $paragraph): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="paragraph  d-none row">
                     <div class="row justify-content-center">
-                        <input type="hidden" name="paragraphs[]" value="<?php echo e($paragraph->id); ?>">
                         <div class="col-12 "><p><?php echo e($paragraph->content); ?></p></div>
                     </div>
                     <div class="row questions justify-content-center">
@@ -52,17 +49,14 @@
                         <div class="row question  d-none mb-2 col-md-8">
                             <div class="card ">
                                 <div class="card-header">
-
                                     <h3><?php echo e($question->content); ?></h3>
-                                    <input type="hidden" name="paragraphQuestions[<?php echo e($paragraph->id); ?>][questions][]" value="<?php echo e($question->id); ?>">
-
                                 </div>
                                 <div class="card-body">
                                     <?php $__currentLoopData = $question->options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="row form-group option">
                                             <div class="col-1 pr-0 ">
                                                 <input type="radio" class="form-control"
-                                                       name="paragraphAnswers[<?php echo e($paragraph->id); ?>][questions][<?php echo e($question->id); ?>]answer" value="<?php echo e($option->id); ?>">
+                                                       name="paragraphAnswers[<?php echo e($question->id); ?>]" value="<?php echo e($option->id); ?>">
                                             </div>
                                             <div class="col-11 pt-2">
                                                 <?php echo e($option->content); ?>

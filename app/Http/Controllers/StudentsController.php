@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Config;
-use App\Reservation;
+
 use App\Student;
-use App\User;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class StudentsController extends Controller
@@ -77,7 +75,14 @@ class StudentsController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-            $student->update(['verified'=>1]);
+        Validator::make($request->all(),[
+            'required_score'=>'numbers|min:300'
+        ]);
+
+            $student->update([
+                'required_score'=>intval($request['required_score']),
+                'verified'=>1
+            ]);
             return redirect(route('student.index'));
     }
 
@@ -87,6 +92,7 @@ class StudentsController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
+
     public function destroy(Student $student)
     {
         //

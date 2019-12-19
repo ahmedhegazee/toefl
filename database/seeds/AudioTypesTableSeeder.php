@@ -12,13 +12,13 @@ class AudioTypesTableSeeder extends Seeder
     public function run()
     {
         \App\Listening\AudioType::create([
-            'type'=>'Short Speech'
+            'type'=>'Short Conversation'
         ]);
         \App\Listening\AudioType::create([
-            'type'=>'Long Speech'
+            'type'=>'Long Conversation'
         ]);
         \App\Listening\AudioType::create([
-            'type'=>'Dialog'
+            'type'=>'Speech'
         ]);
     }
 }

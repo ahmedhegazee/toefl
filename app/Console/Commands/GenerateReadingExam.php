@@ -21,7 +21,7 @@ class GenerateReadingExam extends Command
      *
      * @var string
      */
-    protected $description = 'Generate Grammar Exam From Random Questions';
+    protected $description = 'Generate Reading Exam From Random Questions';
 
     /**
      * Create a new command instance.

@@ -5,7 +5,7 @@
             <?php echo $__env->make('layouts.questions', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             <?php echo method_field('put'); ?>
             <button type="submit" class="btn btn-primary">
-                <?php echo e(__('Update Reading Question')); ?>
+                <?php echo e(__('Update Paragraph Question')); ?>
 
             </button>
         </form>

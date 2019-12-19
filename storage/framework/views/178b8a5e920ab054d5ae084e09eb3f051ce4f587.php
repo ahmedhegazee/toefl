@@ -1,6 +1,6 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
-        <h2>Paragraphs</h2>
+        <h2>Audio Files</h2>
         <a href="<?php echo e(route('audio.create')); ?>" class="btn btn-primary">Add Audio</a>
         <table border="2px solid">
             <tr>

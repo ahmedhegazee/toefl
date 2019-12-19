@@ -5,7 +5,7 @@
         <div class="row justify-content-center"><p id="timer"></p></div>
 
         <input type="hidden" id="time" value="{{$time}}">
-        <form action="{{route('reading.exam.submit')}}" method="post">
+        <form action="{{$route}}" method="post">
             @csrf
 
             @foreach($vocabQuestions as $question)
@@ -15,8 +15,6 @@
                             <div class="card ">
                                 <div class="card-header">
                                     <h3>{{$question->content}}</h3>
-{{--                                    <input type="hidden" name="" value="{{$question->id}}">--}}
-                                    <input type="hidden" name="vocabQuestions[]" value="{{$question->id}}">
                                 </div>
                                 <div class="card-body">
                                     @foreach($question->options as $option)
@@ -45,7 +43,6 @@
             @foreach($paragraphs as $paragraph)
                 <div class="paragraph  d-none row">
                     <div class="row justify-content-center">
-                        <input type="hidden" name="paragraphs[]" value="{{$paragraph->id}}">
                         <div class="col-12 "><p>{{$paragraph->content}}</p></div>
                     </div>
                     <div class="row questions justify-content-center">
@@ -53,17 +50,14 @@
                         <div class="row question  d-none mb-2 col-md-8">
                             <div class="card ">
                                 <div class="card-header">
-{{--                                    <input type="text" name="pqid[]" disabled value="{{$question->id}}">--}}
                                     <h3>{{$question->content}}</h3>
-                                    <input type="hidden" name="paragraphQuestions[{{$paragraph->id}}][questions][]" value="{{$question->id}}">
-{{--                                    <input type="hidden" name="pqid[{{$question->id}}]" value="{{$paragraph->id}}">--}}
                                 </div>
                                 <div class="card-body">
                                     @foreach($question->options as $option)
                                         <div class="row form-group option">
                                             <div class="col-1 pr-0 ">
                                                 <input type="radio" class="form-control"
-                                                       name="paragraphAnswers[{{$paragraph->id}}][questions][{{$question->id}}]answer" value="{{$option->id}}">
+                                                       name="paragraphAnswers[{{$question->id}}]" value="{{$option->id}}">
                                             </div>
                                             <div class="col-11 pt-2">
                                                 {{$option->content}}

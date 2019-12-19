@@ -22,7 +22,25 @@ class GroupsController extends Controller
         $groups = Group::all();
         return view('group.index', compact('groups'));
     }
-
+    public function getStudents(Group $group)
+    {
+        $students =$group->students()->get();
+        $data=$students->toArray();
+        $received=[];
+        for ($i=0;$i<count($students);$i++){
+            $student=[];
+            $student['id']=$data[$i]['id'];
+            $student['name']=$students[$i]->user()->name;
+            $student['arabic_name']=$data[$i]['arabic_name'];
+            $student['email']=$students[$i]->user()->email;
+            $student['verified']=$data[$i]['verified'];
+            $student['active']=$students[$i]->isOnline();
+            $student['enterexam']=$data[$i]['enterexam'];
+            $student['startexam']=$data[$i]['startexam'];
+            array_push($received,$student);
+        }
+        return response()->json($received);
+    }
     /**
      * Show the form for creating a new resource.
      *

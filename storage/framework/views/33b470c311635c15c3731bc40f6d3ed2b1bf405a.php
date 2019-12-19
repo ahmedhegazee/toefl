@@ -3,8 +3,8 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
 
-
                     <?php if(session('error')): ?>
+
                         <div class='alert alert-danger'> <?php echo e(session('error')); ?> </div>
                     <?php endif; ?>
 

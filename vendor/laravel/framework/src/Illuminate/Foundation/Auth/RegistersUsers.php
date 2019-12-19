@@ -44,9 +44,11 @@ trait RegistersUsers
             event(new Registered($user = $this->create($request->all(),$res)));
             $studentsCount = $res->students->count();
             $maxStudents = $res->max_students;
-            $this->guard()->login($user);
+//            $this->guard()->login($user);
             if($studentsCount==$maxStudents)
                 event(new ClosedReservation($res));
+
+            return redirect(route('success'))->with('message','Come to the faculty to continue your registration with the required papers');
 
             return $this->registered($request, $user)
                 ?: redirect($this->redirectPath());
@@ -85,7 +87,6 @@ trait RegistersUsers
     public function getAvailableReservation()
     {
         $reservations= Reservation::where('start','<=',now()->toDateString())
-            ->where('end','>=',now()->toDateString())
             ->where('done','!=',1)->get();
         $res= $reservations->first();
 
@@ -111,6 +112,5 @@ trait RegistersUsers
      */
     protected function registered(Request $request, $user)
     {
-        //
     }
 }

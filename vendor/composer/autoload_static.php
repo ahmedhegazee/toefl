@@ -380,8 +380,11 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
     );
 
     public static $classMap = array (
+        'App\\Attempt' => __DIR__ . '/../..' . '/app/Attempt.php',
         'App\\Config' => __DIR__ . '/../..' . '/app/Config.php',
         'App\\Console\\Commands\\GenerateGrammarExam' => __DIR__ . '/../..' . '/app/Console/Commands/GenerateGrammarExam.php',
+        'App\\Console\\Commands\\GenerateListeningExam' => __DIR__ . '/../..' . '/app/Console/Commands/GenerateListeningExam.php',
+        'App\\Console\\Commands\\GenerateReadingExam' => __DIR__ . '/../..' . '/app/Console/Commands/GenerateReadingExam.php',
         'App\\Console\\Commands\\GenerateStudent' => __DIR__ . '/../..' . '/app/Console/Commands/GenerateStudent.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
@@ -428,11 +431,14 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'App\\Http\\Middleware\\checkRoles' => __DIR__ . '/../..' . '/app/Http/Middleware/checkRoles.php',
         'App\\Http\\Middleware\\checkStudent' => __DIR__ . '/../..' . '/app/Http/Middleware/checkStudent.php',
         'App\\Http\\Middleware\\isAvailableReservation' => __DIR__ . '/../..' . '/app/Http/Middleware/isAvailableReservation.php',
+        'App\\Http\\Middleware\\studentLastActivity' => __DIR__ . '/../..' . '/app/Http/Middleware/studentLastActivity.php',
         'App\\Listening\\Audio' => __DIR__ . '/../..' . '/app/Listening/Audio.php',
         'App\\Listening\\AudioType' => __DIR__ . '/../..' . '/app/Listening/AudioType.php',
+        'App\\Listening\\ListeningAnswer' => __DIR__ . '/../..' . '/app/Listening/ListeningAnswer.php',
         'App\\Listening\\ListeningExam' => __DIR__ . '/../..' . '/app/Listening/ListeningExam.php',
         'App\\Listening\\ListeningOption' => __DIR__ . '/../..' . '/app/Listening/ListeningOption.php',
         'App\\Listening\\ListeningQuestion' => __DIR__ . '/../..' . '/app/Listening/ListeningQuestion.php',
+        'App\\Listening\\ListeningResult' => __DIR__ . '/../..' . '/app/Listening/ListeningResult.php',
         'App\\Policies\\StudentPolicy' => __DIR__ . '/../..' . '/app/Policies/StudentPolicy.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',

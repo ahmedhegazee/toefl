@@ -4,10 +4,13 @@ namespace App;
 
 use App\Grammar\GrammarAnswer;
 use App\Grammar\GrammarResult;
+use App\Listening\ListeningAnswer;
+use App\Listening\ListeningResult;
 use App\Reading\ParagraphAnswer;
 use App\Reading\ReadingResult;
 use App\Reading\VocabAnswer;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Student extends Model
 {
@@ -22,7 +25,10 @@ class Student extends Model
     {
         return $this->verifiedOptions()[$option];
     }
-
+    public function isOnline()
+    {
+        return Cache::has('student-is-online-' . $this->id)?'active':'not active';
+    }
     public function verifiedOptions()
     {
         return [
@@ -42,25 +48,23 @@ class Student extends Model
         return $this->belongsTo(Group::class);
     }
 
-    public function grammarAnswers()
+
+    public function results()
     {
-        return $this->hasMany(GrammarAnswer::class);
-    }
-    public function vocabAnswers()
+        return $this->hasMany(Result::class);
+        }
+    public function attempts()
     {
-        return $this->hasMany(VocabAnswer::class);
-    }
-    public function paragraphAnswers()
-    {
-        return $this->hasMany(ParagraphAnswer::class);
+        return $this->hasMany(Attempt::class);
     }
 
-    public function grammarResults()
+    public function sumAllMarks( int $grammarMarks,int $readingMarks,int $listeningMarks)
     {
-        return $this->hasMany(GrammarResult::class);
-    }
-    public function readingResults()
-    {
-        return $this->hasMany(ReadingResult::class);
+        $marks=$grammarMarks+$readingMarks+$listeningMarks;
+        $this->results()->create([
+            'attempt_id'=>$this->attempts->last()->id,
+            'mark'=>$marks,
+            'success'=>$marks > $this->required_score,
+        ]);
     }
 }

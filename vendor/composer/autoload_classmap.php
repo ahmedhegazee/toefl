@@ -6,8 +6,11 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Attempt' => $baseDir . '/app/Attempt.php',
     'App\\Config' => $baseDir . '/app/Config.php',
     'App\\Console\\Commands\\GenerateGrammarExam' => $baseDir . '/app/Console/Commands/GenerateGrammarExam.php',
+    'App\\Console\\Commands\\GenerateListeningExam' => $baseDir . '/app/Console/Commands/GenerateListeningExam.php',
+    'App\\Console\\Commands\\GenerateReadingExam' => $baseDir . '/app/Console/Commands/GenerateReadingExam.php',
     'App\\Console\\Commands\\GenerateStudent' => $baseDir . '/app/Console/Commands/GenerateStudent.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
@@ -54,11 +57,14 @@ return array(
     'App\\Http\\Middleware\\checkRoles' => $baseDir . '/app/Http/Middleware/checkRoles.php',
     'App\\Http\\Middleware\\checkStudent' => $baseDir . '/app/Http/Middleware/checkStudent.php',
     'App\\Http\\Middleware\\isAvailableReservation' => $baseDir . '/app/Http/Middleware/isAvailableReservation.php',
+    'App\\Http\\Middleware\\studentLastActivity' => $baseDir . '/app/Http/Middleware/studentLastActivity.php',
     'App\\Listening\\Audio' => $baseDir . '/app/Listening/Audio.php',
     'App\\Listening\\AudioType' => $baseDir . '/app/Listening/AudioType.php',
+    'App\\Listening\\ListeningAnswer' => $baseDir . '/app/Listening/ListeningAnswer.php',
     'App\\Listening\\ListeningExam' => $baseDir . '/app/Listening/ListeningExam.php',
     'App\\Listening\\ListeningOption' => $baseDir . '/app/Listening/ListeningOption.php',
     'App\\Listening\\ListeningQuestion' => $baseDir . '/app/Listening/ListeningQuestion.php',
+    'App\\Listening\\ListeningResult' => $baseDir . '/app/Listening/ListeningResult.php',
     'App\\Policies\\StudentPolicy' => $baseDir . '/app/Policies/StudentPolicy.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',

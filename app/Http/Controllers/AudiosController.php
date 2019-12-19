@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Listening\Audio;
 use App\Listening\AudioType;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -19,7 +22,7 @@ class AudiosController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -30,7 +33,7 @@ class AudiosController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -41,8 +44,8 @@ class AudiosController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param Request $request
+     * @return RedirectResponse
      */
     public function store(Request $request)
     {
@@ -59,7 +62,7 @@ class AudiosController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Audio  $audio
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Audio $audio)
     {
@@ -71,7 +74,7 @@ class AudiosController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Audio  $audio
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Audio $audio)
     {
@@ -82,9 +85,9 @@ class AudiosController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  \App\Audio  $audio
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(Request $request, Audio $audio)
     {
@@ -107,8 +110,9 @@ class AudiosController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Audio  $audio
-     * @return \Illuminate\Http\RedirectResponse
+     * @param Audio $audio
+     * @return RedirectResponse
+     * @throws Exception
      */
     public function destroy(Audio $audio)
     {
@@ -139,7 +143,7 @@ class AudiosController extends Controller
             'source' => 'sometimes|file|mimetypes:audio/x-wav',
 
         ];
-        return Validator::make($data,$roles,$message);
+        return Validator::make($data,$roles);
 
     }
 }

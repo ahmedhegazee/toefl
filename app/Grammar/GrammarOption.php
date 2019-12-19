@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class GrammarOption extends Model
 {
     protected $guarded=[];
+
     public function question()
     {
         return $this->belongsTo(GrammarQuestion::class);

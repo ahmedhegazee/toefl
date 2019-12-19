@@ -6,11 +6,14 @@ use App\Config;
 use App\Grammar\GrammarExam;
 use App\Grammar\GrammarOption;
 use App\Grammar\GrammarQuestion;
+use App\Listening\ListeningExam;
+use App\Listening\ListeningOption;
 use App\Reading\ParagraphQuestionOption;
 use App\Reading\ReadingExam;
 use App\Reading\VocabOption;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ExamsController extends Controller
 {
@@ -23,140 +26,130 @@ class ExamsController extends Controller
 
     public function showStudentHome()
     {
-        $student=auth()->user()->getStudent();
-
+        $student = auth()->user()->getStudent();
+        $fullName = auth()->user()->name;
+        $reservation = $student->reservation->id;
+        $groupType = $student->group->type->id;
+        $grammarExam = GrammarExam::where('reservation_id', $reservation)
+            ->where('group_type_id', $groupType)->get()->first();
+        $readingExam = ReadingExam::where('reservation_id', $reservation)
+            ->where('group_type_id', $groupType)->get()->first();
+        $listeningExam = ListeningExam::where('reservation_id', $reservation)
+            ->where('group_type_id', $groupType)->get()->first();
         session([
-            'student'=>$student,
-            'groupType'=>$student->group->type->id,
-            'reservation'=>$student->reservation->id
+            'student' => $student,
+            'grammarExam' => $grammarExam,
+            'readingExam' => $readingExam,
+            'listeningExam' => $listeningExam,
         ]);
-        $fullName =auth()->user()->name;
-        return view('exams.home',compact('fullName','student'));
+        $student->attempts()->create([
+            'group_id' => $student->group->id,
+            'reservation_id' => $reservation,
+        ]);
+        return view('exams.home', compact('fullName', 'student'));
     }
 
     public function showGrammarExam()
     {
-        $reservation =session()->get('reservation');
-        $groupType =session()->get('groupType');
+        if (!$this->checkSessionData())
+            return redirect()->action('ExamsController@showStudentHome');
+        $student = session()->get('student');
+        if (session()->has('student-' . $student->id . '-grammar'))
+            return redirect()->action('ExamsController@showReadingExam');
+        elseif (session()->has('student-' . $student->id . '-reading'))
+            return redirect()->action('ExamsController@showListeningExam');
 
-        $grammareExam= GrammarExam::where('reservation_id',$reservation)
-                                    ->where('group_type_id',$groupType)->get()->first();
-        $fillQuestions=$grammareExam->getFillQuestions;
-        $findQuestions=$grammareExam->getFindQuestions;
-        $time=Config::find(2)->value;
-
-//        return view('exams.grammarExam',compact('time','questions'));
-        return view('exams.grammarExam',compact('fillQuestions','findQuestions','time'));
+        $grammarExam = session()->get('grammarExam');
+        $fillQuestions = $grammarExam->getFillQuestions;
+        $findQuestions = $grammarExam->getFindQuestions;
+        $time = Config::find(2)->value;
+        $route = route('grammar.exam.submit');
+        return view('exams.grammarExam', compact('fillQuestions', 'findQuestions', 'time', 'route'));
     }
+
     public function storeGrammarExamAttempt(Request $request)
     {
-        $student =session()->get('student');
-
-        $questions = $request->get('qid');
-       $answers= $request->get('answers');
-        $marks=0;
-        foreach ($questions as $question){
-            $questionId = intval($question);
-            $q = GrammarQuestion::find($questionId);
-            if(isset($answers[$questionId])){
-                $optionId=intval($answers[$questionId]);
-                $option=GrammarOption::find($optionId);
-                $student->grammarAnswers()->create([
-                    'grammar_question_id'=>$q->id,
-                    'grammar_option_id'=>$option->id
-                ]);
-                if($option->correct)
-                    $marks++;
-            }else{
-                $student->grammarAnswers()->create([
-                    'grammar_question_id'=>$q->id,
-                    'grammar_option_id'=>null
-                ]);
-            }
-
-        }
-        $student->grammarResults()->create([
-            'marks'=>$marks
-        ]);
+        $student = session()->get('student');
+        $answers = $request->get('answers');
+        $marks = collect($answers)->map(function ($answer) {
+            return GrammarOption::find($answer)->correct;
+        })->sum();
+       session(['student-' . $student->id . '-grammar'=> $marks]);
         return redirect()->action("ExamsController@showReadingExam");
     }
-public function showReadingExam()
+
+    public function showReadingExam()
     {
-        $reservation =session()->get('reservation');
-        $groupType =session()->get('groupType');
+        if (!$this->checkSessionData())
+            return redirect()->action('ExamsController@showStudentHome');
+        $student = session()->get('student');
+        if (session()->has('student-' . $student->id . '-reading'))
+            return redirect()->action('ExamsController@showListeningExam');
 
-        $readingeExam= ReadingExam::where('reservation_id',$reservation)
-                                    ->where('group_type_id',$groupType)->get()->first();
-        $vocabQuestions=$readingeExam->vocabQuestions;
-        $paragraphs=$readingeExam->paragraphs;
-
-        $time=Config::find(3)->value;
-//        return view('exams.grammarExam',compact('time','questions'));
-        return view('exams.readingExam',compact('vocabQuestions','paragraphs','time'));
+        $readingExam = session()->get('readingExam');
+        $vocabQuestions = $readingExam->vocabQuestions;
+        $paragraphs = $readingExam->paragraphs;
+        $time = Config::find(3)->value;
+        $route = route('reading.exam.submit');
+        return view('exams.readingExam', compact('vocabQuestions', 'paragraphs', 'time', 'route'));
     }
+
     public function storeReadingExamAttempt(Request $request)
     {
-        $student =session()->get('student');
-        $vocabQuestions = $request->get('vocabQuestions');
-        $vocabAnswers= $request->get('vocabAnswers');
-        $paragraphs = $request->get('paragraphs');
-        $paragraphQuestions = $request->get('paragraphQuestions');
-        $paragraphAnswers= $request->get('paragraphAnswers');
-        $marks=0;
-        foreach ($vocabQuestions as $question){
-            $questionId = intval($question);
-//            $q = VocabQuestion::find($questionId);
-            if(isset($vocabAnswers[$questionId])){
-                $optionId=intval($vocabAnswers[$questionId]);
-                $option=VocabOption::find($optionId);
-                $student->vocabAnswers()->create([
-                    'vocab_question_id'=>$questionId,
-                    'vocab_option_id'=>$option->id
-                ]);
-                if($option->correct)
-                    $marks++;
-            }else{
-                $student->vocabAnswers()->create([
-                    'vocab_question_id'=>$questionId,
-                    'vocab_option_id'=>null
-                ]);
-            }
-
-        }
-        //to reach every paragraph
-        foreach ($paragraphs as $paragraph){
-          $questions=  $paragraphQuestions[intval($paragraph)]['questions'];
-          // to reach every question in every paragraph
-            foreach ($questions as $question){
-                if(isset($paragraphAnswers[intval($paragraph)]['questions'])){
-                    $selectedQuestions=$paragraphAnswers[intval($paragraph)]['questions'];
-                    if(isset($selectedQuestions[intval($question)])){
-                        $question=intval($question);
-                        $selectedQuestion =$selectedQuestions[$question];
-                        $optionId=intval($selectedQuestion);
-                        $option=ParagraphQuestionOption::find($optionId);
-                        $student->paragraphAnswers()->create([
-                            'paragraph_id'=>intval($paragraph),
-                            'paragraph_question_id'=>$question,
-                            'paragraph_question_option_id'=>$option->id
-                        ]);
-                        if($option->correct)
-                            $marks++;
-                    }
-                }
-               else{
-                    $student->paragraphAnswers()->create([
-                        'paragraph_id'=>intval($paragraph),
-                        'paragraph_question_id'=>intval($question),
-                        'paragraph_question_option_id'=>null
-                    ]);
-                }
-            }
-        }
-        $student->readingResults()->create([
-            'marks'=>$marks
-        ]);
-        return "You have in reading exam ".$marks;
+        $student = session()->get('student');
+        $vocabAnswers = $request->get('vocabAnswers');
+        $paragraphAnswers = $request->get('paragraphAnswers');
+        $vocabMarks = collect($vocabAnswers)->map(function ($answer) {
+            return VocabOption::find($answer)->correct;
+        })->sum();
+        $paragraphMarks = collect($paragraphAnswers)->map(function ($answer) {
+            return ParagraphQuestionOption::find($answer)->correct;
+        })->sum();
+        $marks = $vocabMarks + $paragraphMarks;
+        session(['student-' . $student->id . '-reading'=> $marks]);
+        return redirect()->action("ExamsController@showListeningExam");
     }
 
+    public function showListeningExam()
+    {
+        if (!$this->checkSessionData())
+            return redirect()->action('ExamsController@showStudentHome');
+        $listeningExam = session()->get('listeningExam');
+        $shortConversations = $listeningExam->audios->where('audio_type_id', 1);
+        $longConversations = $listeningExam->audios->where('audio_type_id', 2);
+        $speeches = $listeningExam->audios->where('audio_type_id', 3);
+        $time = Config::find(4)->value;
+        $route = route('listening.exam.submit');
+        return view('exams.listeningExam', compact('shortConversations', 'longConversations', 'speeches', 'time', 'route'));
+    }
+
+    public function storeListeningExamAttempt(Request $request)
+    {
+        $student = session()->get('student');
+        $listeningAnswers = $request->get('listeningAnswers');
+        $marks = collect($listeningAnswers)->map(function ($answer) {
+            return ListeningOption::find($answer)->correct;
+        })->sum();
+        $student->sumAllMarks(session()->get('student-' . $student->id . '-grammar'), session()->get('student-' . $student->id . '-reading'), $marks);
+        $this->logout();
+        return redirect(route('success'))->with('message', 'You will know your grades soon');
+    }
+
+    public function logout()
+    {
+        $student = session()->get('student');
+        Cache::forget('student-is-online-' . $student->id);
+        session()->forget([ 'student-' . $student->id . '-grammar','student-' . $student->id . '-reading']);
+        session()->forget(['student', 'grammarExam', 'readingExam', 'listeningExam']);
+        auth()->logout();
+    }
+
+    public function checkSessionData()
+    {
+        return
+            session()->has('student') &&
+            session()->has('grammarExam') &&
+            session()->has('readingExam') &&
+            session()->has('listeningExam');
+    }
 }

@@ -191,6 +191,21 @@ endif; ?>
 
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="type" class="col-md-4 col-form-label text-md-right">Gender</label>
+                            <div class="col-md-6">
+                                <select id="type" name="gender" class="form-control">
+                                    <option value="" disabled>Select Gender</option>
+
+                                        <option value="1" >Male</option>
+                                        <option value="2" >Female</option>
+
+
+                                </select>
+
+
+                            </div>
+                        </div>
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
