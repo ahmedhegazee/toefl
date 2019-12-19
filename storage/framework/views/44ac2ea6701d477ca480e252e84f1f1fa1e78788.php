@@ -28,6 +28,7 @@
                     <td><?php echo e($exam->getFindQuestions()->count()); ?></td>
 
                     <td>
+                        <a href="<?php echo e(route('grammar.live.exam.start',['exam'=>$exam])); ?>" class="btn btn-primary">Live Exam</a>
                         <a href="<?php echo e(route('grammar.exam.show',['exam'=>$exam])); ?>" class="btn btn-primary">Show</a>
                         <a href="<?php echo e(route('grammar.exam.edit',['exam'=>$exam])); ?>" class="btn btn-success">Edit</a>
                         <form style="display: inline;" method="post" action="<?php echo e(route('grammar.exam.destroy',['exam'=>$exam])); ?>">

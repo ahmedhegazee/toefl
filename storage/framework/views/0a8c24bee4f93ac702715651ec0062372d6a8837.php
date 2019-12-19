@@ -16,8 +16,7 @@
 
 </div>
 </div>
-<input type="hidden" name="previous" value="<?php echo e($previous); ?>">
 
-<?php echo csrf_field(); ?>
+
 
 <?php /**PATH /Users/ahmedhegazy/Desktop/toefl/toeflsystem/resources/views/grammar/questions/form.blade.php ENDPATH**/ ?>

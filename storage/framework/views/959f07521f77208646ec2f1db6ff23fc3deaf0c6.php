@@ -23,7 +23,7 @@
                 </div>
 
 
-                <a href="<?php echo e(route('exam.start')); ?>" class="btn btn-primary">Go to Exam</a>
+                <a href="<?php echo e(route('grammar.exam.start')); ?>" class="btn btn-primary">Go to Exam</a>
             </div>
         </div>
 

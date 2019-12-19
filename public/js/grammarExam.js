@@ -94,13 +94,11 @@ function randomizeOptions() {
 function setTimer() {
     var countDownDate = new Date();
     var time = document.getElementById('time').value;
-    if (time.charAt(time.length - 1) === 'm') {
-        var minutes = parseInt(time);
-        countDownDate.setMinutes(countDownDate.getMinutes() + minutes);
-    } else {
-        var hours = parseInt(time);
-        countDownDate.setHours(countDownDate.getHours() + hours);
-    }
+    var arr= time.split('-');
+    var minutes = parseInt(arr[1]);
+    countDownDate.setMinutes(countDownDate.getMinutes() + minutes);
+    var hours = parseInt(arr[0]);
+    countDownDate.setHours(countDownDate.getHours() + hours);
 
 // Update the count down every 1 second
     var x = setInterval(function () {

@@ -25,6 +25,7 @@
                     <td>{{$exam->paragraphs()->count()}}</td>
 
                     <td>
+                        <a href="{{route('reading.live.exam.start',['exam'=>$exam])}}" class="btn btn-primary">Live Exam</a>
                         <a href="{{route('reading.exam.show.paragraphs',['exam'=>$exam])}}" class="btn btn-primary">Show Paragraphs</a>
                         <a href="{{route('reading.exam.show.vocab',['exam'=>$exam])}}" class="btn btn-primary">Show Vocab Questions</a>
                         <a href="{{route('reading.exam.edit',['exam'=>$exam])}}" class="btn btn-success">Edit</a>

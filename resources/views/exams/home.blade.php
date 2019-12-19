@@ -24,7 +24,7 @@
                 </div>
 
 
-                <a href="{{route('exam.start')}}" class="btn btn-primary">Go to Exam</a>
+                <a href="{{route('grammar.exam.start')}}" class="btn btn-primary">Go to Exam</a>
             </div>
         </div>
 

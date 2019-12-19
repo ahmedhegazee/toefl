@@ -29,6 +29,7 @@
                     <td>{{$exam->getFindQuestions()->count()}}</td>
 
                     <td>
+                        <a href="{{route('grammar.live.exam.start',['exam'=>$exam])}}" class="btn btn-primary">Live Exam</a>
                         <a href="{{route('grammar.exam.show',['exam'=>$exam])}}" class="btn btn-primary">Show</a>
                         <a href="{{route('grammar.exam.edit',['exam'=>$exam])}}" class="btn btn-success">Edit</a>
                         <form style="display: inline;" method="post" action="{{route('grammar.exam.destroy',['exam'=>$exam])}}">

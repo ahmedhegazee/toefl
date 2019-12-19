@@ -23,4 +23,13 @@ class Audio extends Model
     {
         return $this->belongsTo(AudioType::class,'audio_type_id');
     }
+    public function scopeShortConversation($query){
+        return $query->where('audio_type_id',1);
+    }
+    public function scopeLongConversation($query){
+        return $query->where('audio_type_id',2);
+    }
+    public function scopeSpeech($query){
+        return $query->where('audio_type_id',3);
+    }
 }

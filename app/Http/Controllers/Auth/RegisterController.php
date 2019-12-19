@@ -122,7 +122,7 @@ class RegisterController extends Controller
             'messageimage'=>$data['messageimage']->store('messageimages','public'),
             'res_id'=>$res->id,
             'group_id'=>intval($data['type']),
-
+            'gender'=>intval($data['gender']),
         ]);
 }
 //    public function getAvailableReservation()

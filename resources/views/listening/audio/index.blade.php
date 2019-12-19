@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container ">
-        <h2>Paragraphs</h2>
+        <h2>Audio Files</h2>
         <a href="{{route('audio.create')}}" class="btn btn-primary">Add Audio</a>
         <table border="2px solid">
             <tr>

@@ -4,6 +4,8 @@ namespace App\Http;
 
 use App\Http\Middleware\isAdmin;
 use App\Http\Middleware\isAvailableReservation;
+use App\Http\Middleware\studentHasOnlyOneAttempt;
+use App\Http\Middleware\studentLastActivity;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -37,6 +39,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            studentLastActivity::class,
         ],
 
         'api' => [
@@ -68,6 +71,7 @@ class Kernel extends HttpKernel
         'check_student'=>\App\Http\Middleware\checkStudent::class,
         'can_start_exam'=>\App\Http\Middleware\canStartExam::class,
         'admin'=>\App\Http\Middleware\admin::class,
+        'has_only_one_attempt'=>studentHasOnlyOneAttempt::class,
     ];
 
     /**

@@ -24,8 +24,8 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="<?php echo e(url('/')); ?>">
-                    <?php echo e(config('app.name', 'Laravel')); ?>
 
+                    TOEFL
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="<?php echo e(__('Toggle navigation')); ?>">
                     <span class="navbar-toggler-icon"></span>
@@ -56,7 +56,9 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <?php if(is_null(auth()->user()->getStudent())): ?>
                                     <a href="<?php echo e(route('admin')); ?>" class="dropdown-item">Control Panel</a>
+
                                     <a class="dropdown-item" href="<?php echo e(route('logout')); ?>"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -67,6 +69,7 @@
                                     <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display: none;">
                                         <?php echo csrf_field(); ?>
                                     </form>
+                                    <?php endif; ?>
                                 </div>
                             </li>
                         <?php endif; ?>
@@ -79,6 +82,9 @@
             <?php echo $__env->yieldContent('content'); ?>
         </main>
     </div>
+
+
+
 </body>
 </html>
 <?php /**PATH /Users/ahmedhegazy/Desktop/toefl/toeflsystem/resources/views/layouts/app.blade.php ENDPATH**/ ?>

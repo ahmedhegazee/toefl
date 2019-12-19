@@ -1,6 +1,6 @@
 let vocabQuestionsArray = [], randomVocabQuestions, vocabQuestion = 0, vocabQuestions;
-let paragraphsArray = [], randomParagraphs, paragraph = 0, paragraphs;
-let paragraphQuestionsArray = [], randomParagraphQuestions, paragraphQuestion = 0, paragraphQuestions;
+let  randomParagraphs, paragraph = 0, paragraphs;
+let  randomParagraphQuestions, paragraphQuestion = 0, paragraphQuestions;
 let isParagraphs =false;
 // let questionsArray = [], randomQuestions, question = 0, questions;
 window.onload = function () {
@@ -129,13 +129,12 @@ function randomizeOptions() {
 function setTimer() {
     var countDownDate = new Date();
     var time = document.getElementById('time').value;
-    if (time.charAt(time.length - 1) === 'm') {
-        var minutes = parseInt(time);
-        countDownDate.setMinutes(countDownDate.getMinutes() + minutes);
-    } else {
-        var hours = parseInt(time);
-        countDownDate.setHours(countDownDate.getHours() + hours);
-    }
+    var arr= time.split('-');
+    var minutes = parseInt(arr[1]);
+    countDownDate.setMinutes(countDownDate.getMinutes() + minutes);
+    var hours = parseInt(arr[0]);
+    countDownDate.setHours(countDownDate.getHours() + hours);
+
 
 // Update the count down every 1 second
     var x = setInterval(function () {

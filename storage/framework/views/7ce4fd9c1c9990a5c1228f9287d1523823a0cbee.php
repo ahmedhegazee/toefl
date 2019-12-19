@@ -12,7 +12,6 @@
                             <a href="<?php echo e(route('vocab.index')); ?>" class="btn btn-primary ">Vocab Questions</a>
                             <a href="<?php echo e(route('paragraph.index')); ?>" class="btn btn-primary ">Paragraphs</a>
 
-
                         </div>
                     </div>
                 </div>
