@@ -144,6 +144,22 @@
 
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="studying" class="col-md-4 col-form-label text-md-right">Studying</label>
+                            <div class="col-md-6">
+                                <select id="studying" name="studying" class="form-control">
+                                    <option value="" disabled>Select Studying</option>
+
+                                        <option value="1" >Ms.c(Master)</option>
+                                        <option value="2" >PhD(Doctor)</option>
+                                        <option value="3" >Board certified</option>
+
+
+                                </select>
+
+
+                            </div>
+                        </div>
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">

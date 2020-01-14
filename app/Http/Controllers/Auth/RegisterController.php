@@ -123,6 +123,7 @@ class RegisterController extends Controller
             'res_id'=>$res->id,
             'group_id'=>intval($data['type']),
             'gender'=>intval($data['gender']),
+            'studying'=>intval($data['studying']),
         ]);
 }
 //    public function getAvailableReservation()

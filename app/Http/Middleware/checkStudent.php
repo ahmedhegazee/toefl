@@ -4,17 +4,20 @@ namespace App\Http\Middleware;
 
 use App\Student;
 use Closure;
+use Illuminate\Support\Facades\Cache;
 
 class checkStudent
 {
     public function isVerified()
     {
 
-        return  Student::where('uid',auth()->user()->id)->get()->first()->verified=='Verified';
+        return  auth()->user()->getStudent()->verified=='Verified';
     }
     public function CanEnterExam()
     {
-        return  Student::where('uid',auth()->user()->id)->get()->first()->enterexam==1;
+        return  Cache::has('group-can-enter-exam-'.auth()->user()->getStudent()->group->id);
+
+//            auth()->user()->getStudent()->enterexam==1;
     }
     /**
      * Handle an incoming request.

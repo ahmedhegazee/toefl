@@ -10,11 +10,16 @@ class studentHasOnlyOneAttempt
     public function hasAttempt()
     {
         $student =auth()->user()->getStudent();
-      $count=  Attempt::where('student_id',$student->id)
+      $attempt=  Attempt::where('student_id',$student->id)
         ->where('reservation_id',$student->reservation->id)
-        ->where('group_id',$student->group->id)->get()->count();
-
-        return $count>0;
+        ->where('group_id',$student->group->id)->get()->first();
+//      dd($attempt);
+            if(!is_null($attempt)) {
+                if (!is_null($attempt->result))
+                    return true;
+            }
+            else
+        return false;
     }
     /**
      * Handle an incoming request.
