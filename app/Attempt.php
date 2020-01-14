@@ -12,4 +12,9 @@ class Attempt extends Model
     {
         return $this->belongsTo(Student::class);
     }
+
+    public function result()
+    {
+      return  $this->hasOne(Result::class);
+    }
 }

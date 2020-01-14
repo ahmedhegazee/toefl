@@ -13,6 +13,7 @@
 
 
 use App\Attempt;
+use Barryvdh\DomPDF\PDF;
 
 Route::get('/', function () {
     return view('welcome');
@@ -82,9 +83,9 @@ Route::resource('grammar/exam', 'GrammarExamController')
         'destroy' => 'grammar.exam.destroy',
         'show' => 'grammar.exam.show',
     ]);
-Route::get('/grammar/exam/{exam}/questions','GrammarExamController@showQuestions')->name('grammar.exam.questions.show');
-Route::post('/grammar/exam/{exam}/questions','GrammarExamController@storeQuestions')->name('grammar.exam.questions.store');
-Route::delete('/grammar/exam/{exam}/questions/{question}','GrammarExamController@destroyQuestions')->name('grammar.exam.questions.destroy');
+Route::get('/grammar/exam/{exam}/questions', 'GrammarExamController@showQuestions')->name('grammar.exam.questions.show');
+Route::post('/grammar/exam/{exam}/questions', 'GrammarExamController@storeQuestions')->name('grammar.exam.questions.store');
+Route::delete('/grammar/exam/{exam}/questions/{question}', 'GrammarExamController@destroyQuestions')->name('grammar.exam.questions.destroy');
 #endregion
 //Groups Section
 Route::get('/group/{group}/students', 'GroupsController@showStudents')->name('group.students.show')->middleware(['auth', 'admin']);
@@ -112,31 +113,31 @@ Route::resource('reading/exam', 'ReadingExamsController')
         'edit' => 'reading.exam.edit',
         'destroy' => 'reading.exam.destroy',
         'index' => 'reading.exam.index',
-        ]);
-Route::get('reading/exam/{exam}/paragraphs','ReadingExamsController@showParagraphs')->name('reading.exam.show.paragraphs');
-Route::get('reading/exam/{exam}/vocab','ReadingExamsController@showVocab')->name('reading.exam.show.vocab');
-Route::view('cpanel/exams','cpanel.exams')->name('exams.index');
+    ]);
+Route::get('reading/exam/{exam}/paragraphs', 'ReadingExamsController@showParagraphs')->name('reading.exam.show.paragraphs');
+Route::get('reading/exam/{exam}/vocab', 'ReadingExamsController@showVocab')->name('reading.exam.show.vocab');
+Route::view('cpanel/exams', 'cpanel.exams')->name('exams.index');
 
 Route::resource('reading/vocab', 'VocabQuestionsController')->except(['show']);
 
-Route::get('reading/exam/{exam}/create/paragraphs','ReadingExamsController@addParagraphs')->name('reading.exam.add.paragraphs');
-Route::post('reading/exam/{exam}/paragraphs','ReadingExamsController@storeParagraphs')->name('reading.exam.store.paragraphs');
-Route::delete('reading/exam/{exam}/paragraphs/{paragraph}','ReadingExamsController@destroyParagraphs')->name('reading.exam.destroy.paragraphs');
-Route::get('reading/exam/{exam}/create/vocab','ReadingExamsController@addVocabQuestions')->name('reading.exam.add.vocab');
-Route::post('reading/exam/{exam}/vocab','ReadingExamsController@storeVocabQuestions')->name('reading.exam.store.vocab');
-Route::delete('reading/exam/{exam}/vocab/{question}','ReadingExamsController@destroyVocabQuestionss')->name('reading.exam.destroy.vocab');
+Route::get('reading/exam/{exam}/create/paragraphs', 'ReadingExamsController@addParagraphs')->name('reading.exam.add.paragraphs');
+Route::post('reading/exam/{exam}/paragraphs', 'ReadingExamsController@storeParagraphs')->name('reading.exam.store.paragraphs');
+Route::delete('reading/exam/{exam}/paragraphs/{paragraph}', 'ReadingExamsController@destroyParagraphs')->name('reading.exam.destroy.paragraphs');
+Route::get('reading/exam/{exam}/create/vocab', 'ReadingExamsController@addVocabQuestions')->name('reading.exam.add.vocab');
+Route::post('reading/exam/{exam}/vocab', 'ReadingExamsController@storeVocabQuestions')->name('reading.exam.store.vocab');
+Route::delete('reading/exam/{exam}/vocab/{question}', 'ReadingExamsController@destroyVocabQuestionss')->name('reading.exam.destroy.vocab');
 
 //listening section
 
 
 Route::resource('listening/audio', 'AudiosController');
-Route::resource('listening/audio/{audio}/question','ListeningQuestionsController')->names([
+Route::resource('listening/audio/{audio}/question', 'ListeningQuestionsController')->names([
     'create' => 'listening.question.create',
     'store' => 'listening.question.store',
     'update' => 'listening.question.update',
     'edit' => 'listening.question.edit',
     'destroy' => 'listening.question.destroy',
-])->except(['show','index']);
+])->except(['show', 'index']);
 Route::resource('listening/exam', 'ListeningExamController')
     ->middleware(['auth', 'admin'])
     ->names([
@@ -148,9 +149,9 @@ Route::resource('listening/exam', 'ListeningExamController')
         'destroy' => 'listening.exam.destroy',
         'show' => 'listening.exam.show',
     ]);;
-Route::get('/listening/exam/{exam}/audio','ListeningExamController@showAudios')->name('listening.exam.audios.show');
-Route::post('/listening/exam/{exam}/audio','ListeningExamController@storeAudios')->name('listening.exam.audios.store');
-Route::delete('/listening/exam/{exam}/audio/{audio}','ListeningExamController@destroyAudios')->name('listening.exam.audios.destroy');
+Route::get('/listening/exam/{exam}/audio', 'ListeningExamController@showAudios')->name('listening.exam.audios.show');
+Route::post('/listening/exam/{exam}/audio', 'ListeningExamController@storeAudios')->name('listening.exam.audios.store');
+Route::delete('/listening/exam/{exam}/audio/{audio}', 'ListeningExamController@destroyAudios')->name('listening.exam.audios.destroy');
 
 
 //Exams
@@ -161,33 +162,9 @@ Route::get('/exam/reading', 'ExamsController@showReadingExam')->name('reading.ex
 Route::post('/exam/reading', 'ExamsController@storeReadingExamAttempt')->name('reading.exam.submit')->middleware(['can_start_exam']);
 Route::get('/exam/listening', 'ExamsController@showListeningExam')->name('listening.exam.start')->middleware(['can_start_exam']);
 Route::post('/exam/listening', 'ExamsController@storeListeningExamAttempt')->name('listening.exam.submit')->middleware(['can_start_exam']);
-Route::get('/reservations/','ReservationsController@getReservations');
-Route::get('/groups/{res}','ReservationsController@getGroups');
-Route::get('/students/{group}','GroupsController@getStudents');
-Route::get('/students/{group}/enter',function(App\Group $group){
-    $group->students()->update(['enterexam'=>1]);
-});
-Route::get('/students/{group}/start',function(App\Group $group){
-    $group->students()->update(['startexam'=>1]);
-});
-Route::get('/students/{group}/stop',function(App\Group $group){
-    if($group->students->first->enterexam===1){
-        $group->students()->each(function ($student){
-            $count= Attempt::where('student_id',$student->id)
-                ->where('reservation_id',$student->reservation->id)
-                ->where('group_id',$student->group->id)->get()->count();
-            if($count==0){
-                $student->sumAllMarks(0,0,0);
-            }
-        });
-        $group->students()->update(['startexam'=>0]);
-        $group->students()->update(['enterexam'=>0]);
-    }
 
-
-});
 //live exams
-Route::view('/exam/cpanel','exams.examControlPanel');
+Route::view('/exam/cpanel', 'exams.examControlPanel');
 Route::get('/live/{exam}/grammar', 'LiveExamsController@showGrammarExam')->name('grammar.live.exam.start');
 Route::post('/live/grammar', 'LiveExamsController@storeGrammarExamAttempt')->name('grammar.live.exam.submit');
 Route::get('/live/{exam}/reading', 'LiveExamsController@showReadingExam')->name('reading.live.exam.start');
@@ -195,49 +172,71 @@ Route::post('/live/reading', 'LiveExamsController@storeReadingExamAttempt')->nam
 Route::get('/live/{exam}/listening', 'LiveExamsController@showListeningExam')->name('listening.live.exam.start');
 Route::post('/live/listening', 'LiveExamsController@storeListeningExamAttempt')->name('listening.live.exam.submit');
 
-Route::get("/short",function(){
-    $short=App\Listening\Audio::shortConversation()->get();
-    foreach ($short as $audio){
-       $question= $audio->questions()->create([
-            'content'=>"Short Question"
+
+Route::group(['middleware' => ['admin','auth']], function () {
+    Route::view('/certificates', 'cpanel.certificatesControlPanel');
+    Route::view('/marks', 'cpanel.failedStudents');
+    Route::get('/students/{reservation}/print', 'ApiController@printPDF');
+    Route::get('/students/{reservation}/certificates', 'ApiController@getStudentsForCertificates');
+    Route::post('/attempt/{student}', 'ApiController@checkStudentAttempt');
+    Route::get('/reservations/', 'ApiController@getReservations');
+    Route::get('/groups/{res}', 'ApiController@getGroups');
+    Route::get('/students/{group}', 'ApiController@getStudents');
+    Route::post('/students/{group}/enter', 'ApiController@studentsCanEnterExam');
+    Route::post('/students/{group}/start', 'ApiController@studentsCanStartExam');
+    Route::post('/students/{group}/stop', 'ApiController@endExam');
+    Route::get('/students/{group}/entered', 'ApiController@isExamEntered');
+    Route::get('/students/{group}/started', 'ApiController@isExamStarted');
+    Route::get('/students/{group}/working', 'ApiController@isExamWorking');
+    Route::get('/group/{group}/hasExams', 'ApiController@isExamWorking');
+    Route::get('/students/{reservation}/failed', 'ApiController@getFailedStudents');
+
+});
+//for development purposes
+/*
+Route::get("/short", function () {
+    $short = App\Listening\Audio::shortConversation()->get();
+    foreach ($short as $audio) {
+        $question = $audio->questions()->create([
+            'content' => "Short Question"
         ]);
-       for($i=0;$i<4;$i++)
-           $question->options()->create([
-               'content'=>"Option".($i+1),
-           ]);
-       $question->options[0]->update(['correct'=>0]);
+        for ($i = 0; $i < 4; $i++)
+            $question->options()->create([
+                'content' => "Option" . ($i + 1),
+            ]);
+        $question->options[0]->update(['correct' => 0]);
     }
 });
-Route::get("/long",function(){
-    $short=App\Listening\Audio::longConversation()->get();
-    foreach ($short as $audio){
-        for($j=0;$j<2;$j++){
-            $question= $audio->questions()->create([
-                'content'=>"Long Question"
+Route::get("/long", function () {
+    $short = App\Listening\Audio::longConversation()->get();
+    foreach ($short as $audio) {
+        for ($j = 0; $j < 2; $j++) {
+            $question = $audio->questions()->create([
+                'content' => "Long Question"
             ]);
-            for($i=0;$i<4;$i++)
+            for ($i = 0; $i < 4; $i++)
                 $question->options()->create([
-                    'content'=>"Option".($i+1),
+                    'content' => "Option" . ($i + 1),
                 ]);
-            $question->options[0]->update(['correct'=>0]);
+            $question->options[0]->update(['correct' => 0]);
         }
 
     }
 });
-Route::get("/speech",function(){
-    $short=App\Listening\Audio::speech()->get();
-    foreach ($short as $audio){
-        for($j=0;$j<5;$j++){
-            $question= $audio->questions()->create([
-                'content'=>"Speech Question"
+Route::get("/speech", function () {
+    $short = App\Listening\Audio::speech()->get();
+    foreach ($short as $audio) {
+        for ($j = 0; $j < 5; $j++) {
+            $question = $audio->questions()->create([
+                'content' => "Speech Question"
             ]);
-            for($i=0;$i<4;$i++)
+            for ($i = 0; $i < 4; $i++)
                 $question->options()->create([
-                    'content'=>"Option".($i+1),
+                    'content' => "Option" . ($i + 1),
                 ]);
-            $question->options[0]->update(['correct'=>0]);
+            $question->options[0]->update(['correct' => 0]);
         }
 
     }
 });
-
+*/

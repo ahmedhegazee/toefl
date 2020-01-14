@@ -25,11 +25,24 @@ class Student extends Model
     {
         return $this->verifiedOptions()[$option];
     }
+    public function getStudyingAttribute($option)
+    {
+        return $this->verifiedOptions()[$option];
+    }
     public function isOnline()
     {
         return Cache::has('student-is-online-' . $this->id)?'active':'not active';
     }
     public function verifiedOptions()
+    {
+        return [
+
+            1=>'Ms.c(Master)',
+            2=>'PhD(Doctor)',
+            3=>'Board certified',
+        ];
+    }
+    public function studyingOptions()
     {
         return [
 
@@ -58,7 +71,7 @@ class Student extends Model
         return $this->hasMany(Attempt::class);
     }
 
-    public function sumAllMarks( int $grammarMarks,int $readingMarks,int $listeningMarks)
+    public function sumAllMarks( int $grammarMarks=0,int $readingMarks=0,int $listeningMarks=0)
     {
         $marks=$grammarMarks+$readingMarks+$listeningMarks;
         $this->results()->create([

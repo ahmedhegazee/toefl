@@ -141,14 +141,7 @@ class ReservationsController extends Controller
     }
 
 
-    public function getReservations()
-    {
-        return response()->json(Reservation::get(['id','start'])->toArray());
-}
-    public function getGroups(Reservation $res)
-    {
-        return response()->json($res->groups()->get(['id','name'])->toArray());
-}
+
 
     public function validateData()
     {

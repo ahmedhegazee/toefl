@@ -27,9 +27,7 @@ class CreateStudentsTable extends Migration
             $table->integer('gender');
             $table->integer('required_score')->default(400);
             $table->integer('verified')->default(0);
-            $table->integer('active')->default(0);//is log in or not
-            $table->integer('startexam')->default(0); // the student can start the exam or not
-            $table->integer('enterexam')->default(0); // the student can enter the exam or not
+            $table->integer('studying');
             $table->foreign('uid')->references('id')->on('users');
             $table->foreign('res_id')->references('id')->on('reservations');
             $table->foreign('group_id')->references('id')->on('groups');
