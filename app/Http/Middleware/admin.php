@@ -15,10 +15,11 @@ class admin
      */
     public function isAdmin()
     {
-        return auth()->user()->role->id!=2 ;
+        return auth()->user()->roles->contains(1) ;
     }
     public function handle($request, Closure $next)
     {
+
         if($this->isAdmin())
         return $next($request);
         else{

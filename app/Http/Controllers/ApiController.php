@@ -9,6 +9,8 @@ use App\Listening\ListeningExam;
 use App\Reading\ReadingExam;
 use App\Reservation;
 use App\Student;
+use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
@@ -146,27 +148,25 @@ class ApiController extends Controller
         $students = $reservation->students()->get()
             ->filter(function ($student) {
                 if (!is_null($student->results->last()))
-                    if ($student->results->last()->success&&$student->results->last()->mark==0)
-                        return false;
-                    else
-                        return true;
+                    if (
+                        !$student->results->last()->success
+                        && $student->results->last()->mark != 0
+                    )
+                        return $student;
             })
             ->map(function ($student) {
 
                 return [
                     "ID" => $student->id,
-                    "English Name" => $student->user()->name,
-                    "Arabic Name" => $student->arabic_name,
+                    "english_name" => $student->user()->name,
+                    "arabic_name" => $student->arabic_name,
                     "Degree" => $student->studying,
-                    "Score" => $student->results->last()->mark,
-                    "Required Score" => $student->required_score,
+                    "score" => $student->results->last()->mark,
+                    "required_score" => $student->required_score,
                     "Actions" => ""
                 ];
-            })->filter(function ($student) {
-                if (!is_null($student))
-                    return true;
-            })
-            ->values()->all();
+            })->values()->all();
+
         return response()->json($students);
     }
 
@@ -199,14 +199,64 @@ class ApiController extends Controller
 
     public function isGroupHasExams(Group $group)
     {
-        $reservation=$group->reservation->id;
+        $reservation = $group->reservation->id;
         $groupType = $group->type->id;
         $grammarExam = GrammarExam::where('reservation_id', $reservation)
-            ->where('group_type_id', $groupType)->get()->count()>0;
+                ->where('group_type_id', $groupType)->get()->count() > 0;
         $readingExam = ReadingExam::where('reservation_id', $reservation)
-            ->where('group_type_id', $groupType)->get()->count()>0;
+                ->where('group_type_id', $groupType)->get()->count() > 0;
         $listeningExam = ListeningExam::where('reservation_id', $reservation)
-            ->where('group_type_id', $groupType)->get()->count()>0;
-        return $grammarExam&&$readingExam&&$listeningExam;
+                ->where('group_type_id', $groupType)->get()->count() > 0;
+        return $grammarExam && $readingExam && $listeningExam;
+    }
+
+    public function getRoles($roles)
+    {
+        $data = '';
+        foreach ($roles as $role)
+            $data .= $role['title'] . " , ";
+        return $data;
+    }
+
+    public function getAllUsers()
+    {
+        $users = User::all();
+        $data = $users->filter(function ($user) {
+            if (!$user->roles->contains(2))
+                return $user;
+        })->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $this->getRoles($user->roles->toArray()),
+                'Actions' => '',
+            ];
+        })->all();
+        return response()->json($data);
+
+    }
+
+    public function updateStudentMarks(Request $request)
+    {
+        $student = Student::findOrFail($request->id);
+        $check = false;
+        $currentScore = $student->results->last()->mark;
+        $requiredScore = $student->required_score;
+        $score = $request->score;
+        if ($score < 500 && $score > $currentScore && $score >= $requiredScore) {
+            $check = $student->results->last()->update(
+                [
+                    'mark' => $request->score,
+                    'success' => 1
+                ]
+            );
+
+        } else {
+            $check = false;
+        }
+
+
+        return response()->json(['success' => $check]);
     }
 }

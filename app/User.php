@@ -62,4 +62,9 @@ protected $guarded=[];
     {
         return Student::where('uid',$this->id)->get()->first();
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class)->withTimestamps();
+    }
 }

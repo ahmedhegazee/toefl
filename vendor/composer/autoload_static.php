@@ -423,6 +423,7 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'App\\Grammar\\GrammarResult' => __DIR__ . '/../..' . '/app/Grammar/GrammarResult.php',
         'App\\Group' => __DIR__ . '/../..' . '/app/Group.php',
         'App\\GroupType' => __DIR__ . '/../..' . '/app/GroupType.php',
+        'App\\Http\\Controllers\\ApiController' => __DIR__ . '/../..' . '/app/Http/Controllers/ApiController.php',
         'App\\Http\\Controllers\\AudiosController' => __DIR__ . '/../..' . '/app/Http/Controllers/AudiosController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
