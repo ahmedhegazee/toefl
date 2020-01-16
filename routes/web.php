@@ -58,6 +58,7 @@ Route::resource('student', 'StudentsController')
 //});
 Route::view('/cpanel/questions', 'questions')->name('questions.index')->middleware(['auth', 'admin']);
 Route::view('/cpanel/reading', 'reading.index')->name('reading.index')->middleware(['auth', 'admin']);
+Route::view('/cpanel/users', 'cpanel.userspanel')->middleware(['auth', 'admin']);
 Route::resource('res', 'ReservationsController')->middleware(['auth', 'admin']);
 
 Route::resource('res/{re}/group', 'GroupsController')->middleware(['auth', 'admin']);
@@ -172,7 +173,7 @@ Route::post('/live/reading', 'LiveExamsController@storeReadingExamAttempt')->nam
 Route::get('/live/{exam}/listening', 'LiveExamsController@showListeningExam')->name('listening.live.exam.start');
 Route::post('/live/listening', 'LiveExamsController@storeListeningExamAttempt')->name('listening.live.exam.submit');
 
-
+//Api routes
 Route::group(['middleware' => ['admin','auth']], function () {
     Route::view('/certificates', 'cpanel.certificatesControlPanel');
     Route::view('/marks', 'cpanel.failedStudents');
@@ -190,6 +191,8 @@ Route::group(['middleware' => ['admin','auth']], function () {
     Route::get('/students/{group}/working', 'ApiController@isExamWorking');
     Route::get('/group/{group}/hasExams', 'ApiController@isExamWorking');
     Route::get('/students/{reservation}/failed', 'ApiController@getFailedStudents');
+    Route::get('/users', 'ApiController@getAllUsers');
+    Route::patch('/students/marks','ApiController@updateStudentMarks');
 
 });
 //for development purposes

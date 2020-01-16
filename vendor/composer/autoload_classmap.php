@@ -22,6 +22,7 @@ return array(
     'App\\Grammar\\GrammarResult' => $baseDir . '/app/Grammar/GrammarResult.php',
     'App\\Group' => $baseDir . '/app/Group.php',
     'App\\GroupType' => $baseDir . '/app/GroupType.php',
+    'App\\Http\\Controllers\\ApiController' => $baseDir . '/app/Http/Controllers/ApiController.php',
     'App\\Http\\Controllers\\AudiosController' => $baseDir . '/app/Http/Controllers/AudiosController.php',
     'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
     'App\\Http\\Controllers\\Auth\\LoginController' => $baseDir . '/app/Http/Controllers/Auth/LoginController.php',

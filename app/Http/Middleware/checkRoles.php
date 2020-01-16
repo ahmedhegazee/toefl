@@ -4,16 +4,19 @@ namespace App\Http\Middleware;
 
 use App\Student;
 use Closure;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class checkRoles
 {
     public function isAdmin()
     {
-        return auth()->user()->role->id!=2;
+        return auth()->user()->roles->contains(1);
     }
     public function isStudent()
     {
-        return auth()->user()->role->id==2;
+        return auth()->user()->roles->contains(2);
     }
 
     /**
@@ -29,11 +32,10 @@ class checkRoles
             return redirect()->route('admin');
         else if($this->isStudent())
         {
-            Student::where('uid',auth()->user()->id)
-                ->update(['active'=>1]);
-            return redirect()->route('student.home');}
+            $expiresAt = Carbon::now()->addMinutes(2);
+            Cache::put('student-is-online-' . Auth::user()->getStudent()->id, true, $expiresAt);
 
-
-
+            return redirect()->route('student.home');
+        }
     }
 }
