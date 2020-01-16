@@ -112,7 +112,7 @@ class RegisterController extends Controller
     public function createStudent($user,$data,Reservation $res)
     {
 
-
+//ll
         Student::create([
             'uid'=> $user->id,
             'phone'=>$data['phone'],
