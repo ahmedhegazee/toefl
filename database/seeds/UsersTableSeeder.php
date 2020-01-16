@@ -14,7 +14,11 @@ class UsersTableSeeder extends Seeder
     {
         //factory(\App\User::class,4)->create();
 
+<<<<<<< HEAD
      $user=   User::create([
+=======
+        $user=User::create([
+>>>>>>> exams
           'name'=>'Admin',
           'email'=>'admin@admin.com',
           'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password

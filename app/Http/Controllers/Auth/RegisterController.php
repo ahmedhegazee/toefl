@@ -106,13 +106,18 @@ class RegisterController extends Controller
 //            'password' => Hash::make('password'),
             'password' => Hash::make($data['phone']),
         ]);
+<<<<<<< HEAD
       $user->roles()->attach(2);
+=======
+        $user->roles()->attach(2);
+
+>>>>>>> exams
         return $user;
     }
     public function createStudent($user,$data,Reservation $res)
     {
 
-
+//ll
         Student::create([
             'uid'=> $user->id,
             'phone'=>$data['phone'],
