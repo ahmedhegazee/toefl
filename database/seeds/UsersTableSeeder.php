@@ -14,12 +14,12 @@ class UsersTableSeeder extends Seeder
     {
         //factory(\App\User::class,4)->create();
 
-        User::create([
+     $user=   User::create([
           'name'=>'Admin',
           'email'=>'admin@admin.com',
           'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
-            'role_id'=>1
         ]);
+        $user->roles()->attach(1);
 
 
     }

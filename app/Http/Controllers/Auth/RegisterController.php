@@ -99,13 +99,14 @@ class RegisterController extends Controller
 
     public function createUser($data)
     {
+//        dd($data);
       $user=  User::create([
             'name' => $data['name'],
             'email'=>$data['email'],
 //            'password' => Hash::make('password'),
             'password' => Hash::make($data['phone']),
-            'role_id'=>2
         ]);
+      $user->roles()->attach(2);
         return $user;
     }
     public function createStudent($user,$data,Reservation $res)

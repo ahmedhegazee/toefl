@@ -114,7 +114,8 @@ $message = $errors->first('personalimage'); ?>
 if (isset($messageCache)) { $message = $messageCache; }
 endif; ?>
                             </div>
-                        </div>                       <div class="form-group row">
+                        </div>
+                        <div class="form-group row">
                             <label for="nidimage" class="col-md-4 col-form-label text-md-right"><?php echo e(__('National ID Image')); ?></label>
 
                             <div class="col-md-6">
@@ -134,7 +135,8 @@ $message = $errors->first('nidimage'); ?>
 if (isset($messageCache)) { $message = $messageCache; }
 endif; ?>
                             </div>
-                        </div>                       <div class="form-group row">
+                        </div>
+                        <div class="form-group row">
                             <label for="certificateimage" class="col-md-4 col-form-label text-md-right"><?php echo e(__('Certificate Image')); ?></label>
 
                             <div class="col-md-6">
@@ -154,7 +156,8 @@ $message = $errors->first('certificateimage'); ?>
 if (isset($messageCache)) { $message = $messageCache; }
 endif; ?>
                             </div>
-                        </div>                       <div class="form-group row">
+                        </div>
+                        <div class="form-group row">
                             <label for="messageimage" class="col-md-4 col-form-label text-md-right"><?php echo e(__('Message Image')); ?></label>
 
                             <div class="col-md-6">
@@ -199,6 +202,22 @@ endif; ?>
 
                                         <option value="1" >Male</option>
                                         <option value="2" >Female</option>
+
+
+                                </select>
+
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="studying" class="col-md-4 col-form-label text-md-right">Studying</label>
+                            <div class="col-md-6">
+                                <select id="studying" name="studying" class="form-control">
+                                    <option value="" disabled>Select Studying</option>
+
+                                        <option value="1" >Ms.c(Master)</option>
+                                        <option value="2" >PhD(Doctor)</option>
+                                        <option value="3" >Board certified</option>
 
 
                                 </select>

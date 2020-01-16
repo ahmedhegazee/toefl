@@ -76,7 +76,8 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>                       <div class="form-group row">
+                        </div>
+                        <div class="form-group row">
                             <label for="nidimage" class="col-md-4 col-form-label text-md-right">{{ __('National ID Image') }}</label>
 
                             <div class="col-md-6">
@@ -88,7 +89,8 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>                       <div class="form-group row">
+                        </div>
+                        <div class="form-group row">
                             <label for="certificateimage" class="col-md-4 col-form-label text-md-right">{{ __('Certificate Image') }}</label>
 
                             <div class="col-md-6">
@@ -100,7 +102,8 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>                       <div class="form-group row">
+                        </div>
+                        <div class="form-group row">
                             <label for="messageimage" class="col-md-4 col-form-label text-md-right">{{ __('Message Image') }}</label>
 
                             <div class="col-md-6">
