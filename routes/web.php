@@ -190,7 +190,7 @@ Route::group(['middleware' => ['admin','auth']], function () {
     Route::get('/students/{group}/entered', 'ApiController@isExamEntered');
     Route::get('/students/{group}/started', 'ApiController@isExamStarted');
     Route::get('/students/{group}/working', 'ApiController@isExamWorking');
-    Route::get('/group/{group}/hasExams', 'ApiController@isExamWorking');
+    Route::get('/group/{group}/hasExams', 'ApiController@isGroupHasExams');
     Route::get('/students/{reservation}/failed', 'ApiController@getFailedStudents');
     Route::get('/users', 'ApiController@getAllUsers');
     Route::get('/configs', 'ApiController@getConfigs');

@@ -13,7 +13,7 @@
             <tr>
                 <th>ID</th>
                 <th>Reservation Date</th>
-                <th>Group Type</th>
+{{--                <th>Group Type</th>--}}
 
                 <th>Fill Questions Count</th>
                 <th>Find Questions Count</th>
@@ -24,7 +24,7 @@
                 <tr>
                     <td>{{$exam->id}}</td>
                     <td>{{$exam->reservation->start}}</td>
-                    <td>{{$exam->groupType->type}}</td>
+{{--                    <td>{{$exam->groupType->type}}</td>--}}
                     <td>{{$exam->getFillQuestions()->count()}}</td>
                     <td>{{$exam->getFindQuestions()->count()}}</td>
 

@@ -8,13 +8,14 @@ use App\Group;
 use App\GroupType;
 use App\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class GrammarExamController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -22,42 +23,40 @@ class GrammarExamController extends Controller
        return view('grammar.exams.index',compact('exams'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         $reservations =Reservation::all();
         if(empty($reservations->toArray()))
             return redirect()->back()->with('error','No Reservation is Available');
 
-        $types=GroupType::all();
-        return view('grammar.exams.create',compact('reservations','types'));
+//        $types=GroupType::all();
+//        return view('grammar.exams.create',compact('reservations','types'));
+        return view('grammar.exams.create',compact('reservations'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
         $res=intval($request['reservation']);
-        $type=intval($request['type']);
-        $count =GrammarExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+//        $type=intval($request['type']);
+//        $count =GrammarExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+        $count =GrammarExam::where('reservation_id',$res)->count();
 
         if($count==0){
             GrammarExam::create([
                 'reservation_id'=>$res,
-                'group_type_id'=>$type,
+//                'group_type_id'=>$type,
             ]);
             return redirect()->action('GrammarExamController@index');
         }
         else{
-            return redirect()->back()->with('error','You have made exam to this reservation and group');
+            return redirect()->back()->with('error','You have made exam to this reservation');
         }
 
     }
@@ -85,8 +84,9 @@ class GrammarExamController extends Controller
     public function edit(GrammarExam $exam)
     {
         $reservations =Reservation::all();
-        $types=GroupType::all();
-        return view('grammar.exams.update',compact('exam','reservations','types'));
+//        $types=GroupType::all();
+//        return view('grammar.exams.update',compact('exam','reservations','types'));
+        return view('grammar.exams.update',compact('exam','reservations'));
     }
 
     /**
@@ -99,18 +99,19 @@ class GrammarExamController extends Controller
     public function update(Request $request, GrammarExam $exam)
     {
         $res=intval($request['reservation']);
-        $type=intval($request['type']);
-        $count =GrammarExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+//        $type=intval($request['type']);
+//        $count =GrammarExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+        $count =GrammarExam::where('reservation_id',$res)->count();
 
         if($count==0){
         $exam->update([
             'reservation_id'=>intval($request['reservation']),
-            'group_type_id'=>intval($request['type']),
+//            'group_type_id'=>intval($request['type']),
         ]);
         return redirect()->action('GrammarExamController@index');
         }
         else{
-            return redirect()->back()->with('error','You have made exam to this reservation and group');
+            return redirect()->back()->with('error','You have made exam to this reservation ');
         }
     }
 

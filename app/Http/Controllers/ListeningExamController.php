@@ -27,8 +27,9 @@ class ListeningExamController extends Controller
 if(empty($reservations->toArray()))
     return redirect()->back()->with('error','No Reservation is Available');
 
-        $types=GroupType::all();
-        return view('listening.exams.create',compact('reservations','types'));
+//        $types=GroupType::all();
+//        return view('listening.exams.create',compact('reservations','types'));
+        return view('listening.exams.create',compact('reservations'));
 
 
     }
@@ -42,18 +43,19 @@ if(empty($reservations->toArray()))
     public function store(Request $request)
     {
         $res=intval($request['reservation']);
-        $type=intval($request['type']);
-        $count =ListeningExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+//        $type=intval($request['type']);
+//        $count =ListeningExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+        $count =ListeningExam::where('reservation_id',$res)->count();
 
         if($count==0){
             ListeningExam::create([
                 'reservation_id'=>$res,
-                'group_type_id'=>$type,
+//                'group_type_id'=>$type,
             ]);
             return redirect()->action('ListeningExamController@index');
         }
         else{
-            return redirect()->back()->with('error','You have made exam to this reservation and group');
+            return redirect()->back()->with('error','You have made exam to this reservation');
         }
 
     }
@@ -80,8 +82,9 @@ if(empty($reservations->toArray()))
     public function edit(ListeningExam $exam)
     {
         $reservations =Reservation::all();
-        $types=GroupType::all();
-        return view('listening.exams.update',compact('exam','reservations','types'));
+//        $types=GroupType::all();
+//        return view('listening.exams.update',compact('exam','reservations','types'));
+        return view('listening.exams.update',compact('exam','reservations'));
     }
 
     /**
@@ -94,18 +97,19 @@ if(empty($reservations->toArray()))
     public function update(Request $request, ListeningExam $exam)
     {
         $res=intval($request['reservation']);
-        $type=intval($request['type']);
-        $count =ListeningExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+//        $type=intval($request['type']);
+//        $count =ListeningExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+        $count =ListeningExam::where('reservation_id',$res)->count();
 
         if($count==0){
             $exam->update([
                 'reservation_id'=>intval($request['reservation']),
-                'group_type_id'=>intval($request['type']),
+//                'group_type_id'=>intval($request['type']),
             ]);
             return redirect()->action('ListeningExamController@index');
         }
         else{
-            return redirect()->back()->with('error','You have made exam to this reservation and group');
+            return redirect()->back()->with('error','You have made exam to this reservation ');
         }
     }
 

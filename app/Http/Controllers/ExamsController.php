@@ -29,13 +29,16 @@ class ExamsController extends Controller
         $student = auth()->user()->getStudent();
         $fullName = auth()->user()->name;
         $reservation = $student->reservation->id;
-        $groupType = $student->group->type->id;
-        $grammarExam = GrammarExam::where('reservation_id', $reservation)
-            ->where('group_type_id', $groupType)->get()->first();
-        $readingExam = ReadingExam::where('reservation_id', $reservation)
-            ->where('group_type_id', $groupType)->get()->first();
-        $listeningExam = ListeningExam::where('reservation_id', $reservation)
-            ->where('group_type_id', $groupType)->get()->first();
+//        $groupType = $student->group->type->id;
+        $grammarExam = GrammarExam::where('reservation_id', $reservation)->get()->first();
+//        $grammarExam = GrammarExam::where('reservation_id', $reservation)
+//            ->where('group_type_id', $groupType)->get()->first();
+//        $readingExam = ReadingExam::where('reservation_id', $reservation)
+//            ->where('group_type_id', $groupType)->get()->first();
+        $readingExam = ReadingExam::where('reservation_id', $reservation)->get()->first();
+//        $listeningExam = ListeningExam::where('reservation_id', $reservation)
+//            ->where('group_type_id', $groupType)->get()->first();
+        $listeningExam = ListeningExam::where('reservation_id', $reservation)->get()->first();
         session([
             'student' => $student,
             'grammarExam' => $grammarExam,

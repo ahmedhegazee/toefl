@@ -37,18 +37,19 @@ class Student extends Model
     {
         return [
 
-            1=>'Ms.c(Master)',
-            2=>'PhD(Doctor)',
-            3=>'Board certified',
+            0=>'Not Verified',
+            1=>'Verified',
         ];
     }
     public function studyingOptions()
     {
         return [
 
-            0=>'Not Verified',
-            1=>'Verified',
+            1=>'Ms.c(Master)',
+            2=>'PhD(Doctor)',
+            3=>'Board certified',
         ];
+
     }
 
     public function reservation()

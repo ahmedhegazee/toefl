@@ -13,7 +13,7 @@
             <tr>
                 <th>ID</th>
                 <th>Reservation Date</th>
-                <th>Group Type</th>
+{{--                <th>Group Type</th>--}}
 
                 <th>Actions</th>
             </tr>
@@ -21,7 +21,7 @@
                 <tr>
                     <td>{{$exam->id}}</td>
                     <td>{{$exam->reservation->start}}</td>
-                    <td>{{$exam->groupType->type}}</td>
+{{--                    <td>{{$exam->groupType->type}}</td>--}}
                     <td>
                         <a href="{{route('listening.live.exam.start',['exam'=>$exam])}}" class="btn btn-primary">Live Exam</a>
                         <a href="{{route('listening.exam.show',['exam'=>$exam])}}" class="btn btn-primary">Show</a>

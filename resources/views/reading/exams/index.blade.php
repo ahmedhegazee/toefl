@@ -8,7 +8,7 @@
             <tr>
                 <th>ID</th>
                 <th>Reservation Date</th>
-                <th>Group Type</th>
+{{--                <th>Group Type</th>--}}
 
                 <th>Vocab Questions</th>
                 <th>Paragraphs</th>
@@ -19,7 +19,7 @@
                 <tr>
                     <td>{{$exam->id}}</td>
                     <td>{{$exam->reservation->start}}</td>
-                    <td>{{$exam->groupType->type}}</td>
+{{--                    <td>{{$exam->groupType->type}}</td>--}}
 
                     <td>{{$exam->vocabQuestions()->count()}}</td>
                     <td>{{$exam->paragraphs()->count()}}</td>

@@ -12,7 +12,7 @@
             <tr>
                 <th>ID</th>
                 <th>Reservation Date</th>
-                <th>Group Type</th>
+
 
                 <th>Fill Questions Count</th>
                 <th>Find Questions Count</th>
@@ -23,7 +23,7 @@
                 <tr>
                     <td><?php echo e($exam->id); ?></td>
                     <td><?php echo e($exam->reservation->start); ?></td>
-                    <td><?php echo e($exam->groupType->type); ?></td>
+
                     <td><?php echo e($exam->getFillQuestions()->count()); ?></td>
                     <td><?php echo e($exam->getFindQuestions()->count()); ?></td>
 

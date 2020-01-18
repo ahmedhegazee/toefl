@@ -33,8 +33,9 @@ class ReadingExamsController extends Controller
         if(empty($reservations->toArray()))
             return redirect()->back()->with('error','No Reservation is Available');
 
-        $types=GroupType::all();
-        return view('reading.exams.create',compact('reservations','types'));
+//        $types=GroupType::all();
+//        return view('reading.exams.create',compact('reservations','types'));
+        return view('reading.exams.create',compact('reservations'));
 
 
     }
@@ -48,18 +49,19 @@ class ReadingExamsController extends Controller
     public function store(Request $request)
     {
         $res=intval($request['reservation']);
-        $type=intval($request['type']);
-        $count =ReadingExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+//        $type=intval($request['type']);
+//        $count =ReadingExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+        $count =ReadingExam::where('reservation_id',$res)->count();
 
         if($count==0){
             ReadingExam::create([
                 'reservation_id'=>$res,
-                'group_type_id'=>$type,
+//                'group_type_id'=>$type,
             ]);
             return redirect()->action('ReadingExamsController@index');
         }
         else{
-            return redirect()->back()->with('error','You have made exam to this reservation and group');
+            return redirect()->back()->with('error','You have made exam to this reservation');
         }
     }
 
@@ -75,8 +77,9 @@ class ReadingExamsController extends Controller
     public function edit(ReadingExam $exam)
     {
         $reservations =Reservation::all();
-        $types=GroupType::all();
-        return view('reading.exams.update',compact('exam','reservations','types'));
+//        $types=GroupType::all();
+//        return view('reading.exams.update',compact('exam','reservations','types'));
+        return view('reading.exams.update',compact('exam','reservations'));
 
     }
 
@@ -90,18 +93,19 @@ class ReadingExamsController extends Controller
     public function update(Request $request, ReadingExam $exam)
     {
         $res=intval($request['reservation']);
-        $type=intval($request['type']);
-        $count =ReadingExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+//        $type=intval($request['type']);
+//        $count =ReadingExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+        $count =ReadingExam::where('reservation_id',$res)->count();
 
         if($count==0){
             $exam->update([
                 'reservation_id'=>intval($request['reservation']),
-                'group_type_id'=>intval($request['type']),
+//                'group_type_id'=>intval($request['type']),
             ]);
             return redirect()->action('ReadingExamsController@index');
         }
         else{
-            return redirect()->back()->with('error','You have made exam to this reservation and group');
+            return redirect()->back()->with('error','You have made exam to this reservation ');
         }
     }
 

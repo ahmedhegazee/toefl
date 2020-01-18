@@ -2534,28 +2534,28 @@ __webpack_require__.r(__webpack_exports__);
       var _this8 = this;
 
       axios.get('/students/' + this.group + "/entered").then(function (response) {
-        _this8.enter = response.data;
+        _this8.enter = response.data.success;
       })["catch"](function (errors) {});
     },
     checkIfExamStarted: function checkIfExamStarted() {
       var _this9 = this;
 
       axios.get('/students/' + this.group + "/started").then(function (response) {
-        _this9.started = response.data;
+        _this9.started = response.data.success;
       })["catch"](function (errors) {});
     },
     checkIfExamWorking: function checkIfExamWorking() {
       var _this10 = this;
 
       axios.get('/students/' + this.group + "/working").then(function (response) {
-        _this10.working = response.data;
+        _this10.working = response.data.success;
       })["catch"](function (errors) {});
     },
     checkIfGroupHasExams: function checkIfGroupHasExams() {
       var _this11 = this;
 
       axios.get('/group/' + this.group + "/hasExams").then(function (response) {
-        _this11.hasExams = response.data;
+        _this11.hasExams = response.data.success;
       })["catch"](function (errors) {});
     },
     countDownChanged: function countDownChanged(dismissCountDown) {

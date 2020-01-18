@@ -6,7 +6,7 @@
             <tr>
                 <th>ID</th>
                 <th>Reservation Date</th>
-                <th>Group Type</th>
+
 
                 <th>Vocab Questions</th>
                 <th>Paragraphs</th>
@@ -17,12 +17,13 @@
                 <tr>
                     <td><?php echo e($exam->id); ?></td>
                     <td><?php echo e($exam->reservation->start); ?></td>
-                    <td><?php echo e($exam->groupType->type); ?></td>
+
 
                     <td><?php echo e($exam->vocabQuestions()->count()); ?></td>
                     <td><?php echo e($exam->paragraphs()->count()); ?></td>
 
                     <td>
+                        <a href="<?php echo e(route('reading.live.exam.start',['exam'=>$exam])); ?>" class="btn btn-primary">Live Exam</a>
                         <a href="<?php echo e(route('reading.exam.show.paragraphs',['exam'=>$exam])); ?>" class="btn btn-primary">Show Paragraphs</a>
                         <a href="<?php echo e(route('reading.exam.show.vocab',['exam'=>$exam])); ?>" class="btn btn-primary">Show Vocab Questions</a>
                         <a href="<?php echo e(route('reading.exam.edit',['exam'=>$exam])); ?>" class="btn btn-success">Edit</a>
