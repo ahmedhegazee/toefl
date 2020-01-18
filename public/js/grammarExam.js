@@ -94,7 +94,7 @@ function randomizeOptions() {
 function setTimer() {
     var countDownDate = new Date();
     var time = document.getElementById('time').value;
-    var arr= time.split('-');
+    var arr= time.split(':');
     var minutes = parseInt(arr[1]);
     countDownDate.setMinutes(countDownDate.getMinutes() + minutes);
     var hours = parseInt(arr[0]);

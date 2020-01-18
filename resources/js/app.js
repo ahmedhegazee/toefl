@@ -23,6 +23,7 @@ Vue.component('control-panel', require('./components/ControlPanel.vue').default)
 Vue.component('certificate-panel', require('./components/CertificatePanel.vue').default);
 Vue.component('marks-panel', require('./components/MarksPanel.vue').default);
 Vue.component('users-panel', require('./components/UsersPanel.vue').default);
+Vue.component('configs-panel', require('./components/ConfigsPanel.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -175,8 +175,9 @@ Route::post('/live/listening', 'LiveExamsController@storeListeningExamAttempt')-
 
 //Api routes
 Route::group(['middleware' => ['admin','auth']], function () {
-    Route::view('/certificates', 'cpanel.certificatesControlPanel');
-    Route::view('/marks', 'cpanel.failedStudents');
+    Route::view('/cpanel/certificates', 'cpanel.certificatesControlPanel');
+    Route::view('/cpanel/marks', 'cpanel.failedStudents');
+    Route::view('/cpanel/configs', 'cpanel.configpanel');
     Route::get('/students/{reservation}/print', 'ApiController@printPDF');
     Route::get('/students/{reservation}/certificates', 'ApiController@getStudentsForCertificates');
     Route::post('/attempt/{student}', 'ApiController@checkStudentAttempt');
@@ -192,7 +193,15 @@ Route::group(['middleware' => ['admin','auth']], function () {
     Route::get('/group/{group}/hasExams', 'ApiController@isExamWorking');
     Route::get('/students/{reservation}/failed', 'ApiController@getFailedStudents');
     Route::get('/users', 'ApiController@getAllUsers');
+    Route::get('/configs', 'ApiController@getConfigs');
     Route::patch('/students/marks','ApiController@updateStudentMarks');
+    Route::patch('/configs/update','ApiController@updateConfig');
+    Route::patch('/users/{user}','ApiController@updateUser');
+    Route::delete('/users/{user}','ApiController@destroyUser');
+    Route::patch('/roles/{user}','ApiController@updateUserRoles');
+    Route::post('/users/store','ApiController@addNewUser');
+    Route::post('/users/unique-email','ApiController@checkEmailIsUnique');
+    Route::post('/students/unique-phone','ApiController@checkPhoneIsUnique');
 
 });
 //for development purposes

@@ -2,6 +2,6 @@
 
 @section('content')
     <div class="container">
-    <users-panel></users-panel>
+    <configs-panel></configs-panel>
     </div>
 @endsection

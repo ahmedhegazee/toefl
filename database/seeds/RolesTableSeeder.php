@@ -41,6 +41,9 @@ class RolesTableSeeder extends Seeder
         \App\Role::create([
             'title'=>'Manage Reservations Panel'
         ]);
+        \App\Role::create([
+            'title' => 'Super Admin'
+        ]);
 
     }
 }

@@ -11,12 +11,11 @@
         </b-alert>
 
 
-
-
         <h1>Configuration</h1>
         <b-table striped
                  hover
-                 :items="students"
+                 :sticky-header="true"
+                 :items="configs"
         >
             <template v-slot:cell(actions)="row">
                 <button class="btn btn-success" @click="showDialog(row.item)">Edit Config</button>
@@ -24,36 +23,110 @@
             </template>
 
         </b-table>
+        <!--        Name Changer Modal-->
         <b-modal
             id="modal-prevent-closing"
-            ref="modal"
-            title="Submit Your Name"
-            @shown="score=0"
-            @hidden="resetModal"
+            ref="nameChanger"
+            title="Change Position Name"
+            @shown="name=''"
             @ok="handleOk"
         >
-            <form ref="form" @submit.stop.prevent="handleSubmit">
-                <h4 >Student Name : {{st_name}}</h4>
-                <h4>Current Score : {{currentScore}}</h4>
-                <h4>Required Score : {{requiredScore}}</h4>
+            <form ref="form" @submit.stop.prevent="handleNameSubmit">
+                <h4>Position Name : {{pos_name}}</h4>
+                <h4>Current Name : {{currentName}}</h4>
                 <b-form-group
-                    :state="scoreState"
-                    label="Student Marks"
+                    :state="nameState"
+                    label="Name Changer"
                     label-for="name-input"
                 >
                     <b-form-input
-                        :type="'number'"
                         id="name-input"
-                        v-model="score"
-                        :state="scoreState"
-                        min="0"
-                        max="500"
+                        v-model="name"
+                        :state="nameState"
                         required
                     ></b-form-input>
-                    <b-form-invalid-feedback :state="scoreState">
-                        The score must be higher than the old one and less than 500.
+                    <b-form-invalid-feedback :state="nameState">
+                        The name length must be between 5 and 200 characters.
                     </b-form-invalid-feedback>
-                    <b-form-valid-feedback :state="scoreState">
+                    <b-form-valid-feedback :state="nameState">
+                        Looks Good.
+                    </b-form-valid-feedback>
+                </b-form-group>
+            </form>
+        </b-modal>
+        <!-- Time Changer Modal-->
+        <b-modal
+            id="modal-prevent-closing"
+            ref="timeChanger"
+            title="Change Exam Time"
+            @shown="resetModal"
+            @ok="handleOk"
+        >
+            <form ref="form" @submit.stop.prevent="handleTimeSubmit">
+                <h4>Current Time = {{currentHours}} H :{{currentMinutes}} M</h4>
+                <b-form-group
+                    :state="timeState"
+                    label="Hours"
+                    label-for="name-input"
+                >
+                    <b-form-input
+                        id="hours-input"
+                        :type="'number'"
+                        v-model="hours"
+                        :state="timeState"
+                        min="0"
+                        max="4"
+                        required
+                    ></b-form-input>
+                </b-form-group>
+                <b-form-group
+                    :state="timeState"
+                    label="Minutes"
+                    label-for="name-input"
+                >
+                    <b-form-input
+                        id="minutes-input"
+                        :type="'number'"
+                        v-model="minutes"
+                        :state="timeState"
+                        min="0"
+                        max="60"
+                        required
+                    ></b-form-input>
+                    <b-form-invalid-feedback :state="timeState">
+                        Put correct time
+                    </b-form-invalid-feedback>
+                </b-form-group>
+            </form>
+        </b-modal>
+        <!-- Count Changer Modal-->
+        <b-modal
+            id="modal-prevent-closing"
+            ref="countChanger"
+            title="Change Computers Count"
+            @shown="resetModal"
+            @ok="handleOk"
+        >
+            <form ref="form" @submit.stop.prevent="handleCountSubmit">
+                <h4>Current Computers Count = {{currentCount}}</h4>
+                <b-form-group
+                    :state="countState"
+                    label="Computers Count"
+                    label-for="name-input"
+                >
+                    <b-form-input
+                        id="hours-input"
+                        :type="'number'"
+                        v-model="count"
+                        :state="countState"
+                        min="0"
+                        max="200"
+                        required
+                    ></b-form-input>
+                    <b-form-invalid-feedback :state="countState">
+                        Put correct count
+                    </b-form-invalid-feedback>
+                    <b-form-valid-feedback :state="countState">
                         Looks Good.
                     </b-form-valid-feedback>
                 </b-form-group>
@@ -68,9 +141,9 @@
 
     export default {
         mounted() {
-            axios.get('/reservations/')
+            axios.get('/configs/')
                 .then(response => {
-                    this.reservations = response.data;
+                    this.configs = response.data;
                     // console.log(response.data);
                 }).catch(errors => {
 
@@ -78,35 +151,54 @@
         },
         data: function () {
             return {
-                reservations: [],
-                students: [],
-                reservation: '',
+                configs: [],
                 dismissSecs: 5,
                 dismissCountDown: 0,
                 message: "",
                 alert: "danger",
-                score: 0,
-                currentScore:0,
-                requiredScore:0,
-                st_name:'',
-                student:null,
+                currentName: '',
+                name: '',
+                pos_name: '',
+                config: null,
+                newValue: '',
+                currentHours: 0,
+                currentMinutes: 0,
+                hours: 0,
+                minutes: 0,
+                currentCount: 0,
+                count: 0,
             }
-        }, computed:{
-            scoreState:function(){
-                if(this.score==0)
+        }, computed: {
+            nameState: function () {
+                if (this.name.length == 0)
                     return null;
                 else
-                    return parseInt(this.score,10)>this.currentScore&&parseInt(this.score,10)>=this.requiredScore&&parseInt(this.score,10)<500;
-            }
+                    return this.name.length > 5 && this.name.length < 200 && this.name != this.currentName;
+            },
+            countState: function () {
+                if (parseInt(this.count) == 0)
+                    return null;
+                else
+                    return parseInt(this.count)!=parseInt(this.currentCount);
+            },
+            timeState: function () {
+                if (parseInt(this.hours) == 0 && parseInt(this.minutes) == 0)
+                    return null;
+                if (parseInt(this.minutes) == 60) {
+                    this.minutes = 0;
+                    this.hours++;
+                }
+                if (parseInt(this.hours) == 0)
+                    return parseInt(this.minutes) > 30
+                        && parseInt(this.minutes) != parseInt(this.currentMinutes);
+                else
+                    return parseInt(this.minutes) != parseInt(this.currentMinutes)
+                        && parseInt(this.hours) != parseInt(this.currentHours);
+
+            },
         },
         methods: {
-            getStudents() {
-                axios.get('/students/' + this.reservation + '/failed')
-                    .then(response => {
-                        this.students = response.data;
-                    }).catch(errors => {
-                });
-            },
+
             countDownChanged(dismissCountDown) {
                 this.dismissCountDown = dismissCountDown;
                 if (this.dismissCountDown === 0) {
@@ -114,67 +206,127 @@
                     this.alert = "danger";
                 }
             },
-            showAlert(message,alert="danger") {
+            showAlert(message, alert = "danger") {
                 this.message = message;
                 this.alert = alert;
                 this.dismissCountDown = this.dismissSecs
             },
 
-            showDialog(student) {
-                this.student=student;
-                this.requiredScore=student.required_score;
-                this.currentScore=student.score;
-                this.st_name=student.english_name;
-                this.$refs.modal.show();
+            showDialog(config) {
+                switch (config.id) {
+                    case 1:
+                        this.config = config;
+                        this.currentCount = config.value;
+                        this.$refs.countChanger.show();
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                        this.config = config;
+                        var time = config.value;
+                        this.currentHours = time.split(':')[0];
+                        this.currentMinutes = time.split(':')[1];
+                        this.$refs.timeChanger.show();
+                        break;
+                    case 5:
+                    case 6:
+                    case 7:
+                        this.config = config;
+                        this.currentName = config.value;
+                        this.pos_name = config.name;
+                        this.$refs.nameChanger.show();
+                        break;
+
+                }
+
             },
 
             resetModal() {
-                this.id=0;
-                this.requiredScore=0;
-                this.currentScore=0;
-                this.st_name='';
+                this.hours = 0;
+                this.minutes = 0;
+                this.count = 0;
             },
             handleOk(bvModalEvt) {
                 // Prevent modal from closing
                 bvModalEvt.preventDefault()
                 // Trigger submit handler
-                this.handleSubmit()
+                switch (this.config.id) {
+                    case 1:
+                        this.handleCountSubmit();
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                        this.handleTimeSubmit();
+                        break;
+                    case 5:
+                    case 6:
+                    case 7:
+                        this.handleNameSubmit();
+                        break;
+
+                }
             },
-            handleSubmit() {
+            handleCountSubmit() {
                 // Exit when the form isn't valid
-                if (!this.scoreState) {
+                if (!this.countState) {
                     return
                 }
                 // Push the name to submitted names
-                this.sendMarksChange();
+                this.newValue = this.count;
+                this.sendChange();
                 // Hide the modal manually
                 this.$nextTick(() => {
-                    this.$refs.modal.hide()
+                    this.$refs.countChanger.hide()
                 })
             },
-            sendMarksChange(){
-                axios.patch('/students/marks',{
-                    'id':this.student.ID,
-                    'score':this.score
-                }).then(response=>{
-                    if(response.data.success){
-                        var index = this.students.indexOf(this.student);
-                        if (index > -1) {
-                            this.students.splice(index, 1);
-                        }
-                        this.showAlert("Successfully Updated","success");
-                    }else{
+            handleNameSubmit() {
+                // Exit when the form isn't valid
+                if (!this.nameState) {
+                    return
+                }
+                // Push the name to submitted names
+                this.newValue = this.name;
+                this.sendChange();
+                // Hide the modal manually
+                this.$nextTick(() => {
+                    this.$refs.nameChanger.hide()
+                })
+            },
+            handleTimeSubmit() {
+                // Exit when the form isn't valid
+                if (!this.timeState) {
+                    return
+                }
+                // Push the name to submitted names
+                this.newValue = this.hours + ':' + this.minutes;
+                this.sendChange();
+                // Hide the modal manually
+                this.$nextTick(() => {
+                    this.$refs.timeChanger.hide()
+                })
+            },
+
+            sendChange() {
+                axios.patch('/configs/update', {
+                    'id': this.config.id,
+                    'value': this.newValue,
+                }).then(response => {
+                    if (response.data.success) {
+                        this.config.value = this.newValue;
+                        this.showAlert("Successfully Updated", "success");
+                    } else {
                         this.showAlert("Something happened when updating . Please call Support");
                     }
                 })
                     .catch(function (error) {
-                        this.showAlert("Something happened when updating . Please call Support");
                         console.log(error);
+                        this.showAlert("Something happened when updating . Please call Support");
+                        // console.log(error);
                     });
 
             },
         }
-
 
 
     }

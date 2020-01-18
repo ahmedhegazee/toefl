@@ -3,17 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Attempt;
+use App\Config;
 use App\Grammar\GrammarExam;
 use App\Group;
 use App\Listening\ListeningExam;
 use App\Reading\ReadingExam;
 use App\Reservation;
+use App\Role;
 use App\Student;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\View;
 
 class ApiController extends Controller
@@ -145,14 +148,18 @@ class ApiController extends Controller
 
     public function getFailedStudents(Reservation $reservation)
     {
+
+
         $students = $reservation->students()->get()
             ->filter(function ($student) {
                 if (!is_null($student->results->last()))
                     if (
                         !$student->results->last()->success
                         && $student->results->last()->mark != 0
-                    )
+                    ) {
+//                        dump($student);
                         return $student;
+                    }
             })
             ->map(function ($student) {
 
@@ -166,7 +173,6 @@ class ApiController extends Controller
                     "Actions" => ""
                 ];
             })->values()->all();
-
         return response()->json($students);
     }
 
@@ -221,7 +227,7 @@ class ApiController extends Controller
     public function getAllUsers()
     {
         $users = User::all();
-        $data = $users->filter(function ($user) {
+        $users = $users->filter(function ($user) {
             if (!$user->roles->contains(2))
                 return $user;
         })->map(function ($user) {
@@ -230,9 +236,29 @@ class ApiController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'roles' => $this->getRoles($user->roles->toArray()),
+                'selectedRoles' => $user->roles->pluck('id')->toArray(),
                 'Actions' => '',
             ];
-        })->all();
+        })->values();
+        $roles = Role::all()
+            ->map(function ($role) {
+
+                if ($role->id == 1 ||$role->id == 2)
+                    return [
+                        'value' => $role->id,
+                        'text' => $role->title,
+                        'disabled' => true,
+                    ];
+                else
+                    return [
+                        'value' => $role->id,
+                        'text' => $role->title
+                    ];
+            })->values();
+        $data = [
+            'users' => $users,
+            'roles' => $roles
+        ];
         return response()->json($data);
 
     }
@@ -258,5 +284,103 @@ class ApiController extends Controller
 
 
         return response()->json(['success' => $check]);
+    }
+
+    public function getConfigs()
+    {
+        $configs = Config::all()->map(function ($config) {
+            return [
+                'id' => $config->id,
+                'name' => $config->name,
+                'value' => $config->value,
+                'actions' => ''
+            ];
+        });
+        return response()->json($configs);
+    }
+
+    public function updateConfig(Request $request)
+    {
+        $config = Config::findOrFail($request->id);
+//        dd($request);
+        $check = $config->update([
+            'value' => $request->value,
+        ]);
+        return response()->json(['success' => $check]);
+    }
+
+    public function updateUser(Request $request,User $user)
+    {
+//        dd($request);
+        $user = User::findOrFail($request->id);;
+        $checkEmail = true;
+        $checkName = true;
+        $checkPassword = true;
+
+
+        if (strlen($request->name) > 0)
+            $checkName = $user->update([
+                'name' => $request->name,
+            ]);
+        if (strlen($request->email) > 0)
+            $checkEmail = $user->update([
+                'email' => $request->email,
+            ]);
+        if (strlen($request->password) > 0)
+            $checkPassword = $user->update([
+                'password' => Hash::make($request->password),
+            ]);
+        $check = $checkEmail && $checkName && $checkPassword;
+        return response()->json(['success' => $check]);
+    }
+
+    public function updateUserRoles(Request $request,User $user)
+    {
+//        dd($request);
+        $user->roles()->sync($request->roles);
+        return response()->json(['success' => true]);
+    }
+
+    public function addNewUser(Request $request)
+    {
+        $user = User::create([
+            'name' => $request->name,
+            'password' => Hash::make($request->password),
+            'email' => $request->email,
+        ]);
+        $user->roles()->attach(1);
+        $data = [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $this->getRoles($user->roles->toArray()),
+                'selectedRoles' => $user->roles->pluck('id')->toArray(),
+                'Actions' => '',
+                ],
+            'success' => true
+        ];
+        return response()->json($data);
+    }
+
+    public function checkEmailIsUnique(Request $request)
+    {
+        if(strlen($request->email)==0)
+            $check=null;
+        else
+        $check =User::where('email',$request->email)->count()==0;
+        return response()->json(['check'=>$check]);
+    }
+    public function checkPhoneIsUnique(Request $request)
+    {
+        $check= Student::where('phone',$request->email)->count()==0;
+        return response()->json(['check'=>$check]);
+    }
+
+    public function destroyUser(User $user)
+    {
+        $user->roles()->sync([]);
+        $user->delete();
+
     }
 }

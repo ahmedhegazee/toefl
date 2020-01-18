@@ -2005,6 +2005,342 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ConfigsPanel.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ConfigsPanel.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mounted: function mounted() {
+    var _this = this;
+
+    axios.get('/configs/').then(function (response) {
+      _this.configs = response.data; // console.log(response.data);
+    })["catch"](function (errors) {});
+  },
+  data: function data() {
+    return {
+      configs: [],
+      dismissSecs: 5,
+      dismissCountDown: 0,
+      message: "",
+      alert: "danger",
+      currentName: '',
+      name: '',
+      pos_name: '',
+      config: null,
+      newValue: '',
+      currentHours: 0,
+      currentMinutes: 0,
+      hours: 0,
+      minutes: 0,
+      currentCount: 0,
+      count: 0
+    };
+  },
+  computed: {
+    nameState: function nameState() {
+      if (this.name.length == 0) return null;else return this.name.length > 5 && this.name.length < 200 && this.name != this.currentName;
+    },
+    countState: function countState() {
+      if (parseInt(this.count) == 0) return null;else return parseInt(this.count) != parseInt(this.currentCount);
+    },
+    timeState: function timeState() {
+      if (parseInt(this.hours) == 0 && parseInt(this.minutes) == 0) return null;
+
+      if (parseInt(this.minutes) == 60) {
+        this.minutes = 0;
+        this.hours++;
+      }
+
+      if (parseInt(this.hours) == 0) return parseInt(this.minutes) > 30 && parseInt(this.minutes) != parseInt(this.currentMinutes);else return parseInt(this.minutes) != parseInt(this.currentMinutes) && parseInt(this.hours) != parseInt(this.currentHours);
+    }
+  },
+  methods: {
+    countDownChanged: function countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+
+      if (this.dismissCountDown === 0) {
+        this.message = "";
+        this.alert = "danger";
+      }
+    },
+    showAlert: function showAlert(message) {
+      var alert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "danger";
+      this.message = message;
+      this.alert = alert;
+      this.dismissCountDown = this.dismissSecs;
+    },
+    showDialog: function showDialog(config) {
+      switch (config.id) {
+        case 1:
+          this.config = config;
+          this.currentCount = config.value;
+          this.$refs.countChanger.show();
+          break;
+
+        case 2:
+        case 3:
+        case 4:
+          this.config = config;
+          var time = config.value;
+          this.currentHours = time.split(':')[0];
+          this.currentMinutes = time.split(':')[1];
+          this.$refs.timeChanger.show();
+          break;
+
+        case 5:
+        case 6:
+        case 7:
+          this.config = config;
+          this.currentName = config.value;
+          this.pos_name = config.name;
+          this.$refs.nameChanger.show();
+          break;
+      }
+    },
+    resetModal: function resetModal() {
+      this.hours = 0;
+      this.minutes = 0;
+      this.count = 0;
+    },
+    handleOk: function handleOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault(); // Trigger submit handler
+
+      switch (this.config.id) {
+        case 1:
+          this.handleCountSubmit();
+          break;
+
+        case 2:
+        case 3:
+        case 4:
+          this.handleTimeSubmit();
+          break;
+
+        case 5:
+        case 6:
+        case 7:
+          this.handleNameSubmit();
+          break;
+      }
+    },
+    handleCountSubmit: function handleCountSubmit() {
+      var _this2 = this;
+
+      // Exit when the form isn't valid
+      if (!this.countState) {
+        return;
+      } // Push the name to submitted names
+
+
+      this.newValue = this.count;
+      this.sendChange(); // Hide the modal manually
+
+      this.$nextTick(function () {
+        _this2.$refs.countChanger.hide();
+      });
+    },
+    handleNameSubmit: function handleNameSubmit() {
+      var _this3 = this;
+
+      // Exit when the form isn't valid
+      if (!this.nameState) {
+        return;
+      } // Push the name to submitted names
+
+
+      this.newValue = this.name;
+      this.sendChange(); // Hide the modal manually
+
+      this.$nextTick(function () {
+        _this3.$refs.nameChanger.hide();
+      });
+    },
+    handleTimeSubmit: function handleTimeSubmit() {
+      var _this4 = this;
+
+      // Exit when the form isn't valid
+      if (!this.timeState) {
+        return;
+      } // Push the name to submitted names
+
+
+      this.newValue = this.hours + ':' + this.minutes;
+      this.sendChange(); // Hide the modal manually
+
+      this.$nextTick(function () {
+        _this4.$refs.timeChanger.hide();
+      });
+    },
+    sendChange: function sendChange() {
+      var _this5 = this;
+
+      axios.patch('/configs/update', {
+        'id': this.config.id,
+        'value': this.newValue
+      }).then(function (response) {
+        if (response.data.success) {
+          _this5.config.value = _this5.newValue;
+
+          _this5.showAlert("Successfully Updated", "success");
+        } else {
+          _this5.showAlert("Something happened when updating . Please call Support");
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ControlPanel.vue?vue&type=script&lang=js&":
 /*!***********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ControlPanel.vue?vue&type=script&lang=js& ***!
@@ -2484,24 +2820,276 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
 
     axios.get('/users').then(function (response) {
-      _this.users = response.data; // console.log(response.data);
+      _this.users = response.data.users;
+      _this.roles = response.data.roles; // console.log(response.data);
     })["catch"](function (errors) {});
   },
   data: function data() {
     return {
+      fields: ["id", "name", "email", "roles", "actions"],
+      selected: [],
+      roles: [],
       users: [],
       dismissSecs: 5,
       dismissCountDown: 0,
       message: "",
-      alert: "danger"
+      alert: "danger",
+      user: '',
+      name: '',
+      email: '',
+      confirmEmail: '',
+      password: '',
+      confirmPassword: '',
+      confirmEmailState: null,
+      confirmPassState: null,
+      isUniqueEmail: null
     };
   },
+  computed: {
+    nameState: function nameState() {
+      if (this.name.length == 0) return null;else {
+        if (this.user != null) return this.name.length >= 5 && this.name.length < 200 && this.name != this.user.name;else return this.name.length >= 5 && this.name.length < 200;
+      }
+    },
+    passwordState: function passwordState() {
+      if (this.password.length == 0) return null;else return this.password.length >= 8;
+    },
+    emailState: function emailState() {
+      if (this.email.length == 0) return null;else return this.validateEmail(this.email);
+    }
+  },
   methods: {
+    validateEmail: function validateEmail(email) {
+      var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    },
     countDownChanged: function countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
 
@@ -2510,10 +3098,225 @@ __webpack_require__.r(__webpack_exports__);
         this.alert = "danger";
       }
     },
-    showAlert: function showAlert() {
+    showAlert: function showAlert(message) {
+      var alert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "danger";
+      this.message = message;
+      this.alert = alert;
       this.dismissCountDown = this.dismissSecs;
     },
-    showDialog: function showDialog(id, score) {}
+    showEditInfoDialog: function showEditInfoDialog(user) {
+      this.user = user;
+      this.$refs.infoChanger.show();
+    },
+    showEditRolesDialog: function showEditRolesDialog(user) {
+      this.user = user;
+      this.selected = user.selectedRoles;
+      this.$refs.rolesChanger.show();
+    },
+    resetModal: function resetModal() {
+      this.name = '';
+      this.password = '';
+      this.confirmPassword = '';
+      this.email = '';
+      this.confirmEmail = '';
+      this.confirmPassState = null;
+      this.confirmEmailState = null;
+      this.isUniqueEmail = null;
+    },
+    resetNewModal: function resetNewModal() {
+      this.resetModal();
+      this.user = null;
+    },
+    handleOk: function handleOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault(); // Trigger submit handler
+
+      this.checkIsUniqueEmail();
+      this.handleSubmit();
+    },
+    handleOkForNewUserModal: function handleOkForNewUserModal(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault(); // Trigger submit handler
+
+      this.checkIsUniqueEmail();
+      this.handleNewUserSubmit();
+    },
+    handleRolesDialogOk: function handleRolesDialogOk(bvModalEvt) {
+      var _this2 = this;
+
+      // Prevent modal from closing
+      bvModalEvt.preventDefault(); // Trigger submit handler
+
+      this.sendRolesUpdate();
+      this.$nextTick(function () {
+        _this2.$refs.rolesChanger.hide();
+      });
+    },
+    handleSubmit: function handleSubmit() {
+      var _this3 = this;
+
+      // Exit when the form isn't valid
+      if (this.name.length > 0 && !this.nameState) {
+        return;
+      } else if (!this.emailState) {
+        return;
+      } else if (this.email != this.confirmEmail) {
+        this.confirmEmailState = false;
+        return;
+      } else if (!this.passwordState) return;else if (this.password != this.confirmPassword) {
+        this.confirmPassState = false;
+        return;
+      } else if (!this.isUniqueEmail) return;
+
+      this.sendChange(); // Hide the modal manually
+
+      this.$nextTick(function () {
+        _this3.$refs.infoChanger.hide();
+      });
+    },
+    handleNewUserSubmit: function handleNewUserSubmit() {
+      var _this4 = this;
+
+      // Exit when the form isn't valid
+      if (!this.nameState && !this.passwordState && !this.emailState && !this.isUniqueEmail) {
+        return;
+      }
+
+      if (this.password != this.confirmPassword) {
+        this.confirmPassState = false;
+        return;
+      }
+
+      if (this.email != this.confirmEmail) {
+        this.confirmEmailState = false;
+        return;
+      }
+
+      this.addNewUser(); // Hide the modal manually
+
+      this.$nextTick(function () {
+        _this4.$refs.addNewUserModal.hide();
+      });
+    },
+    sendChange: function sendChange() {
+      var _this5 = this;
+
+      axios.patch('/users/' + this.user.id, {
+        'name': this.name,
+        'email': this.email,
+        'password': this.password
+      }).then(function (response) {
+        if (response.data.success) {
+          _this5.successAction();
+        } else {
+          _this5.showAlert("Something happened when updating . Please call Support");
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
+      });
+    },
+    addNewUser: function addNewUser() {
+      var _this6 = this;
+
+      axios.post('/users/store', {
+        'name': this.name,
+        'email': this.email,
+        'password': this.password
+      }).then(function (response) {
+        if (response.data.success) {
+          _this6.showAlert("Successfully Updated", "success");
+
+          _this6.users.push(response.data.user);
+        } else {
+          _this6.showAlert("Something happened when updating . Please call Support");
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
+      });
+    },
+    successAction: function successAction() {
+      if (this.name.length > 0) this.user.name = this.name;
+      if (this.email.length > 0) this.user.email = this.email;
+      this.showAlert("Successfully Updated", "success");
+    },
+    getUserRoles: function getUserRoles() {
+      var data = '';
+
+      for (var i = 0; i < this.selected.length; i++) {
+        var role = this.selected[i] - 1;
+        console.log('index ' + role);
+        console.log('role ' + this.roles[role]['text']);
+        data += this.roles[role]['text'] + ' ,';
+      }
+
+      return data;
+    },
+    sendRolesUpdate: function sendRolesUpdate() {
+      var _this7 = this;
+
+      axios.patch('/roles/' + this.user.id, {
+        'roles': this.selected
+      }).then(function (response) {
+        if (response.data.success) {
+          _this7.user.roles = _this7.getUserRoles();
+          _this7.user.selectedRoles = _this7.selected;
+
+          _this7.showAlert("Successfully Updated", "success");
+        } else {
+          _this7.showAlert("Something happened when updating . Please call Support");
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
+      });
+    },
+    checkIsUniqueEmail: function checkIsUniqueEmail() {
+      var _this8 = this;
+
+      axios.post('/users/unique-email', {
+        'email': this.email
+      }).then(function (response) {
+        _this8.isUniqueEmail = response.data.check;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    deleteUser: function deleteUser(user) {
+      var _this9 = this;
+
+      if (user.roles.indexOf('Super Admin') == -1) {
+        this.$bvModal.msgBoxConfirm('Are you sure about deleting this user ' + user.name, {
+          title: 'Delete User',
+          size: 'sm',
+          buttonSize: 'sm',
+          okVariant: 'danger',
+          okTitle: 'YES',
+          cancelTitle: 'NO',
+          footerClass: 'p-2',
+          hideHeaderClose: false,
+          centered: true
+        }).then(function (value) {
+          if (value == true) {
+            axios["delete"]('/users/' + user.id).then(function (response) {
+              var index = _this9.users.indexOf(user);
+
+              if (index > -1) {
+                _this9.users.splice(index, 1);
+              }
+
+              _this9.showAlert("Successfully Deleted", 'success');
+            })["catch"](function (error) {
+              console.log(error);
+            });
+          }
+        })["catch"](function (err) {
+          // An error occurred
+          console.log(err);
+        });
+      } else this.showAlert("You can't delete super admin");
+    }
   }
 });
 
@@ -69993,6 +70796,355 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ConfigsPanel.vue?vue&type=template&id=c466b504&":
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ConfigsPanel.vue?vue&type=template&id=c466b504& ***!
+  \***************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-alert",
+        {
+          attrs: {
+            show: _vm.dismissCountDown,
+            dismissible: "",
+            fade: "",
+            variant: _vm.alert
+          },
+          on: { "dismiss-count-down": _vm.countDownChanged }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+      ),
+      _vm._v(" "),
+      _c("h1", [_vm._v("Configuration")]),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          striped: "",
+          hover: "",
+          "sticky-header": true,
+          items: _vm.configs
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(actions)",
+            fn: function(row) {
+              return [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    on: {
+                      click: function($event) {
+                        return _vm.showDialog(row.item)
+                      }
+                    }
+                  },
+                  [_vm._v("Edit Config")]
+                )
+              ]
+            }
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "nameChanger",
+          attrs: { id: "modal-prevent-closing", title: "Change Position Name" },
+          on: {
+            shown: function($event) {
+              _vm.name = ""
+            },
+            ok: _vm.handleOk
+          }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  return _vm.handleNameSubmit($event)
+                }
+              }
+            },
+            [
+              _c("h4", [_vm._v("Position Name : " + _vm._s(_vm.pos_name))]),
+              _vm._v(" "),
+              _c("h4", [_vm._v("Current Name : " + _vm._s(_vm.currentName))]),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.nameState,
+                    label: "Name Changer",
+                    "label-for": "name-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "name-input",
+                      state: _vm.nameState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.name,
+                      callback: function($$v) {
+                        _vm.name = $$v
+                      },
+                      expression: "name"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.nameState } },
+                    [
+                      _vm._v(
+                        "\n                    The name length must be between 5 and 200 characters.\n                "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-valid-feedback",
+                    { attrs: { state: _vm.nameState } },
+                    [
+                      _vm._v(
+                        "\n                    Looks Good.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "timeChanger",
+          attrs: { id: "modal-prevent-closing", title: "Change Exam Time" },
+          on: { shown: _vm.resetModal, ok: _vm.handleOk }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  return _vm.handleTimeSubmit($event)
+                }
+              }
+            },
+            [
+              _c("h4", [
+                _vm._v(
+                  "Current Time = " +
+                    _vm._s(_vm.currentHours) +
+                    " H :" +
+                    _vm._s(_vm.currentMinutes) +
+                    " M"
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.timeState,
+                    label: "Hours",
+                    "label-for": "name-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "hours-input",
+                      type: "number",
+                      state: _vm.timeState,
+                      min: "0",
+                      max: "4",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.hours,
+                      callback: function($$v) {
+                        _vm.hours = $$v
+                      },
+                      expression: "hours"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.timeState,
+                    label: "Minutes",
+                    "label-for": "name-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "minutes-input",
+                      type: "number",
+                      state: _vm.timeState,
+                      min: "0",
+                      max: "60",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.minutes,
+                      callback: function($$v) {
+                        _vm.minutes = $$v
+                      },
+                      expression: "minutes"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.timeState } },
+                    [
+                      _vm._v(
+                        "\n                    Put correct time\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "countChanger",
+          attrs: {
+            id: "modal-prevent-closing",
+            title: "Change Computers Count"
+          },
+          on: { shown: _vm.resetModal, ok: _vm.handleOk }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  return _vm.handleCountSubmit($event)
+                }
+              }
+            },
+            [
+              _c("h4", [
+                _vm._v("Current Computers Count = " + _vm._s(_vm.currentCount))
+              ]),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.countState,
+                    label: "Computers Count",
+                    "label-for": "name-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "hours-input",
+                      type: "number",
+                      state: _vm.countState,
+                      min: "0",
+                      max: "200",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.count,
+                      callback: function($$v) {
+                        _vm.count = $$v
+                      },
+                      expression: "count"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.countState } },
+                    [
+                      _vm._v(
+                        "\n                    Put correct count\n                "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-valid-feedback",
+                    { attrs: { state: _vm.countState } },
+                    [
+                      _vm._v(
+                        "\n                    Looks Good.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ]
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ControlPanel.vue?vue&type=template&id=314d61dc&":
 /*!***************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ControlPanel.vue?vue&type=template&id=314d61dc& ***!
@@ -70477,6 +71629,7 @@ var render = function() {
             show: _vm.dismissCountDown,
             dismissible: "",
             fade: "",
+            "sticky-header": true,
             variant: _vm.alert
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
@@ -70489,12 +71642,255 @@ var render = function() {
       _vm._v(" "),
       _c(
         "button",
-        { staticClass: "btn btn-primary", on: { click: function($event) {} } },
+        {
+          staticClass: "btn btn-primary mb-2",
+          on: {
+            click: function($event) {
+              return _vm.$refs.addNewUserModal.show()
+            }
+          }
+        },
         [_vm._v("Add New User")]
       ),
       _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "addNewUserModal",
+          attrs: { id: "modal-prevent-closing", title: "Add User Information" },
+          on: { shown: _vm.resetNewModal, ok: _vm.handleOkForNewUserModal }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              attrs: { autocomplete: "off" },
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  return _vm.handleNewUserSubmit($event)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.nameState,
+                    label: "User Name",
+                    "label-for": "name-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "name-input",
+                      autocomplete: "off",
+                      state: _vm.nameState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.name,
+                      callback: function($$v) {
+                        _vm.name = $$v
+                      },
+                      expression: "name"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.nameState } },
+                    [
+                      _vm._v(
+                        "\n                    The name length must be between 5 and 200 characters.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "User Email", "label-for": "email-input" } },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "email-input",
+                      type: "email",
+                      state: _vm.emailState,
+                      autocomplete: "off",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.email,
+                      callback: function($$v) {
+                        _vm.email = $$v
+                      },
+                      expression: "email"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.emailState } },
+                    [
+                      _vm._v(
+                        "\n                    Write correct email please.\n                "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    [
+                      _c(
+                        "b-form-invalid-feedback",
+                        { attrs: { state: _vm.isUniqueEmail } },
+                        [
+                          _vm._v(
+                            "\n                        Write another email please.This email is token\n                    "
+                          )
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.confirmEmailState,
+                    label: "Confirm Email",
+                    "label-for": "email-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "confirm-email-input",
+                      type: "email",
+                      autocomplete: "false",
+                      state: _vm.confirmEmailState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.confirmEmail,
+                      callback: function($$v) {
+                        _vm.confirmEmail = $$v
+                      },
+                      expression: "confirmEmail"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.confirmEmailState } },
+                    [
+                      _vm._v(
+                        "\n                    Confirm your email correctly.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.passwordState,
+                    label: "User Password",
+                    "label-for": "password-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "password-input",
+                      type: "password",
+                      state: _vm.passwordState,
+                      autocomplete: "new-password",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.password,
+                      callback: function($$v) {
+                        _vm.password = $$v
+                      },
+                      expression: "password"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.passwordState } },
+                    [
+                      _vm._v(
+                        "\n                    Write correct password more than 8 characters.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.confirmPassState,
+                    label: "Confirm Password",
+                    "label-for": "confirm-password-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "confirm-password-input",
+                      type: "password",
+                      autocomplete: "new-password",
+                      state: _vm.confirmPassState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.confirmPassword,
+                      callback: function($$v) {
+                        _vm.confirmPassword = $$v
+                      },
+                      expression: "confirmPassword"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.confirmPassState } },
+                    [
+                      _vm._v(
+                        "\n                    Confirm your password correctly.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
       _c("b-table", {
-        attrs: { striped: "", hover: "", items: _vm.users },
+        attrs: { striped: "", fields: _vm.fields, hover: "", items: _vm.users },
         scopedSlots: _vm._u([
           {
             key: "cell(actions)",
@@ -70504,7 +71900,11 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-primary",
-                    on: { click: function($event) {} }
+                    on: {
+                      click: function($event) {
+                        return _vm.showEditRolesDialog(row.item)
+                      }
+                    }
                   },
                   [_vm._v("Edit Roles")]
                 ),
@@ -70513,15 +71913,314 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-primary",
-                    on: { click: function($event) {} }
+                    on: {
+                      click: function($event) {
+                        return _vm.showEditInfoDialog(row.item)
+                      }
+                    }
                   },
                   [_vm._v("Edit Info")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteUser(row.item)
+                      }
+                    }
+                  },
+                  [_vm._v("Delete")]
                 )
               ]
             }
           }
         ])
-      })
+      }),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "infoChanger",
+          attrs: {
+            id: "modal-prevent-closing",
+            title: "Change User Information"
+          },
+          on: { shown: _vm.resetModal, ok: _vm.handleOk }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              attrs: { autocomplete: "off" },
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  return _vm.handleSubmit($event)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.nameState,
+                    label: "User Name",
+                    "label-for": "name-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "name-input",
+                      autocomplete: "off",
+                      state: _vm.nameState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.name,
+                      callback: function($$v) {
+                        _vm.name = $$v
+                      },
+                      expression: "name"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.nameState } },
+                    [
+                      _vm._v(
+                        "\n                    The name length must be between 5 and 200 characters.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { label: "User Email", "label-for": "email-input" } },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "email-input",
+                      type: "email",
+                      state: _vm.emailState,
+                      autocomplete: "off",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.email,
+                      callback: function($$v) {
+                        _vm.email = $$v
+                      },
+                      expression: "email"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.emailState } },
+                    [
+                      _vm._v(
+                        "\n                    Write correct email please.\n                "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    [
+                      _c(
+                        "b-form-invalid-feedback",
+                        { attrs: { state: _vm.isUniqueEmail } },
+                        [
+                          _vm._v(
+                            "\n                        Write another email please.This email is token\n                    "
+                          )
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.confirmEmailState,
+                    label: "Confirm Email",
+                    "label-for": "email-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "confirm-email-input",
+                      type: "email",
+                      autocomplete: "false",
+                      state: _vm.confirmEmailState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.confirmEmail,
+                      callback: function($$v) {
+                        _vm.confirmEmail = $$v
+                      },
+                      expression: "confirmEmail"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.confirmEmailState } },
+                    [
+                      _vm._v(
+                        "\n                    Confirm your email correctly.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.passwordState,
+                    label: "User Password",
+                    "label-for": "password-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "password-input",
+                      type: "password",
+                      state: _vm.passwordState,
+                      autocomplete: "new-password",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.password,
+                      callback: function($$v) {
+                        _vm.password = $$v
+                      },
+                      expression: "password"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.passwordState } },
+                    [
+                      _vm._v(
+                        "\n                    Write correct password more than 8 characters.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.confirmPassState,
+                    label: "Confirm Password",
+                    "label-for": "confirm-password-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "confirm-password-input",
+                      type: "password",
+                      autocomplete: "new-password",
+                      state: _vm.confirmPassState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.confirmPassword,
+                      callback: function($$v) {
+                        _vm.confirmPassword = $$v
+                      },
+                      expression: "confirmPassword"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.confirmPassState } },
+                    [
+                      _vm._v(
+                        "\n                    Confirm your password correctly.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "rolesChanger",
+          attrs: { id: "modal-prevent-closing", title: "Change User Roles" },
+          on: { ok: _vm.handleRolesDialogOk }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                { attrs: { label: "Select Roles" } },
+                [
+                  _c("b-form-checkbox-group", {
+                    attrs: { options: _vm.roles, name: "roles", stacked: "" },
+                    model: {
+                      value: _vm.selected,
+                      callback: function($$v) {
+                        _vm.selected = $$v
+                      },
+                      expression: "selected"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ]
+      )
     ],
     1
   )
@@ -82704,6 +84403,7 @@ Vue.component('control-panel', __webpack_require__(/*! ./components/ControlPanel
 Vue.component('certificate-panel', __webpack_require__(/*! ./components/CertificatePanel.vue */ "./resources/js/components/CertificatePanel.vue")["default"]);
 Vue.component('marks-panel', __webpack_require__(/*! ./components/MarksPanel.vue */ "./resources/js/components/MarksPanel.vue")["default"]);
 Vue.component('users-panel', __webpack_require__(/*! ./components/UsersPanel.vue */ "./resources/js/components/UsersPanel.vue")["default"]);
+Vue.component('configs-panel', __webpack_require__(/*! ./components/ConfigsPanel.vue */ "./resources/js/components/ConfigsPanel.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -82825,6 +84525,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CertificatePanel_vue_vue_type_template_id_23b5b298___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CertificatePanel_vue_vue_type_template_id_23b5b298___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ConfigsPanel.vue":
+/*!**************************************************!*\
+  !*** ./resources/js/components/ConfigsPanel.vue ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ConfigsPanel_vue_vue_type_template_id_c466b504___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ConfigsPanel.vue?vue&type=template&id=c466b504& */ "./resources/js/components/ConfigsPanel.vue?vue&type=template&id=c466b504&");
+/* harmony import */ var _ConfigsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ConfigsPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/ConfigsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ConfigsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ConfigsPanel_vue_vue_type_template_id_c466b504___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ConfigsPanel_vue_vue_type_template_id_c466b504___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ConfigsPanel.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ConfigsPanel.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/components/ConfigsPanel.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfigsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ConfigsPanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ConfigsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfigsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ConfigsPanel.vue?vue&type=template&id=c466b504&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/ConfigsPanel.vue?vue&type=template&id=c466b504& ***!
+  \*********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfigsPanel_vue_vue_type_template_id_c466b504___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ConfigsPanel.vue?vue&type=template&id=c466b504& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ConfigsPanel.vue?vue&type=template&id=c466b504&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfigsPanel_vue_vue_type_template_id_c466b504___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfigsPanel_vue_vue_type_template_id_c466b504___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
