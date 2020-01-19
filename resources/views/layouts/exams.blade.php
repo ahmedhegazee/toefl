@@ -13,21 +13,21 @@
 
     </div>
 </div>
-<div class="form-group row">
-    <label for="type" class="col-md-4 col-form-label text-md-right">Group Type</label>
-    <div class="col-md-6">
-        <select id="type" name="type" class="form-control">
-            <option value="" disabled>Select Group Type</option>
-            @foreach($types as $type)
-                <option value="{{$type->id}}" {{isset($exam)&&$exam->groupType->id==$type->id?'selected':''}}>{{$type->type}}</option>
-            @endforeach
+{{--<div class="form-group row">--}}
+{{--    <label for="type" class="col-md-4 col-form-label text-md-right">Group Type</label>--}}
+{{--    <div class="col-md-6">--}}
+{{--        <select id="type" name="type" class="form-control">--}}
+{{--            <option value="" disabled>Select Group Type</option>--}}
+{{--            @foreach($types as $type)--}}
+{{--                <option value="{{$type->id}}" {{isset($exam)&&$exam->groupType->id==$type->id?'selected':''}}>{{$type->type}}</option>--}}
+{{--            @endforeach--}}
 
 
-        </select>
+{{--        </select>--}}
 
 
-    </div>
-</div>
+{{--    </div>--}}
+{{--</div>--}}
 
 @if(session()->has('error'))
 <div class="row alert alert-danger">

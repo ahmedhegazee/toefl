@@ -16,9 +16,9 @@ class CreateReadingExamsTable extends Migration
         Schema::create('reading_exams', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('reservation_id');
-            $table->unsignedBigInteger('group_type_id');
+//            $table->unsignedBigInteger('group_type_id');
             $table->foreign('reservation_id')->references('id')->on('reservations');
-            $table->foreign('group_type_id')->references('id')->on('group_types');
+//            $table->foreign('group_type_id')->references('id')->on('group_types');
 
             $table->timestamps();
         });

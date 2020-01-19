@@ -13,6 +13,7 @@ use App\Reading\ReadingExam;
 use App\Reading\VocabOption;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class ExamsController extends Controller
@@ -29,13 +30,16 @@ class ExamsController extends Controller
         $student = auth()->user()->getStudent();
         $fullName = auth()->user()->name;
         $reservation = $student->reservation->id;
-        $groupType = $student->group->type->id;
-        $grammarExam = GrammarExam::where('reservation_id', $reservation)
-            ->where('group_type_id', $groupType)->get()->first();
-        $readingExam = ReadingExam::where('reservation_id', $reservation)
-            ->where('group_type_id', $groupType)->get()->first();
-        $listeningExam = ListeningExam::where('reservation_id', $reservation)
-            ->where('group_type_id', $groupType)->get()->first();
+//        $groupType = $student->group->type->id;
+        $grammarExam = GrammarExam::where('reservation_id', $reservation)->get()->first();
+//        $grammarExam = GrammarExam::where('reservation_id', $reservation)
+//            ->where('group_type_id', $groupType)->get()->first();
+//        $readingExam = ReadingExam::where('reservation_id', $reservation)
+//            ->where('group_type_id', $groupType)->get()->first();
+        $readingExam = ReadingExam::where('reservation_id', $reservation)->get()->first();
+//        $listeningExam = ListeningExam::where('reservation_id', $reservation)
+//            ->where('group_type_id', $groupType)->get()->first();
+        $listeningExam = ListeningExam::where('reservation_id', $reservation)->get()->first();
         session([
             'student' => $student,
             'grammarExam' => $grammarExam,
@@ -75,6 +79,8 @@ class ExamsController extends Controller
             return GrammarOption::find($answer)->correct;
         })->sum();
        session(['student-' . $student->id . '-grammar'=> $marks]);
+        $expiresAt = Carbon::now()->addHours(2);
+       Cache::put('student-' . $student->id . '-grammar',$marks,$expiresAt);
         return redirect()->action("ExamsController@showReadingExam");
     }
 
@@ -107,6 +113,8 @@ class ExamsController extends Controller
         })->sum();
         $marks = $vocabMarks + $paragraphMarks;
         session(['student-' . $student->id . '-reading'=> $marks]);
+        $expiresAt = Carbon::now()->addHours(2);
+        Cache::put('student-' . $student->id . '-reading',$marks,$expiresAt);
         return redirect()->action("ExamsController@showListeningExam");
     }
 
@@ -139,8 +147,11 @@ class ExamsController extends Controller
     {
         $student = session()->get('student');
         Cache::forget('student-is-online-' . $student->id);
+        Cache::forget('student-' . $student->id . '-grammar');
+        Cache::forget('student-' . $student->id . '-reading');
         session()->forget([ 'student-' . $student->id . '-grammar','student-' . $student->id . '-reading']);
         session()->forget(['student', 'grammarExam', 'readingExam', 'listeningExam']);
+
         auth()->logout();
     }
 

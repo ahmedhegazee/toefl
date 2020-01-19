@@ -8,10 +8,8 @@
                     <div class="card-body">
 
                         <div class="row justify-content-between p-2">
-
-                            <a href="<?php echo e(route('vocab.index')); ?>" class="btn btn-primary ">Vocab Questions</a>
-                            <a href="<?php echo e(route('paragraph.index')); ?>" class="btn btn-primary ">Paragraphs</a>
-
+                            <a href="<?php echo e(route('reading.questions.index')); ?>" class="btn btn-primary ">Questions</a>
+                            <a href="<?php echo e(route('reading.exam.index')); ?>" class="btn btn-primary ">Exams </a>
                         </div>
                     </div>
                 </div>

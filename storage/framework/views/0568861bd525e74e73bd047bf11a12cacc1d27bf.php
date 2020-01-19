@@ -12,9 +12,6 @@
             <tr>
                 <th>ID</th>
                 <th>Reservation Date</th>
-                <th>Group Type</th>
-
-
 
 
                 <th>Actions</th>
@@ -23,11 +20,9 @@
                 <tr>
                     <td><?php echo e($exam->id); ?></td>
                     <td><?php echo e($exam->reservation->start); ?></td>
-                    <td><?php echo e($exam->groupType->type); ?></td>
-
-
 
                     <td>
+                        <a href="<?php echo e(route('listening.live.exam.start',['exam'=>$exam])); ?>" class="btn btn-primary">Live Exam</a>
                         <a href="<?php echo e(route('listening.exam.show',['exam'=>$exam])); ?>" class="btn btn-primary">Show</a>
                         <a href="<?php echo e(route('listening.exam.edit',['exam'=>$exam])); ?>" class="btn btn-success">Edit</a>
                         <form style="display: inline;" method="post" action="<?php echo e(route('listening.exam.destroy',['exam'=>$exam])); ?>">
@@ -43,4 +38,4 @@
     </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/ahmedhegazy/Desktop/toefl/toeflsystem/resources/views/listening/exams/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/ahmedhegazy/Desktop/toefl/toeflsystem/resources/views/listening/exams/questions.blade.php ENDPATH**/ ?>

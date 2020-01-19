@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\StudentMiddlewares;
 
 use App\Student;
 use Closure;
@@ -10,12 +10,11 @@ class checkStudent
 {
     public function isVerified()
     {
-
-        return  auth()->user()->getStudent()->verified=='Verified';
+        return  auth()->user()->getStudent()->isVerified();
     }
     public function CanEnterExam()
     {
-        return  Cache::has('group-can-enter-exam-'.auth()->user()->getStudent()->group->id);
+        return  auth()->user()->getStudent()->CanEnterExam();
 
 //            auth()->user()->getStudent()->enterexam==1;
     }
@@ -28,8 +27,7 @@ class checkStudent
      */
     public function handle($request, Closure $next)
     {
-
-
+//dd('hello');
         if(!$this->isVerified()){
             auth()->logout();
             return redirect(route('error'))->with('error','You Are Not Verified');

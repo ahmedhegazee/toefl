@@ -3,7 +3,7 @@
         <h1>Update Grammar Exam</h1>
         <form action="<?php echo e(route('grammar.exam.update',['exam'=>$exam])); ?>" method="post">
             <?php echo method_field('put'); ?>
-            <?php echo $__env->make('grammar.exams.form', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php echo $__env->make('layouts.exams', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
 
             <button type="submit" class="btn btn-primary">

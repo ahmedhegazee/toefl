@@ -13,21 +13,21 @@
 
     </div>
 </div>
-<div class="form-group row">
-    <label for="type" class="col-md-4 col-form-label text-md-right">Group Type</label>
-    <div class="col-md-6">
-        <select id="type" name="type" class="form-control">
-            <option value="" disabled>Select Group Type</option>
-            <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <option value="<?php echo e($type->id); ?>" <?php echo e(isset($exam)&&$exam->groupType->id==$type->id?'selected':''); ?>><?php echo e($type->type); ?></option>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 
-        </select>
 
 
-    </div>
-</div>
+
+
+
+
+
+
+
+
+
+
+
 
 <?php if(session()->has('error')): ?>
 <div class="row alert alert-danger">

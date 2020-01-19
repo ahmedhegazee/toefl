@@ -18,7 +18,7 @@ class Student extends Model
 
     public function user()
     {
-       return User::find($this->uid);
+       return $this->hasOne(User::class,'id','uid');
     }
 
     public function getVerifiedAttribute($option)
@@ -27,7 +27,7 @@ class Student extends Model
     }
     public function getStudyingAttribute($option)
     {
-        return $this->verifiedOptions()[$option];
+        return $this->studyingOptions()[$option];
     }
     public function isOnline()
     {
@@ -37,18 +37,19 @@ class Student extends Model
     {
         return [
 
-            1=>'Ms.c(Master)',
-            2=>'PhD(Doctor)',
-            3=>'Board certified',
+            0=>'Not Verified',
+            1=>'Verified',
         ];
     }
     public function studyingOptions()
     {
         return [
 
-            0=>'Not Verified',
-            1=>'Verified',
+            1=>'Ms.c(Master)',
+            2=>'PhD(Doctor)',
+            3=>'Board certified',
         ];
+
     }
 
     public function reservation()
@@ -79,5 +80,15 @@ class Student extends Model
             'mark'=>$marks,
             'success'=>$marks > $this->required_score,
         ]);
+    }
+    public function isVerified()
+    {
+        return  $this->verified=='Verified';
+    }
+
+    public function CanEnterExam()
+    {
+        return  Cache::has('group-can-enter-exam-'.$this->group->id);
+
     }
 }

@@ -124,6 +124,7 @@
                                 this.message="The students can login now";
                                 this.alert="success";
                                 this.showAlert();
+                                this.enter=true;
                             }).catch(errors => {
 
                         });
@@ -148,6 +149,8 @@
                     axios.post('/students/' + this.group + "/start")
                         .then(response => {
                             this.message="The students can solve the exam";
+                            this.started=true;
+
                             this.alert="success";
                             this.showAlert();
                         }).catch(errors => {
@@ -190,7 +193,7 @@
             checkIfExamEntered(){
                 axios.get('/students/' + this.group + "/entered")
                     .then(response => {
-                        this.enter=response.data;
+                        this.enter=response.data.success;
 
                     }).catch(errors => {
 
@@ -199,7 +202,7 @@
             checkIfExamStarted(){
                 axios.get('/students/' + this.group + "/started")
                     .then(response => {
-                        this.started=response.data;
+                        this.started=response.data.success;
 
                     }).catch(errors => {
 
@@ -208,14 +211,14 @@
             checkIfExamWorking(){
                 axios.get('/students/' + this.group + "/working")
                     .then(response => {
-                       this.working=response.data;
+                       this.working=response.data.success;
                     }).catch(errors => {
                 });
             },
             checkIfGroupHasExams(){
                 axios.get('/group/' + this.group + "/hasExams")
                     .then(response => {
-                       this.hasExams=response.data;
+                       this.hasExams=response.data.success;
                     }).catch(errors => {
                 });
             },

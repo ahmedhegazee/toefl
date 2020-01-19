@@ -13,10 +13,13 @@
                             
 
 
-                            <a href="<?php echo e(route('questions.index')); ?>" class="btn btn-primary ">Questions</a>
+
                             <a href="<?php echo e(route('student.index')); ?>" class="btn btn-primary ">Students</a>
                             <a href="<?php echo e(route('res.index')); ?>" class="btn btn-primary ">Reservations </a>
-                            <a href="<?php echo e(route('exams.index')); ?>" class="btn btn-primary ">Exams </a>
+
+                            <a href="<?php echo e(route('grammar.index')); ?>" class="btn btn-primary ">Grammar Section </a>
+                            <a href="<?php echo e(route('reading.index')); ?>" class="btn btn-primary ">Reading Section </a>
+                            <a href="<?php echo e(route('listening.index')); ?>" class="btn btn-primary ">Listening Section </a>
 
                         </div>
                     </div>

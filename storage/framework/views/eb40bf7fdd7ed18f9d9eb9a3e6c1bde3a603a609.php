@@ -22,31 +22,21 @@
             </div>
         </div>
 
-        </div>
-
         <div class="row">
-            <form action="<?php echo e(route('student.update',['student'=>$student])); ?>" method="post">
-                <?php echo method_field('put'); ?>
-                <div class="form-group row">
-                    <label for="required_score" class="col-md-4 col-form-label text-md-right">Required Score</label>
+            <form action="<?php echo e(route('student.verify',['student'=>$student])); ?>" method="post">
+                <?php echo method_field('patch'); ?>
+                
+                
 
-                    <div class="col-md-6">
-                        <input id="required_score" type="number" class="form-control <?php if ($errors->has('required_score')) :
-if (isset($message)) { $messageCache = $message; }
-$message = $errors->first('required_score'); ?> is-invalid <?php unset($message);
-if (isset($messageCache)) { $message = $messageCache; }
-endif; ?>" name="required_score" value="<?php echo e(old('required_score')); ?>" required  autofocus>
+                
+                
 
-                        <?php if ($errors->has('required_score')) :
-if (isset($message)) { $messageCache = $message; }
-$message = $errors->first('required_score'); ?>
-                        <span class="invalid-feedback" role="alert">
-                                        <strong><?php echo e($message); ?></strong>
-                                    </span>
-                        <?php unset($message);
-if (isset($messageCache)) { $message = $messageCache; }
-endif; ?>
-                    </div>
+                
+                
+                
+                
+                
+                
                 <button type="submit" class="btn btn-primary">
                     Verify Student
                 </button>
@@ -54,7 +44,9 @@ endif; ?>
             </form>
 
         </div>
-    </div>
+        </div>
+
+
 
     <?php $__env->stopSection(); ?>
 

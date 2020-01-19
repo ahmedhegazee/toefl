@@ -57,11 +57,12 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'arabic_name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
-            'phone'=>'required|string|unique:students',
+            'phone'=>'required|string|unique:students|min:11|max:11',
             'personalimage'=>'required|image|max:5120',
             'nidimage'=>'required|image|max:5120',
             'certificateimage'=>'required|image|max:5120',
             'messageimage'=>'required|image|max:5120',
+            'required_score'=>'numbers|min:300|max:700'
         ];
         $messages=[
             'personalimage.required'=>'personal image field is required',
@@ -77,6 +78,7 @@ class RegisterController extends Controller
             'phone.unique'=>'this phone number is token',
             'email.unique'=>'this email is token',
         ];
+
 //        dd($data['name']);
         return Validator::make($data,$rules,$messages );
     }
@@ -125,6 +127,7 @@ class RegisterController extends Controller
             'group_id'=>intval($data['type']),
             'gender'=>intval($data['gender']),
             'studying'=>intval($data['studying']),
+            'required_score'=>intval($data['required_score'])
         ]);
 }
 //    public function getAvailableReservation()
