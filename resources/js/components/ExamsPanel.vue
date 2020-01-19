@@ -124,6 +124,7 @@
                                 this.message="The students can login now";
                                 this.alert="success";
                                 this.showAlert();
+                                this.enter=true;
                             }).catch(errors => {
 
                         });
@@ -148,6 +149,8 @@
                     axios.post('/students/' + this.group + "/start")
                         .then(response => {
                             this.message="The students can solve the exam";
+                            this.started=true;
+
                             this.alert="success";
                             this.showAlert();
                         }).catch(errors => {

@@ -10,8 +10,8 @@
                     <div class="card-body">
 
                         <div class="row justify-content-between p-2">
-                            <a href="{{route('reading.questions.index')}}" class="btn btn-primary ">Questions</a>
-                            <a href="{{route('reading.exam.index')}}" class="btn btn-primary ">Exams </a>
+                            <a href="{{route('grammar.question.index')}}" class="btn btn-primary ">Questions</a>
+                            <a href="{{route('grammar.exam.index')}}" class="btn btn-primary ">Exams </a>
                         </div>
                     </div>
                 </div>

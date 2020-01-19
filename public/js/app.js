@@ -2341,10 +2341,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ControlPanel.vue?vue&type=script&lang=js&":
-/*!***********************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ControlPanel.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExamsPanel.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ExamsPanel.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2472,6 +2472,8 @@ __webpack_require__.r(__webpack_exports__);
             _this4.alert = "success";
 
             _this4.showAlert();
+
+            _this4.enter = true;
           })["catch"](function (errors) {});
         } else {
           this.message = "The exam is already opened,so students can login ";
@@ -2494,6 +2496,7 @@ __webpack_require__.r(__webpack_exports__);
       } else if (this.enter && !this.started) {
         axios.post('/students/' + this.group + "/start").then(function (response) {
           _this5.message = "The students can solve the exam";
+          _this5.started = true;
           _this5.alert = "success";
 
           _this5.showAlert();
@@ -2769,6 +2772,530 @@ __webpack_require__.r(__webpack_exports__);
         }
       })["catch"](function (error) {
         this.showAlert("Something happened when updating . Please call Support");
+        console.log(error);
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/StudentsPanel.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/StudentsPanel.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mounted: function mounted() {
+    var _this = this;
+
+    axios.get('/student').then(function (response) {
+      _this.students = response.data; // console.log(response.data);
+    })["catch"](function (errors) {});
+    axios.get('/reservations/available').then(function (response) {
+      _this.reservations = response.data.reservations;
+
+      _this.reservations.unshift({
+        value: null,
+        text: "Select Reservation",
+        disabled: true
+      });
+
+      _this.groupTypes = response.data.groupTypes;
+
+      _this.groupTypes.unshift({
+        value: null,
+        text: "Select Group Type",
+        disabled: true
+      });
+
+      _this.studyingDegrees = response.data.studyingDegrees;
+
+      _this.studyingDegrees.unshift({
+        value: null,
+        text: "Select Studying Degree",
+        disabled: true
+      }); // console.log(response.data);
+
+    })["catch"](function (errors) {});
+  },
+  data: function data() {
+    return {
+      fields: ["id", "Arabic Name", "English Name", "phone", "email", "Studying Degree", "Required Score", "verified", "actions"],
+      reservation: null,
+      groupType: null,
+      groupTypes: [],
+      reservations: [],
+      students: [],
+      dismissSecs: 5,
+      dismissCountDown: 0,
+      message: "",
+      alert: "danger",
+      student: '',
+      englishName: '',
+      arabicName: '',
+      email: '',
+      confirmEmail: '',
+      phone: '',
+      confirmPhone: '',
+      requiredScore: 0,
+      studyingDegree: null,
+      studyingDegrees: [],
+      confirmEmailState: null,
+      confirmPhoneState: null,
+      isUniqueEmail: null,
+      isUniquePhone: null
+    };
+  },
+  computed: {
+    englishNameState: function englishNameState() {
+      if (this.englishName.length == 0) return null;else {
+        if (this.student != null) return this.englishName.length >= 5 && this.englishName.length < 200 && this.englishName != this.student['English Name'];else return this.englishName.length >= 5 && this.englishName.length < 200;
+      }
+    },
+    arabicNameState: function arabicNameState() {
+      if (this.arabicName.length == 0) return null;else {
+        if (this.student != null) return this.arabicName.length >= 5 && this.arabicName.length < 200 && this.arabicName != this.student['Arabic Name'];else return this.arabicName.length >= 5 && this.arabicName.length < 200;
+      }
+    },
+    phoneState: function phoneState() {
+      if (this.phone.length == 0) return null;else return this.phone.length == 11;
+    },
+    emailState: function emailState() {
+      if (this.email.length == 0) return null;else return this.validateEmail(this.email);
+    },
+    requiredScoreState: function requiredScoreState() {
+      if (parseInt(this.requiredScore) == 0) return null;else return parseInt(this.requiredScore) >= 300 && parseInt(this.requiredScore) < 700 && parseInt(this.requiredScore) != parseInt(this.student['Required Score']);
+    }
+  },
+  methods: {
+    validateEmail: function validateEmail(email) {
+      var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    },
+    countDownChanged: function countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+
+      if (this.dismissCountDown === 0) {
+        this.message = "";
+        this.alert = "danger";
+      }
+    },
+    showAlert: function showAlert(message) {
+      var alert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "danger";
+      this.message = message;
+      this.alert = alert;
+      this.dismissCountDown = this.dismissSecs;
+    },
+    showEditInfoDialog: function showEditInfoDialog(student) {
+      this.student = student;
+      this.$refs.infoChanger.show();
+    },
+    showReservationsDialog: function showReservationsDialog(student) {
+      this.student = student;
+      this.$refs.resChanger.show();
+    },
+    verifyStudent: function verifyStudent(student) {
+      window.location.replace('/student/' + student.id);
+    },
+    resetModal: function resetModal() {
+      this.englishName = '';
+      this.arabicName = '';
+      this.phone = '';
+      this.confirmPhone = '';
+      this.email = '';
+      this.confirmEmail = '';
+      this.confirmPhoneState = null;
+      this.confirmEmailState = null;
+      this.isUniqueEmail = null;
+      this.isUniquePhone = null;
+      this.studyingDegree = null;
+      this.groupType = null;
+      this.requiredScore = 0;
+    },
+    resetNewModal: function resetNewModal() {
+      this.resetModal();
+      this.student = null;
+    },
+    resetModalForRes: function resetModalForRes() {
+      this.reservation = null;
+      this.groupType = null;
+    },
+    handleOk: function handleOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault(); // Trigger submit handler
+
+      if (this.emailState) this.checkIsUniqueEmail();
+      if (this.phoneState) this.checkIsUniquePhone();
+      this.handleSubmit();
+    },
+    handleResChangerOk: function handleResChangerOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault();
+      this.handleResSubmit();
+    },
+    handleResSubmit: function handleResSubmit() {
+      var _this2 = this;
+
+      if (!this.reservation) return;
+      if (!this.groupType) return;
+      this.sendResUpdate();
+      this.$nextTick(function () {
+        _this2.$refs.resChanger.hide();
+      });
+    },
+    // handleOkForNewUserModal(bvModalEvt) {
+    //     // Prevent modal from closing
+    //     bvModalEvt.preventDefault()
+    //     // Trigger submit handler
+    //     this.checkIsUniqueEmail();
+    //
+    //     this.handleNewUserSubmit();
+    //
+    //
+    // },
+    handleSubmit: function handleSubmit() {
+      var _this3 = this;
+
+      // Exit when the form isn't valid
+      if (this.arabicName.length > 0) {
+        if (!this.arabicNameState) return;
+      } else if (this.englishName.length > 0) {
+        if (!this.englishNameState) return;
+      } else if (this.email.length > 0) if (!this.emailState) {
+        if (this.email != this.confirmEmail) {
+          this.confirmEmailState = false;
+          return;
+          if (!this.isUniqueEmail) return;
+        }
+      } else if (this.phone.length > 0) if (!this.phoneState) if (this.phone != this.confirmPhone) {
+        this.confirmPhoneState = false;
+        return;
+        if (!this.isUniquePhone) return;
+      } else if (!this.requiredScoreState) return;
+
+      this.sendChange(); // Hide the modal manually
+
+      this.$nextTick(function () {
+        _this3.$refs.infoChanger.hide();
+      });
+    },
+    // handleNewUserSubmit() {
+    //     // Exit when the form isn't valid
+    //     if (
+    //         !this.englishNameState
+    //         && !this.passwordState
+    //         && !this.emailState
+    //         && !this.isUniqueEmail
+    //     ) {
+    //
+    //         return
+    //     }
+    //
+    //     if (this.password != this.confirmPhone) {
+    //         this.confirmPhoneState = false;
+    //         return
+    //     }
+    //     if (this.email != this.confirmEmail) {
+    //         this.confirmEmailState = false;
+    //         return
+    //     }
+    //     this.addNewUser();
+    //     // Hide the modal manually
+    //     this.$nextTick(() => {
+    //         this.$refs.addNewUserModal.hide()
+    //     })
+    //
+    // },
+    sendChange: function sendChange() {
+      var _this4 = this;
+
+      axios.patch('/student/' + this.student.id, {
+        'name': this.englishName,
+        'email': this.email,
+        'phone': this.phone,
+        'arabic_name': this.arabicName,
+        'required_score': this.requiredScore,
+        'studying': this.studyingDegree,
+        'group_type': this.groupType
+      }).then(function (response) {
+        if (response.data.success) {
+          _this4.successAction();
+        } else {
+          _this4.showAlert("Something happened when updating . Please call Support");
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
+      });
+    },
+    successAction: function successAction() {
+      if (this.englishName.length > 0) this.student['English Name'] = this.englishName;
+      if (this.arabicName.length > 0) this.student['Arabic Name'] = this.arabicName;
+      if (this.email.length > 0) this.student.email = this.email;
+      if (this.phone.length > 0) this.student.phone = this.phone;
+      if (this.requiredScore > 0) this.student['Required Score'] = this.requiredScore;
+
+      if (this.studyingDegree != null) {
+        this.student['Studying Degree'] = this.studyingDegrees[this.studyingDegree]['text'];
+      }
+
+      this.showAlert("Successfully Updated", "success");
+    },
+    // addNewUser() {
+    //     axios.post('/students/store', {
+    //         'name': this.name,
+    //         'email': this.email,
+    //         'password': this.password,
+    //     }).then(response => {
+    //         if (response.data.success) {
+    //             this.showAlert("Successfully Updated", "success");
+    //             this.students.push(response.data.student);
+    //         } else {
+    //             this.showAlert("Something happened when updating . Please call Support");
+    //         }
+    //     })
+    //         .catch(function (error) {
+    //             console.log(error);
+    //             this.showAlert("Something happened when updating . Please call Support");
+    //             // console.log(error);
+    //         });
+    // },
+    sendResUpdate: function sendResUpdate() {
+      var _this5 = this;
+
+      axios.patch('/student/' + this.student.id + '/new-reservation', {
+        'res': this.reservation,
+        'type': this.groupType
+      }).then(function (response) {
+        if (response.data.success) {
+          _this5.showAlert("Successfully Updated", "success");
+        } else {
+          _this5.showAlert(response.data.message);
+        }
+
+        _this5.reservation = null;
+      })["catch"](function (error) {
+        console.log(error);
+        this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
+      });
+    },
+    checkIsUniqueEmail: function checkIsUniqueEmail() {
+      var _this6 = this;
+
+      axios.post('/students/unique-email', {
+        'email': this.email
+      }).then(function (response) {
+        _this6.isUniqueEmail = response.data.check;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    checkIsUniquePhone: function checkIsUniquePhone() {
+      var _this7 = this;
+
+      axios.post('/students/unique-phone', {
+        'phone': this.phone
+      }).then(function (response) {
+        _this7.isUniquePhone = response.data.check;
+      })["catch"](function (error) {
         console.log(error);
       });
     }
@@ -3131,7 +3658,7 @@ __webpack_require__.r(__webpack_exports__);
       // Prevent modal from closing
       bvModalEvt.preventDefault(); // Trigger submit handler
 
-      this.checkIsUniqueEmail();
+      if (this.emailState) this.checkIsUniqueEmail();
       this.handleSubmit();
     },
     handleOkForNewUserModal: function handleOkForNewUserModal(bvModalEvt) {
@@ -3156,17 +3683,18 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       // Exit when the form isn't valid
-      if (this.name.length > 0 && !this.nameState) {
-        return;
-      } else if (!this.emailState) {
-        return;
-      } else if (this.email != this.confirmEmail) {
-        this.confirmEmailState = false;
-        return;
-      } else if (!this.passwordState) return;else if (this.password != this.confirmPassword) {
+      if (this.name.length > 0) {
+        if (!this.nameState) return;
+      } else if (this.email.length > 0) if (!this.emailState) {
+        if (this.email != this.confirmEmail) {
+          this.confirmEmailState = false;
+          return;
+          if (!this.isUniqueEmail) return;
+        }
+      } else if (this.password.length > 0) if (!this.passwordState) if (this.password != this.confirmPassword) {
         this.confirmPassState = false;
         return;
-      } else if (!this.isUniqueEmail) return;
+      }
 
       this.sendChange(); // Hide the modal manually
 
@@ -71145,10 +71673,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ControlPanel.vue?vue&type=template&id=314d61dc&":
-/*!***************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ControlPanel.vue?vue&type=template&id=314d61dc& ***!
-  \***************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExamsPanel.vue?vue&type=template&id=bd5f3a4a&":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ExamsPanel.vue?vue&type=template&id=bd5f3a4a& ***!
+  \*************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -71604,6 +72132,523 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/StudentsPanel.vue?vue&type=template&id=6ab6a8f1&":
+/*!****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/StudentsPanel.vue?vue&type=template&id=6ab6a8f1& ***!
+  \****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-alert",
+        {
+          attrs: {
+            show: _vm.dismissCountDown,
+            dismissible: "",
+            fade: "",
+            "sticky-header": true,
+            variant: _vm.alert
+          },
+          on: { "dismiss-count-down": _vm.countDownChanged }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+      ),
+      _vm._v(" "),
+      _c("h1", [_vm._v("Students")]),
+      _c("br"),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          striped: "",
+          fields: _vm.fields,
+          hover: "",
+          items: _vm.students
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(actions)",
+            fn: function(row) {
+              return [
+                row.item.verified != "Verified"
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary mr-1 mb-1",
+                        on: {
+                          click: function($event) {
+                            return _vm.verifyStudent(row.item)
+                          }
+                        }
+                      },
+                      [_vm._v("Verify\n            ")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary mr-1 mb-1",
+                    on: {
+                      click: function($event) {
+                        return _vm.showEditInfoDialog(row.item)
+                      }
+                    }
+                  },
+                  [_vm._v("Edit Info")]
+                ),
+                _vm._v(" "),
+                !row.item.failed
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary mr-1 mb-1",
+                        on: {
+                          click: function($event) {
+                            return _vm.showReservationsDialog(row.item)
+                          }
+                        }
+                      },
+                      [_vm._v("New Reservation\n            ")]
+                    )
+                  : _vm._e()
+              ]
+            }
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "infoChanger",
+          attrs: {
+            id: "modal-prevent-closing",
+            title: "Change User Information"
+          },
+          on: { shown: _vm.resetModal, ok: _vm.handleOk }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              attrs: { autocomplete: "off" },
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  return _vm.handleSubmit($event)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.englishNameState,
+                    label: "English Name",
+                    "label-for": "english-name-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "english-name-input",
+                      autocomplete: "off",
+                      state: _vm.englishNameState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.englishName,
+                      callback: function($$v) {
+                        _vm.englishName = $$v
+                      },
+                      expression: "englishName"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.englishNameState } },
+                    [
+                      _vm._v(
+                        "\n                    The english name length must be between 5 and 200 characters.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.englishNameState,
+                    label: "Arabic Name",
+                    "label-for": "arabic-name-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "arabic-name-input",
+                      autocomplete: "off",
+                      state: _vm.arabicNameState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.arabicName,
+                      callback: function($$v) {
+                        _vm.arabicName = $$v
+                      },
+                      expression: "arabicName"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.arabicNameState } },
+                    [
+                      _vm._v(
+                        "\n                    The arabic name length must be between 5 and 200 characters.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: { label: "Student Email", "label-for": "email-input" }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "email-input",
+                      type: "email",
+                      state: _vm.emailState,
+                      autocomplete: "off",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.email,
+                      callback: function($$v) {
+                        _vm.email = $$v
+                      },
+                      expression: "email"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.emailState } },
+                    [
+                      _vm._v(
+                        "\n                    Write correct email please.\n                "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    [
+                      _c(
+                        "b-form-invalid-feedback",
+                        { attrs: { state: _vm.isUniqueEmail } },
+                        [
+                          _vm._v(
+                            "\n                        Write another email please.This email is token\n                    "
+                          )
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.confirmEmailState,
+                    label: "Confirm Email",
+                    "label-for": "email-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "confirm-email-input",
+                      type: "email",
+                      autocomplete: "false",
+                      state: _vm.confirmEmailState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.confirmEmail,
+                      callback: function($$v) {
+                        _vm.confirmEmail = $$v
+                      },
+                      expression: "confirmEmail"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.confirmEmailState } },
+                    [
+                      _vm._v(
+                        "\n                    Confirm your email correctly.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.phoneState,
+                    label: "User Phone",
+                    "label-for": "phone-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "phone-input",
+                      type: "tel",
+                      state: _vm.phoneState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.phone,
+                      callback: function($$v) {
+                        _vm.phone = $$v
+                      },
+                      expression: "phone"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.phoneState } },
+                    [
+                      _vm._v(
+                        "\n                    Write correct phone number.\n                "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    [
+                      _c(
+                        "b-form-invalid-feedback",
+                        { attrs: { state: _vm.isUniquePhone } },
+                        [
+                          _vm._v(
+                            "\n                        Write another phone number please.This phone number is token\n                    "
+                          )
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.confirmPhoneState,
+                    label: "Confirm Phone",
+                    "label-for": "confirm-phone-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "confirm-phone-input",
+                      type: "tel",
+                      state: _vm.confirmPhoneState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.confirmPhone,
+                      callback: function($$v) {
+                        _vm.confirmPhone = $$v
+                      },
+                      expression: "confirmPhone"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.confirmPhoneState } },
+                    [
+                      _vm._v(
+                        "\n                    Confirm your phone correctly.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.requiredScoreState,
+                    label: "Required Score",
+                    "label-for": "required-score-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "required-score-input",
+                      type: "number",
+                      min: "300",
+                      max: "700",
+                      state: _vm.requiredScoreState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.requiredScore,
+                      callback: function($$v) {
+                        _vm.requiredScore = $$v
+                      },
+                      expression: "requiredScore"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.requiredScoreState } },
+                    [
+                      _vm._v(
+                        "\n                    Write correct Score.\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("b-form-select", {
+                staticClass: "mb-2",
+                attrs: { options: _vm.studyingDegrees },
+                model: {
+                  value: _vm.studyingDegree,
+                  callback: function($$v) {
+                    _vm.studyingDegree = $$v
+                  },
+                  expression: "studyingDegree"
+                }
+              }),
+              _vm._v(" "),
+              _c("b-form-select", {
+                attrs: { options: _vm.groupTypes },
+                model: {
+                  value: _vm.groupType,
+                  callback: function($$v) {
+                    _vm.groupType = $$v
+                  },
+                  expression: "groupType"
+                }
+              })
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "resChanger",
+          attrs: {
+            id: "modal-prevent-closing",
+            title: "Change Student Reservation"
+          },
+          on: { shown: _vm.resetModalForRes, ok: _vm.handleResChangerOk }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              attrs: { autocomplete: "off" },
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  return _vm.handleResSubmit($event)
+                }
+              }
+            },
+            [
+              _c("b-form-select", {
+                staticClass: "mb-2",
+                attrs: { options: _vm.reservations },
+                model: {
+                  value: _vm.reservation,
+                  callback: function($$v) {
+                    _vm.reservation = $$v
+                  },
+                  expression: "reservation"
+                }
+              }),
+              _vm._v(" "),
+              _c("b-form-select", {
+                attrs: { options: _vm.groupTypes },
+                model: {
+                  value: _vm.groupType,
+                  callback: function($$v) {
+                    _vm.groupType = $$v
+                  },
+                  expression: "groupType"
+                }
+              })
+            ],
+            1
+          )
+        ]
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UsersPanel.vue?vue&type=template&id=1ddbef87&":
 /*!*************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UsersPanel.vue?vue&type=template&id=1ddbef87& ***!
@@ -71899,7 +72944,7 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-primary",
+                    staticClass: "btn btn-primary mr-2 mb-2",
                     on: {
                       click: function($event) {
                         return _vm.showEditRolesDialog(row.item)
@@ -71912,7 +72957,7 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-primary",
+                    staticClass: "btn btn-primary mr-2 mb-2",
                     on: {
                       click: function($event) {
                         return _vm.showEditInfoDialog(row.item)
@@ -71925,7 +72970,7 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-danger",
+                    staticClass: "btn btn-danger mr-2 mb-2",
                     on: {
                       click: function($event) {
                         return _vm.deleteUser(row.item)
@@ -84394,15 +85439,16 @@ Vue.use(bootstrap_vue__WEBPACK_IMPORTED_MODULE_0__["default"]);
  * Vue components. It will recursively scan this directory for the Vue
  * components and automatically register them with their "basename".
  *
- * Eg. ./components/ControlPanel.vue -> <example-component></example-component>
+ * Eg. ./components/ExamsPanel.vue -> <example-component></example-component>
  */
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('control-panel', __webpack_require__(/*! ./components/ControlPanel.vue */ "./resources/js/components/ControlPanel.vue")["default"]);
+Vue.component('exams-panel', __webpack_require__(/*! ./components/ExamsPanel.vue */ "./resources/js/components/ExamsPanel.vue")["default"]);
 Vue.component('certificate-panel', __webpack_require__(/*! ./components/CertificatePanel.vue */ "./resources/js/components/CertificatePanel.vue")["default"]);
 Vue.component('marks-panel', __webpack_require__(/*! ./components/MarksPanel.vue */ "./resources/js/components/MarksPanel.vue")["default"]);
 Vue.component('users-panel', __webpack_require__(/*! ./components/UsersPanel.vue */ "./resources/js/components/UsersPanel.vue")["default"]);
+Vue.component('students-panel', __webpack_require__(/*! ./components/StudentsPanel.vue */ "./resources/js/components/StudentsPanel.vue")["default"]);
 Vue.component('configs-panel', __webpack_require__(/*! ./components/ConfigsPanel.vue */ "./resources/js/components/ConfigsPanel.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -84599,17 +85645,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/ControlPanel.vue":
-/*!**************************************************!*\
-  !*** ./resources/js/components/ControlPanel.vue ***!
-  \**************************************************/
+/***/ "./resources/js/components/ExamsPanel.vue":
+/*!************************************************!*\
+  !*** ./resources/js/components/ExamsPanel.vue ***!
+  \************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ControlPanel_vue_vue_type_template_id_314d61dc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ControlPanel.vue?vue&type=template&id=314d61dc& */ "./resources/js/components/ControlPanel.vue?vue&type=template&id=314d61dc&");
-/* harmony import */ var _ControlPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ControlPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/ControlPanel.vue?vue&type=script&lang=js&");
+/* harmony import */ var _ExamsPanel_vue_vue_type_template_id_bd5f3a4a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ExamsPanel.vue?vue&type=template&id=bd5f3a4a& */ "./resources/js/components/ExamsPanel.vue?vue&type=template&id=bd5f3a4a&");
+/* harmony import */ var _ExamsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ExamsPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/ExamsPanel.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -84619,9 +85665,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _ControlPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ControlPanel_vue_vue_type_template_id_314d61dc___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ControlPanel_vue_vue_type_template_id_314d61dc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _ExamsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ExamsPanel_vue_vue_type_template_id_bd5f3a4a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ExamsPanel_vue_vue_type_template_id_bd5f3a4a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -84631,38 +85677,38 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/ControlPanel.vue"
+component.options.__file = "resources/js/components/ExamsPanel.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/ControlPanel.vue?vue&type=script&lang=js&":
-/*!***************************************************************************!*\
-  !*** ./resources/js/components/ControlPanel.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************/
+/***/ "./resources/js/components/ExamsPanel.vue?vue&type=script&lang=js&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/ExamsPanel.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ControlPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ControlPanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ControlPanel.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ControlPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ExamsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ExamsPanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExamsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ExamsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/ControlPanel.vue?vue&type=template&id=314d61dc&":
-/*!*********************************************************************************!*\
-  !*** ./resources/js/components/ControlPanel.vue?vue&type=template&id=314d61dc& ***!
-  \*********************************************************************************/
+/***/ "./resources/js/components/ExamsPanel.vue?vue&type=template&id=bd5f3a4a&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/ExamsPanel.vue?vue&type=template&id=bd5f3a4a& ***!
+  \*******************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ControlPanel_vue_vue_type_template_id_314d61dc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ControlPanel.vue?vue&type=template&id=314d61dc& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ControlPanel.vue?vue&type=template&id=314d61dc&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ControlPanel_vue_vue_type_template_id_314d61dc___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExamsPanel_vue_vue_type_template_id_bd5f3a4a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ExamsPanel.vue?vue&type=template&id=bd5f3a4a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExamsPanel.vue?vue&type=template&id=bd5f3a4a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExamsPanel_vue_vue_type_template_id_bd5f3a4a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ControlPanel_vue_vue_type_template_id_314d61dc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExamsPanel_vue_vue_type_template_id_bd5f3a4a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -84732,6 +85778,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MarksPanel_vue_vue_type_template_id_c9089fee___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MarksPanel_vue_vue_type_template_id_c9089fee___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/StudentsPanel.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/components/StudentsPanel.vue ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _StudentsPanel_vue_vue_type_template_id_6ab6a8f1___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./StudentsPanel.vue?vue&type=template&id=6ab6a8f1& */ "./resources/js/components/StudentsPanel.vue?vue&type=template&id=6ab6a8f1&");
+/* harmony import */ var _StudentsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./StudentsPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/StudentsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _StudentsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _StudentsPanel_vue_vue_type_template_id_6ab6a8f1___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _StudentsPanel_vue_vue_type_template_id_6ab6a8f1___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/StudentsPanel.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/StudentsPanel.vue?vue&type=script&lang=js&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/StudentsPanel.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_StudentsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./StudentsPanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/StudentsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_StudentsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/StudentsPanel.vue?vue&type=template&id=6ab6a8f1&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/StudentsPanel.vue?vue&type=template&id=6ab6a8f1& ***!
+  \**********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_StudentsPanel_vue_vue_type_template_id_6ab6a8f1___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./StudentsPanel.vue?vue&type=template&id=6ab6a8f1& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/StudentsPanel.vue?vue&type=template&id=6ab6a8f1&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_StudentsPanel_vue_vue_type_template_id_6ab6a8f1___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_StudentsPanel_vue_vue_type_template_id_6ab6a8f1___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\AdminMiddleware;
 
 use Closure;
 
@@ -13,14 +13,11 @@ class admin
      * @param  \Closure  $next
      * @return mixed
      */
-    public function isAdmin()
-    {
-        return auth()->user()->roles->contains(1) ;
-    }
+
     public function handle($request, Closure $next)
     {
 
-        if($this->isAdmin())
+        if(auth()->user()->isAdmin())
         return $next($request);
         else{
             auth()->logout();

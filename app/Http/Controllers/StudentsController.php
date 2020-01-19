@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 
+use App\Reservation;
 use App\Student;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class StudentsController extends Controller
@@ -20,12 +22,27 @@ class StudentsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        $students= Student::paginate(15);
-        return view('students.index',compact('students'));
+//        $students= Student::paginate(15);
+//        return view('students.index',compact('students'));
+   $students=Student::all()->map(function($student){
+      return[
+         'id'=> $student->id,
+          'Arabic Name'=>$student->arabic_name,
+          'English Name'=>$student->user->name,
+          'phone'=>$student->phone,
+          'email'=>$student->user->email,
+          'verified'=>$student->verified,
+          'Studying Degree'=>$student->studying,
+          'Required Score'=>$student->required_score,
+          'Actions'=>'',
+          'failed'=>$student->results->last()->success?true:false,
+      ] ;
+   });
+   return response()->json($students);
     }
 
 
@@ -71,19 +88,102 @@ class StudentsController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Student  $student
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function update(Request $request, Student $student)
     {
-        Validator::make($request->all(),[
-            'required_score'=>'numbers|min:300'
-        ]);
 
-            $student->update([
-                'required_score'=>intval($request['required_score']),
-                'verified'=>1
+        $checkEmail = true;
+        $checkEnglishName = true;
+        $checkArabicName = true;
+        $checkRequiredScore = true;
+        $checkStudyingDegree = true;
+        $checkPhone = true;
+        $checkGroupType = true;
+
+
+        if (strlen($request->name) > 0)
+            $checkEnglishName = $student->user->update([
+                'name' => $request->name,
             ]);
-            return redirect(route('student.index'));
+        if (strlen($request->arabic_name) > 0)
+            $checkArabicName = $student->update([
+                'arabic_name' => $request->arabic_name,
+            ]);
+
+        if (strlen($request->email) > 0)
+            $checkEmail = $student->user->update([
+                'email' => $request->email,
+            ]);
+        if ($request->required_score > 0)
+            $checkRequiredScore = $student->update([
+                'required_score' => $request->required_score,
+            ]);
+        if ($request->studying > 0)
+            $checkStudyingDegree = $student->update([
+                'studying' => $request->studying,
+            ]);
+        if ($request->group_type > 0){
+            $type=$request->group_type;
+            $res=$student->reservation;
+            $newGroup=$res->groups()->where('group_type_id',$type)->get()->last();
+            if($newGroup->id!=$student->group->id)
+            $checkGroupType = $student->update([
+                'group_id' => $newGroup->id,
+            ]);
+            else
+                $checkGroupType=false;
+        }
+        if (strlen($request->phone)>0){
+            $checkPhone = $student->user->update([
+                'password' => Hash::make($request->phone),
+            ]);
+            $student->update([
+                'phone' => $request->phone,
+            ]);
+        }
+
+
+        $check = $checkEmail && $checkEnglishName && $checkArabicName
+                &&$checkRequiredScore&&$checkStudyingDegree&&$checkPhone
+                &&$checkGroupType;
+        return response()->json(['success' => $check]);
+
+    }
+
+    public function moveStudentToNewReservation(Request $request,Student $student)
+    {
+        if($request->has('res'))
+        {
+            $type=intval($request->get('type'));
+            $oldGroup=$student->group;
+            $oldReservation=$student->reservation;
+            $res=intval($request->get('res'));
+            $newReservation=Reservation::findOrFail($res);
+            $newGroup=$newReservation->groups()->where('group_type_id',$type)->get()->last();
+            if(
+                $oldGroup->id!=$newGroup->id
+                &&$oldReservation->id!=$newReservation->id
+            ){
+                $student->update([
+                    'res_id'=>$newReservation->id,
+                    'group_id'=>$newGroup->id,
+                ]);
+                return response()->json(['success'=>true]);
+            }else{
+                return response()->json(['success'=>false,'message'=>'choose another resrvation and group type']);
+            }
+
+        }
+
+}
+    public function verifyStudent(Student $student)
+    {
+        $student->update([
+//                'required_score'=>intval($request['required_score']),
+            'verified'=>1
+        ]);
+        return view('cpanel.studentspanel');
     }
 
     /**

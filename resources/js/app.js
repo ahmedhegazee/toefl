@@ -13,16 +13,17 @@ Vue.use(BootstrapVue);
  * Vue components. It will recursively scan this directory for the Vue
  * components and automatically register them with their "basename".
  *
- * Eg. ./components/ControlPanel.vue -> <example-component></example-component>
+ * Eg. ./components/ExamsPanel.vue -> <example-component></example-component>
  */
 
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('control-panel', require('./components/ControlPanel.vue').default);
+Vue.component('exams-panel', require('./components/ExamsPanel.vue').default);
 Vue.component('certificate-panel', require('./components/CertificatePanel.vue').default);
 Vue.component('marks-panel', require('./components/MarksPanel.vue').default);
 Vue.component('users-panel', require('./components/UsersPanel.vue').default);
+Vue.component('students-panel', require('./components/StudentsPanel.vue').default);
 Vue.component('configs-panel', require('./components/ConfigsPanel.vue').default);
 
 /**

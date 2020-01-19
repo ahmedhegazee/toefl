@@ -1,9 +1,10 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
 
-        <control-panel></control-panel>
+        <exams-panel></exams-panel>
+    </div>
 
-
+    
 
 
 

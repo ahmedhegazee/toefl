@@ -45,18 +45,6 @@ protected $guarded=[];
     {
         return $this->role->id;
 }
-    public function isAdmin()
-    {
-        //dd($this->role()->get());
-        foreach ($this->role()->get() as $role) {
-            if ($role->id == 1) {
-                return true;
-            }
-        }
-
-        return false;
-       //return $this->role();
-    }
 
     public function getStudent()
     {
@@ -67,4 +55,46 @@ protected $guarded=[];
     {
         return $this->belongsToMany(Role::class)->withTimestamps();
     }
+
+    public function isAdmin()
+    {
+        return $this->roles->contains(1) ;
+    }
+    public function isSuperAdmin()
+    {
+        return $this->roles->contains(11) ;
+    }
+    public function canEditMarks()
+    {
+        return $this->roles->contains(7) ;
+    }
+    public function canManageExamsPanel()
+    {
+        return $this->roles->contains(3) ;
+    }
+    public function canManageStudentsPanel()
+    {
+        return $this->roles->contains(9) ;
+    }
+    public function canManageReservationsPanel()
+    {
+        return $this->roles->contains(10) ;
+    }
+    public function canManageGrammarSection()
+    {
+        return $this->roles->contains(5) ;
+    }
+    public function canManageReadingSection()
+    {
+        return $this->roles->contains(4) ;
+    }
+    public function canManageListeningSection()
+    {
+        return $this->roles->contains(6) ;
+    }
+    public function canPrintCertificates()
+    {
+        return $this->roles->contains(8) ;
+    }
+
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\StudentMiddlewares;
 
 use App\Attempt;
 use Closure;

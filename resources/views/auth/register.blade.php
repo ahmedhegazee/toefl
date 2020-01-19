@@ -65,6 +65,19 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="required_score" class="col-md-4 col-form-label text-md-right">{{ __('Required Score') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="required_score" type="number" min="300" max="700" class="form-control @error('required_score') is-invalid @enderror" name="required_score" value="{{ old('required_score') }}"  required >
+
+                                @error('required_score')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="personalimage" class="col-md-4 col-form-label text-md-right">{{ __('Personal Image') }}</label>
 
                             <div class="col-md-6">

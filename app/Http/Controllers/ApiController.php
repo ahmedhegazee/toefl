@@ -6,6 +6,7 @@ use App\Attempt;
 use App\Config;
 use App\Grammar\GrammarExam;
 use App\Group;
+use App\GroupType;
 use App\Listening\ListeningExam;
 use App\Reading\ReadingExam;
 use App\Reservation;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\View;
+use function foo\func;
 
 class ApiController extends Controller
 {
@@ -98,33 +100,45 @@ class ApiController extends Controller
 
     public function endExam(Group $group)
     {
-        if (Cache::has('group-can-enter-exam-' . $group->id)) {
+        if (
+            Cache::has('group-can-enter-exam-' . $group->id)
+            && Cache::has('group-can-start-exam-' . $group->id)
+        ) {
+
             $group->students()->each(function ($student) {
                 $attempt = Attempt::where('student_id', $student->id)
                     ->where('reservation_id', $student->reservation->id)
                     ->where('group_id', $student->group->id)->get();
-//                if ($attempt->count() == 0) {
-//                    $student->attempts()->create([
-//                        'reservation_id'=>$student->reservation->id,
-//                        'group_id'=>$student->group->id,
-//                    ]);
-//                }
-                if ($attempt->count() != 0)
-                    if (is_null($attempt->first->result)) {
-                        $grammar = 0;
-                        $reading = 0;
-                        if (session()->has('student-' . $student->id . '-grammar'))
-                            $grammar = session()->get('student-' . $student->id . '-grammar');
-                        elseif (session()->has('student-' . $student->id . '-reading'))
-                            $reading = session()->get('student-' . $student->id . '-reading');
+                $grammar = 0;
+                $reading = 0;
+                if ($attempt->count() == 0) {
+                    $student->attempts()->create([
+                        'reservation_id' => $student->reservation->id,
+                        'group_id' => $student->group->id,
+                    ]);
+                    //-1 means the student didn't attend.
+                    $grammar = -1;
+                }
+                if (is_null($attempt->first->result)) {
 
-                        $student->sumAllMarks($grammar, $reading, 0);
+                    if (Cache::has('student-' . $student->id . '-grammar')) {
+                        $grammar = Cache::get('student-' . $student->id . '-grammar');
+                        Cache::forget('student-' . $student->id . '-grammar');
+                    } elseif (Cache::has('student-' . $student->id . '-reading')) {
+                        $reading = Cache::get('student-' . $student->id . '-reading');
+                        Cache::forget('student-' . $student->id . '-reading');
                     }
+
+
+                    $student->sumAllMarks($grammar, $reading, 0);
+
+                }
 
             });
         }
         Cache::forget('group-can-start-exam-' . $group->id);
         Cache::forget('group-can-enter-exam-' . $group->id);
+
 
     }
 
@@ -134,9 +148,9 @@ class ApiController extends Controller
             ->map(function ($student) {
                 return [
                     "ID" => $student->id,
-                    "English Name" => $student->user()->name,
+                    "English Name" => $student->user->name,
                     "Arabic Name" => $student->arabic_name,
-                    "Email" => $student->user()->email,
+                    "Email" => $student->user->email,
                     "Phone Number" => $student->phone,
                     "Verified" => $student->verified,
                     "Active" => $student->isOnline(),
@@ -189,21 +203,21 @@ class ApiController extends Controller
     public function isExamEntered(Group $group)
     {
         $check = Cache::has('group-can-enter-exam-' . $group->id);
-        return response()->json(['success'=>$check]);
+        return response()->json(['success' => $check]);
 
     }
 
     public function isExamStarted(Group $group)
     {
-        $check =Cache::has('group-can-start-exam-' . $group->id);
-        return response()->json(['success'=>$check]);
+        $check = Cache::has('group-can-start-exam-' . $group->id);
+        return response()->json(['success' => $check]);
 
     }
 
     public function isExamWorking(Group $group)
     {
-        $check = ['success'=>(Cache::has('group-can-enter-exam-' . $group->id) && Cache::has('group-can-start-exam-' . $group->id))];
-        return response()->json(['success'=>$check]);
+        $check = ['success' => (Cache::has('group-can-enter-exam-' . $group->id) && Cache::has('group-can-start-exam-' . $group->id))];
+        return response()->json($check);
     }
 
     public function isGroupHasExams(Group $group)
@@ -218,13 +232,13 @@ class ApiController extends Controller
 //        $listeningExam = ListeningExam::where('reservation_id', $reservation)
 //                ->where('group_type_id', $groupType)->get()->count() > 0;
         $grammarExam = GrammarExam::where('reservation_id', $reservation)
-               ->get()->count() > 0;
+                ->get()->count() > 0;
         $readingExam = ReadingExam::where('reservation_id', $reservation)
                 ->get()->count() > 0;
         $listeningExam = ListeningExam::where('reservation_id', $reservation)
-               ->get()->count() > 0;
+                ->get()->count() > 0;
         $check = $grammarExam && $readingExam && $listeningExam;
-        return response()->json(['success'=>$check]);
+        return response()->json(['success' => $check]);
     }
 
     public function getRoles($roles)
@@ -254,7 +268,7 @@ class ApiController extends Controller
         $roles = Role::all()
             ->map(function ($role) {
 
-                if ($role->id == 1 ||$role->id == 2)
+                if ($role->id == 1 || $role->id == 2)
                     return [
                         'value' => $role->id,
                         'text' => $role->title,
@@ -320,10 +334,9 @@ class ApiController extends Controller
         return response()->json(['success' => $check]);
     }
 
-    public function updateUser(Request $request,User $user)
+    public function updateUser(Request $request, User $user)
     {
 //        dd($request);
-        $user = User::findOrFail($request->id);;
         $checkEmail = true;
         $checkName = true;
         $checkPassword = true;
@@ -345,7 +358,7 @@ class ApiController extends Controller
         return response()->json(['success' => $check]);
     }
 
-    public function updateUserRoles(Request $request,User $user)
+    public function updateUserRoles(Request $request, User $user)
     {
 //        dd($request);
         $user->roles()->sync($request->roles);
@@ -368,7 +381,7 @@ class ApiController extends Controller
                 'roles' => $this->getRoles($user->roles->toArray()),
                 'selectedRoles' => $user->roles->pluck('id')->toArray(),
                 'Actions' => '',
-                ],
+            ],
             'success' => true
         ];
         return response()->json($data);
@@ -376,16 +389,17 @@ class ApiController extends Controller
 
     public function checkEmailIsUnique(Request $request)
     {
-        if(strlen($request->email)==0)
-            $check=null;
+        if (strlen($request->email) == 0)
+            $check = null;
         else
-        $check =User::where('email',$request->email)->count()==0;
-        return response()->json(['check'=>$check]);
+            $check = User::where('email', $request->email)->count() == 0;
+        return response()->json(['check' => $check]);
     }
+
     public function checkPhoneIsUnique(Request $request)
     {
-        $check= Student::where('phone',$request->email)->count()==0;
-        return response()->json(['check'=>$check]);
+        $check = Student::where('phone', $request->phone)->count() == 0;
+        return response()->json(['check' => $check]);
     }
 
     public function destroyUser(User $user)
@@ -393,5 +407,44 @@ class ApiController extends Controller
         $user->roles()->sync([]);
         $user->delete();
 
+    }
+
+    public function getAvailableReservations()
+    {
+        $reservations = Reservation::where('start', '<=', now()->toDateString())
+            ->where('end', '>=', now()->toDateString())
+            ->where('done', '!=', 1)->get();
+        $reservations = $reservations->map(function ($reservation) {
+            return [
+                'text' => $reservation->start . ' ' . $reservation->done,
+                'value' => $reservation->id,
+            ];
+        })->values()->all();
+        $types = GroupType::all()->map(function ($type) {
+            return [
+                'text' => $type->type,
+                'value' => $type->id,
+            ];
+        });
+        $studyingDegrees = [
+            [
+                'text' => 'Ms.c (Master)',
+                'value'=>1,
+            ],
+            [
+                'text' => 'PhD (Doctor)',
+                'value'=>2,
+            ],
+            [
+                'text' => 'Board certified',
+                'value'=>3,
+            ],
+        ];
+        $data = [
+            'reservations' => $reservations,
+            'groupTypes' => $types,
+            'studyingDegrees' => $studyingDegrees,
+        ];
+        return response()->json($data);
     }
 }
