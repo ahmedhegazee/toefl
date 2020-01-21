@@ -271,15 +271,16 @@
                         return this.arabicName.length >= 5 && this.arabicName.length < 200 && this.arabicName != this.student['Arabic Name'];
                     else
                         return this.arabicName.length >= 5 && this.arabicName.length < 200;
-
                 }
             },
 
             phoneState: function () {
                 if (this.phone.length == 0)
                     return null;
-                else
-                    return this.phone.length == 11;
+                else{
+                    return this.phone.length == 11&&this.validatePhone(this.phone);
+                }
+
             },
             emailState: function () {
                 if (this.email.length == 0)
@@ -298,6 +299,10 @@
             validateEmail(email) {
                 var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 return re.test(email);
+            },
+            validatePhone(phone) {
+                var re = /^(010|011|012|015){1}[0-9]{8}$/;
+                return re.test(phone);
             },
             countDownChanged(dismissCountDown) {
                 this.dismissCountDown = dismissCountDown;

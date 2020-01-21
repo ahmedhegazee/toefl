@@ -25,7 +25,10 @@ Vue.component('marks-panel', require('./components/MarksPanel.vue').default);
 Vue.component('users-panel', require('./components/UsersPanel.vue').default);
 Vue.component('students-panel', require('./components/StudentsPanel.vue').default);
 Vue.component('configs-panel', require('./components/ConfigsPanel.vue').default);
+Vue.component('reservations-panel', require('./components/ReservationsPanel.vue').default);
+Vue.component('groups-panel', require('./components/GroupsPanel.vue').default);
 Vue.component('display-exams-panel', require('./components/DisplayExamsPanel.vue').default);
+Vue.component('display-students-panel', require('./components/StudentsDisplayPanel.vue').default);
 Vue.component('display-questions-panel', require('./components/DisplayQuestionsPanel.vue').default);
 
 /**

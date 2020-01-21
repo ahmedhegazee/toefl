@@ -95,6 +95,27 @@ endif; ?>
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="required_score" class="col-md-4 col-form-label text-md-right"><?php echo e(__('Required Score')); ?></label>
+
+                            <div class="col-md-6">
+                                <input id="required_score" type="number" min="300" max="700" class="form-control <?php if ($errors->has('required_score')) :
+if (isset($message)) { $messageCache = $message; }
+$message = $errors->first('required_score'); ?> is-invalid <?php unset($message);
+if (isset($messageCache)) { $message = $messageCache; }
+endif; ?>" name="required_score" value="<?php echo e(old('required_score')); ?>"  required >
+
+                                <?php if ($errors->has('required_score')) :
+if (isset($message)) { $messageCache = $message; }
+$message = $errors->first('required_score'); ?>
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong><?php echo e($message); ?></strong>
+                                    </span>
+                                <?php unset($message);
+if (isset($messageCache)) { $message = $messageCache; }
+endif; ?>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="personalimage" class="col-md-4 col-form-label text-md-right"><?php echo e(__('Personal Image')); ?></label>
 
                             <div class="col-md-6">
@@ -185,7 +206,7 @@ endif; ?>
                                     <option value="" disabled>Select how to take exam</option>
 
                                     <?php $__currentLoopData = $groups; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($group->id); ?>" ><?php echo e($group->type->type); ?></option>
+                                        <option value="<?php echo e($group->id); ?>" ><?php echo e($group->type); ?></option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 

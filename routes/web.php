@@ -218,9 +218,11 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::post('/users/store', 'ApiControllers\ApiController@addNewUser');
     });
     Route::group(['middleware' => ['manage-reservations-panel']], function () {
-        Route::resource('/cpanel/res', 'ReservationsController');
+        Route::resource('/cpanel/res', 'ReservationsController')
+            ->only(['show','update','store','index']);;
 
-        Route::resource('/cpanel/res/{re}/group', 'GroupsController');
+        Route::resource('/cpanel/res/{re}/group', 'GroupsController')
+            ->only(['show','update']);
     });
 
 

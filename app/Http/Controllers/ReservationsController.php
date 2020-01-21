@@ -20,19 +20,34 @@ class ReservationsController extends Controller
      */
     public function index()
     {
-        $reservations = Reservation::all();
+        $reservations=$this->getReservations(Reservation::all());
+        $reservations=json_encode($reservations);
         return view('reservation.index', compact('reservations'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function getReservations($reservations)
     {
-        return view('reservation.create');
+         return $reservations->map(function ($res) {
+            return [
+                'id' => $res->id,
+                'start' => $res->start,
+                'Students Count' => $res->students->count(),
+                'Max Students Count' => $res->max_students,
+                'open/close'=>$res->done,
+                'actions'=>'',
+            ];
+        });
+
     }
+//    /**
+//     * Show the form for creating a new resource.
+//     *
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function create()
+//    {
+//        return view('reservation.create');
+//    }
 
     /**
      * Store a newly created resource in storage.
@@ -45,9 +60,11 @@ class ReservationsController extends Controller
         if (!$this->isAvailableOpenedReservation()) {
             $res = Reservation::create($this->validateData());
             $this->generateGroups($res);
-            return redirect()->to(route('res.index'));
+            $reservations=$this->getAllReservations(Reservation::all());
+            $reservations=json_encode($reservations);
+            return response()->json(['success'=>true,'res'=>$reservations]);
         } else
-            return redirect()->back()->with('error', 'You can\'t create another reservation.There is another one is opened');
+            return response()->json(['success'=>false,'message'=>'You can\'t create another reservation.There is another one is opened']);
     }
 
     /**
@@ -58,21 +75,34 @@ class ReservationsController extends Controller
      */
     public function show(Reservation $re)
     {
-        $groups = $re->groups;
+        $groups = $this->getGroups($re->groups);
+        $groups=json_encode($groups);
         return view('reservation.show', compact('groups', 're'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Reservation $resarvation
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Reservation $re)
+    public function getGroups($groups)
     {
-
-        return view('reservation.update', compact('re'));
-    }
+        return $groups->map(function($group){
+            return[
+              'id'=>$group->id,
+              'name'=>$group->name,
+              'Group Type'=>$group->type->type,
+              'Students Count'=>$group->students->count(),
+              'actions'=>''
+            ];
+        });
+}
+//    /**
+//     * Show the form for editing the specified resource.
+//     *
+//     * @param \App\Reservation $resarvation
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function edit(Reservation $re)
+//    {
+//
+//        return view('reservation.update', compact('re'));
+//    }
 
     /**
      * Update the specified resource in storage.
@@ -85,13 +115,12 @@ class ReservationsController extends Controller
     {
 //        dd($request['max_students']);
 
-            if ($re->done ==0) {
-                $re->update($this->validateData());
-                return redirect()->to(route('res.index'));
-            }
-            else
-                return redirect()->back()->with('error', 'You can\'t change number of students after the reservation is closed');
-           }
+        if ($re->done == 0) {
+           $check= $re->update($this->validateData());
+            return response()->json(['success'=>$check]);
+        } else
+            return response()->json(['success'=>false,'message'=>'You can\'t change number of students after the reservation is closed']);
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -139,8 +168,6 @@ class ReservationsController extends Controller
     {
         return Reservation::where('done', 0)->count() > 0;
     }
-
-
 
 
     public function validateData()

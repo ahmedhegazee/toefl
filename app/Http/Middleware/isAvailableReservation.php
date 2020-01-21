@@ -17,8 +17,7 @@ class isAvailableReservation
      */
     public function handle($request, Closure $next)
     {
-       $reservations= Reservation::where('start','<=',now()->toDateString())
-           ->where('done','!=',1)->get();
+       $reservations= Reservation::where('done','!=',1)->get();
        $res= $reservations->first();
       if($res !=null){
 
