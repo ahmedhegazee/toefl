@@ -44,4 +44,5 @@ public function scopeFindQuestions($query)
         return $query->where('grammar_question_type_id',2)->get();
 }
 
+
 }

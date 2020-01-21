@@ -32,4 +32,30 @@ class Audio extends Model
     public function scopeSpeech($query){
         return $query->where('audio_type_id',3);
     }
+
+    public static function getAudios($audios)
+    {
+        return $audios->map(function ($audio){
+            return [
+              'id'=>$audio->id,
+              'title'=>$audio->title,
+              'type'=>$audio->type->type,
+              'questions'=>$audio->questions->count(),
+                'actions'=>'',
+            ];
+        });
+    }
+    public static function getAudiosForChoose($audios)
+    {
+        return $audios->map(function ($audio){
+            return [
+                'check'=>'',
+                'id'=>$audio->id,
+                'title'=>$audio->title,
+                'type'=>$audio->type->type,
+                'questions'=>$audio->questions->count(),
+                'actions'=>'',
+            ];
+        });
+    }
 }

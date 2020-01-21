@@ -13,7 +13,7 @@ class GenerateGrammarExam extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:grammarExam {reservation}  {groupType}';
+    protected $signature = 'generate:grammarExam {reservation}  ';
 
     /**
      * The console command description.
@@ -41,12 +41,13 @@ class GenerateGrammarExam extends Command
     {
         $res=$this->argument('reservation');
 
-        $type=$this->argument('groupType');
-        $count =GrammarExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+//        $type=$this->argument('groupType');
+//        $count =GrammarExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+        $count =GrammarExam::where('reservation_id',$res)->count();
         if($count==0) {
             $exam = GrammarExam::create([
                 'reservation_id' => $res,
-                'group_type_id' => $type,
+//                'group_type_id' => $type,
             ]);
             $fillQuestions = GrammarQuestion::fillQuestions()->random(15)->pluck('id')->toArray();
             $findQuestions = GrammarQuestion::findQuestions()->random(25)->pluck('id')->toArray();

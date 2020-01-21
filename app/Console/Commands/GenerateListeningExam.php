@@ -13,7 +13,7 @@ class GenerateListeningExam extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:listeningExam {reservation}  {groupType}';
+    protected $signature = 'generate:listeningExam {reservation}  ';
 
     /**
      * The console command description.
@@ -41,12 +41,13 @@ class GenerateListeningExam extends Command
     {
         $res=$this->argument('reservation');
 
-        $type=$this->argument('groupType');
-        $count =ListeningExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+//        $type=$this->argument('groupType');
+//        $count =ListeningExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+        $count =ListeningExam::where('reservation_id',$res)->count();
         if($count==0) {
             $exam = ListeningExam::create([
                 'reservation_id' => $res,
-                'group_type_id' => $type,
+//                'group_type_id' => $type,
             ]);
             $shortSpeech = Audio::shortConversation()->get()->random(18)->pluck('id')->toArray();
             $longSpeech = Audio::longConversation()->get()->random(3)->pluck('id')->toArray();

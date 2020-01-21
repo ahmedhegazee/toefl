@@ -25,6 +25,8 @@ Vue.component('marks-panel', require('./components/MarksPanel.vue').default);
 Vue.component('users-panel', require('./components/UsersPanel.vue').default);
 Vue.component('students-panel', require('./components/StudentsPanel.vue').default);
 Vue.component('configs-panel', require('./components/ConfigsPanel.vue').default);
+Vue.component('display-exams-panel', require('./components/DisplayExamsPanel.vue').default);
+Vue.component('display-questions-panel', require('./components/DisplayQuestionsPanel.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

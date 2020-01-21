@@ -34,6 +34,7 @@
         <h1>Students</h1>
         <b-table striped
                  hover
+                 :sticky-header="true"
                  :items="students"
         ></b-table>
 
