@@ -3,7 +3,10 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center"><p id="timer"></p></div>
-
+        @if(!is_null(auth()->user()->getStudent()))
+            <input type="hidden" class="form-control"
+                   id="id" value="{{auth()->user()->getStudent()->id}}">
+        @endif
         <input type="hidden" id="time" value="{{$time}}">
         <form action="{{$route}}" method="post">
         @csrf
@@ -40,6 +43,8 @@
                            <div class="row question  d-none mb-2 col-md-8">
                                    <div class="card " >
                                        <div class="card-header">
+                                           <input type="hidden" class="form-control"
+                                                  name="questions" value="{{$question->id}}">
                                            <h3>{{$question->content}}</h3>
                                        </div>
                                        <div class="card-body">
@@ -99,6 +104,8 @@
                             <div class="row question  d-none mb-2 col-md-8">
                                 <div class="card ">
                                     <div class="card-header">
+                                        <input type="hidden" class="form-control"
+                                               name="questions" value="{{$question->id}}">
                                         <h3>{{$question->content}}</h3>
                                     </div>
                                     <div class="card-body">
@@ -155,6 +162,8 @@
                             <div class="row question  d-none mb-2 col-md-8">
                                 <div class="card ">
                                     <div class="card-header">
+                                        <input type="hidden" class="form-control"
+                                               name="questions" value="{{$question->id}}">
                                         <h3>{{$question->content}}</h3>
                                     </div>
                                     <div class="card-body">
@@ -186,7 +195,7 @@
             <div class="row justify-content-center">
                 <button type="button" onclick="nextQuestion();" id="next" class="btn btn-primary d-none">Next Question
                 </button>
-                <button type="submit" class="btn btn-primary d-none " id="submit">Submit Answers</button>
+                <button class="btn btn-primary d-none " id="submit">Submit Answers</button>
 
             </div>
         </form>

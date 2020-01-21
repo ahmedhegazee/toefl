@@ -47,6 +47,15 @@ function nextQuestion() {
     }
 
     if(paragraph === paragraphs.length){
+        var questions=getQuestions('vocab');
+        var answers=getAnswers(questions,'vocabAnswers');
+        var id=document.getElementById('id');
+        cacheAnswers(answers,id,'vocab');
+
+         questions=getQuestions('pq');
+         answers=getAnswers(questions,'paragraphAnswers');
+        cacheAnswers(answers,id,'paragraph');
+
         document.getElementById('submit').setAttribute('class', 'btn btn-primary d-block');
         document.getElementById('next').setAttribute('class', 'btn btn-primary d-none');
     }
@@ -163,4 +172,33 @@ function setTimer() {
         }
     }, 1000);
 
+}
+function getQuestions(name){
+    let questions=[];
+    var q=document.getElementsByName(name);
+    for(var i=0; i<q.length;i++){
+        questions.push(parseInt(q[i].value));
+    }
+    return questions;
+}
+function getAnswers(questions,name){
+    let answers=[];
+    for (var i=0;i<questions.length;i++){
+        var a=document.getElementsByName(name+'['+questions[i]+']');
+        for(var j=0;j<4;j++){
+            if(a[j].checked)
+                answers.push(parseInt(a[j].value));
+        }
+    }
+    return answers;
+}
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+function cacheAnswers(answers,id=0,name){
+    var json =JSON.stringify(answers);
+    setCookie('student-'+id+"-reading-"+name,json,7);
 }
