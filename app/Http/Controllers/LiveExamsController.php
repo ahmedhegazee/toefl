@@ -15,11 +15,7 @@ use Illuminate\Http\Request;
 
 class LiveExamsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('admin');
-    }
+
 
     public function showGrammarExam(GrammarExam $exam)
     {
@@ -53,10 +49,10 @@ class LiveExamsController extends Controller
         $vocabAnswers = $request->get('vocabAnswers');
         $paragraphAnswers = $request->get('paragraphAnswers');
         $vocabMarks=collect($vocabAnswers)->map(function($answer){
-            return VocabOption::find($answer)->correct();
+            return VocabOption::find($answer)->correct;
         })->sum();
         $paragraphMarks=collect($paragraphAnswers)->map(function($answer){
-            return ParagraphQuestionOption::find($answer)->correct();
+            return ParagraphQuestionOption::find($answer)->correct;
         })->sum();
         $marks = $vocabMarks+$paragraphMarks;
         return "you have ".$marks . ' in this exam';

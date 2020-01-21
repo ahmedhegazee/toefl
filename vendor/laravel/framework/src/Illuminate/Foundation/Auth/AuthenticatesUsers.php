@@ -2,10 +2,8 @@
 
 namespace Illuminate\Foundation\Auth;
 
-use App\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 
 trait AuthenticatesUsers
@@ -158,7 +156,9 @@ trait AuthenticatesUsers
     public function logout(Request $request)
     {
         $this->guard()->logout();
+
         $request->session()->invalidate();
+
         return $this->loggedOut($request) ?: redirect('/');
     }
 

@@ -1922,6 +1922,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CertificatePanel",
   mounted: function mounted() {
@@ -2341,6 +2342,364 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DisplayExamsPanel.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/DisplayExamsPanel.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "DisplayExamsPanel",
+  mounted: function mounted() {
+    // console.log(this.exams);
+    this.jsonData = JSON.parse(this.exams);
+  },
+  props: ['exams', 'liveRoute', 'route', 'isReading'],
+  data: function data() {
+    return {
+      dismissSecs: 3,
+      dismissCountDown: 0,
+      message: "",
+      alert: "danger",
+      jsonData: null,
+      filter: null
+    };
+  },
+  computed: {
+    isReadingExam: function isReadingExam() {
+      return this.isReading == 'true';
+    }
+  },
+  methods: {
+    showLiveExam: function showLiveExam(exam) {
+      window.location.replace(this.liveRoute + '/' + exam.id);
+    },
+    showExam: function showExam(exam) {
+      window.location.replace(this.route + '/' + exam.id);
+    },
+    showParagraphs: function showParagraphs(exam) {
+      window.location.replace(this.route + '/' + exam.id + '/paragraph');
+    },
+    showVocab: function showVocab(exam) {
+      window.location.replace(this.route + '/' + exam.id + '/vocab');
+    },
+    showEditExam: function showEditExam(exam) {
+      window.location.replace(this.route + '/' + exam.id + '/edit');
+    },
+    deleteExam: function deleteExam(exam) {
+      var _this = this;
+
+      this.$bvModal.msgBoxConfirm('Are you sure about deleting this exam ', {
+        title: 'Delete Exam',
+        size: 'sm',
+        buttonSize: 'sm',
+        okVariant: 'danger',
+        okTitle: 'YES',
+        cancelTitle: 'NO',
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+        centered: true
+      }).then(function (value) {
+        if (value == true) {
+          axios["delete"](_this.route + '/' + exam.id).then(function (response) {
+            var index = _this.jsonData.indexOf(exam);
+
+            if (index > -1) {
+              _this.jsonData.splice(index, 1);
+            }
+
+            _this.showAlert('Successfully deleted', 'success');
+          })["catch"](function (error) {
+            return console.log(error);
+          });
+        }
+      })["catch"](function (err) {
+        // An error occurred
+        console.log(err);
+      });
+    },
+    countDownChanged: function countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+
+      if (this.dismissCountDown === 0) {
+        this.message = "";
+        this.alert = "danger";
+      }
+    },
+    showAlert: function showAlert(message) {
+      var alert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "danger";
+      this.message = message;
+      this.alert = alert;
+      this.dismissCountDown = this.dismissSecs;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DisplayQuestionsPanel.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/DisplayQuestionsPanel.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "DisplayQuestionsPanel",
+  mounted: function mounted() {
+    // console.log(this.exams);
+    if (this.canChooseQuestions) this.selected = JSON.parse(this.checked);
+    this.jsonData = JSON.parse(this.exams);
+  },
+  props: ['exams', 'route', 'deleteRoute', 'isParagraph', 'canChoose', 'checked', 'storeRoute', 'isAudio', 'redirectRoute'],
+  data: function data() {
+    return {
+      dismissSecs: 3,
+      dismissCountDown: 0,
+      message: "",
+      alert: "danger",
+      jsonData: null,
+      selected: [],
+      filter: null
+    };
+  },
+  computed: {
+    canChooseQuestions: function canChooseQuestions() {
+      return this.canChoose == 'true';
+    },
+    isParagraphs: function isParagraphs() {
+      return this.isParagraph == 'true';
+    },
+    isAudios: function isAudios() {
+      return this.isAudio == 'true';
+    }
+  },
+  methods: {
+    showEditQuestion: function showEditQuestion(question) {
+      window.location.replace(this.route + '/' + question.id + '/edit');
+    },
+    showParagraph: function showParagraph(paragraph) {
+      window.location.replace(this.route + '/' + paragraph.id);
+    },
+    deleteQuestion: function deleteQuestion(question) {
+      var _this = this;
+
+      this.$bvModal.msgBoxConfirm('Are you sure about removing this question ', {
+        title: 'Remove Question',
+        size: 'sm',
+        buttonSize: 'sm',
+        okVariant: 'danger',
+        okTitle: 'YES',
+        cancelTitle: 'NO',
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+        centered: true
+      }).then(function (value) {
+        if (value == true) {
+          axios["delete"](_this.deleteRoute + '/' + question.id).then(function (response) {
+            if (response.data.success) {
+              var index = _this.jsonData.indexOf(question);
+
+              if (index > -1) {
+                _this.jsonData.splice(index, 1);
+              }
+
+              _this.showAlert('Successfully removed', 'success');
+            } else _this.showAlert("You can't remove this question ");
+          })["catch"](function (error) {
+            console.log(error);
+
+            _this.showAlert('Something happened. Please call support');
+          });
+        }
+      })["catch"](function (err) {
+        // An error occurred
+        console.log(err);
+      });
+    },
+    countDownChanged: function countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+
+      if (this.dismissCountDown === 0) {
+        this.message = "";
+        this.alert = "danger";
+      }
+    },
+    showAlert: function showAlert(message) {
+      var alert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "danger";
+      this.message = message;
+      this.alert = alert;
+      this.dismissCountDown = this.dismissSecs;
+    },
+    storeQuestions: function storeQuestions() {
+      var _this2 = this;
+
+      axios.post(this.storeRoute, {
+        'questions': this.selected
+      }).then(function (response) {
+        _this2.showAlert('Successfully Added to the exam', 'success');
+
+        var r = _this2.redirectRoute;
+        setTimeout(function () {
+          // window.history.back();
+          window.location.replace(r);
+        }, 4000);
+      })["catch"](function (error) {
+        return function (error) {
+          console.log(error);
+
+          _this2.showAlert('Something happened. Please call support');
+        };
+      });
+    },
+    storeParagraphs: function storeParagraphs() {
+      var _this3 = this;
+
+      axios.post(this.storeRoute, {
+        'paragraphs': this.selected
+      }).then(function (response) {
+        _this3.showAlert('Successfully Added to the exam', 'success');
+
+        var r = _this3.redirectRoute;
+        setTimeout(function () {
+          // window.history.back();
+          window.location.replace(r);
+        }, 4000);
+      })["catch"](function (error) {
+        return function (error) {
+          console.log(error);
+
+          _this3.showAlert('Something happened. Please call support');
+        };
+      });
+    },
+    storeAudios: function storeAudios() {
+      var _this4 = this;
+
+      axios.post(this.storeRoute, {
+        'audios': this.selected
+      }).then(function (response) {
+        _this4.showAlert('Successfully Added to the exam', 'success');
+
+        var r = _this4.redirectRoute;
+        setTimeout(function () {
+          // window.history.back();
+          window.location.replace(r);
+        }, 4000);
+      })["catch"](function (error) {
+        return function (error) {
+          console.log(error);
+
+          _this4.showAlert('Something happened. Please call support');
+        };
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExamsPanel.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ExamsPanel.vue?vue&type=script&lang=js& ***!
@@ -2350,6 +2709,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -2592,6 +2952,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -2982,6 +3343,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
@@ -3041,7 +3409,8 @@ __webpack_require__.r(__webpack_exports__);
       confirmEmailState: null,
       confirmPhoneState: null,
       isUniqueEmail: null,
-      isUniquePhone: null
+      isUniquePhone: null,
+      filter: null
     };
   },
   computed: {
@@ -71182,7 +71551,14 @@ var render = function() {
       _vm._v(" "),
       _c("h1", [_vm._v("Students")]),
       _vm._v(" "),
-      _c("b-table", { attrs: { striped: "", hover: "", items: _vm.students } }),
+      _c("b-table", {
+        attrs: {
+          striped: "",
+          hover: "",
+          "sticky-header": true,
+          items: _vm.students
+        }
+      }),
       _vm._v(" "),
       _c(
         "b-modal",
@@ -71673,6 +72049,373 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DisplayExamsPanel.vue?vue&type=template&id=069becb7&scoped=true&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/DisplayExamsPanel.vue?vue&type=template&id=069becb7&scoped=true& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-alert",
+        {
+          attrs: {
+            show: _vm.dismissCountDown,
+            dismissible: "",
+            fade: "",
+            variant: _vm.alert
+          },
+          on: { "dismiss-count-down": _vm.countDownChanged }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+      ),
+      _vm._v(" "),
+      _c("b-form-input", {
+        staticClass: "mt-2 mb-2",
+        attrs: { id: "search-input", placeholder: "type to search" },
+        model: {
+          value: _vm.filter,
+          callback: function($$v) {
+            _vm.filter = $$v
+          },
+          expression: "filter"
+        }
+      }),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          striped: "",
+          hover: "",
+          "sticky-header": true,
+          items: _vm.jsonData,
+          filter: _vm.filter,
+          "sort-by": "id"
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(actions)",
+            fn: function(row) {
+              return [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    on: {
+                      click: function($event) {
+                        return _vm.showLiveExam(row.item)
+                      }
+                    }
+                  },
+                  [_vm._v("Live Exam")]
+                ),
+                _vm._v(" "),
+                !_vm.isReadingExam
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        on: {
+                          click: function($event) {
+                            return _vm.showExam(row.item)
+                          }
+                        }
+                      },
+                      [_vm._v("Show")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.isReadingExam
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        on: {
+                          click: function($event) {
+                            return _vm.showVocab(row.item)
+                          }
+                        }
+                      },
+                      [_vm._v("Show Vocab")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.isReadingExam
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        on: {
+                          click: function($event) {
+                            return _vm.showParagraphs(row.item)
+                          }
+                        }
+                      },
+                      [_vm._v("Show Paragraphs")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    on: {
+                      click: function($event) {
+                        return _vm.showEditExam(row.item)
+                      }
+                    }
+                  },
+                  [_vm._v("Edit")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteExam(row.item)
+                      }
+                    }
+                  },
+                  [_vm._v("Delete")]
+                )
+              ]
+            }
+          }
+        ])
+      })
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DisplayQuestionsPanel.vue?vue&type=template&id=4847d784&scoped=true&":
+/*!************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/DisplayQuestionsPanel.vue?vue&type=template&id=4847d784&scoped=true& ***!
+  \************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-alert",
+        {
+          attrs: {
+            show: _vm.dismissCountDown,
+            dismissible: "",
+            fade: "",
+            variant: _vm.alert
+          },
+          on: { "dismiss-count-down": _vm.countDownChanged }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+      ),
+      _vm._v(" "),
+      _c("b-form-input", {
+        staticClass: "mt-2 mb-2",
+        attrs: { id: "search-input", placeholder: "type to search" },
+        model: {
+          value: _vm.filter,
+          callback: function($$v) {
+            _vm.filter = $$v
+          },
+          expression: "filter"
+        }
+      }),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          striped: "",
+          hover: "",
+          "sticky-header": true,
+          items: _vm.jsonData,
+          filter: _vm.filter,
+          "sort-by": "id"
+        },
+        scopedSlots: _vm._u(
+          [
+            {
+              key: "cell(actions)",
+              fn: function(row) {
+                return [
+                  !_vm.canChooseQuestions && _vm.isParagraphs
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          on: {
+                            click: function($event) {
+                              return _vm.showParagraph(row.item)
+                            }
+                          }
+                        },
+                        [_vm._v("Show")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.canChooseQuestions
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success",
+                          on: {
+                            click: function($event) {
+                              return _vm.showEditQuestion(row.item)
+                            }
+                          }
+                        },
+                        [_vm._v("Edit")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.canChooseQuestions
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger",
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteQuestion(row.item)
+                            }
+                          }
+                        },
+                        [_vm._v("Remove")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.canChooseQuestions && _vm.isParagraphs
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          on: {
+                            click: function($event) {
+                              return _vm.showParagraph(row.item)
+                            }
+                          }
+                        },
+                        [_vm._v("Show")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.canChooseQuestions
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success",
+                          on: {
+                            click: function($event) {
+                              return _vm.showEditQuestion(row.item)
+                            }
+                          }
+                        },
+                        [_vm._v("Edit")]
+                      )
+                    : _vm._e()
+                ]
+              }
+            },
+            _vm.canChooseQuestions
+              ? {
+                  key: "cell(check)",
+                  fn: function(row) {
+                    return [
+                      _c(
+                        "b-form-checkbox-group",
+                        {
+                          attrs: { id: "checkbox-group-2" },
+                          model: {
+                            value: _vm.selected,
+                            callback: function($$v) {
+                              _vm.selected = $$v
+                            },
+                            expression: "selected"
+                          }
+                        },
+                        [
+                          _c("b-form-checkbox", {
+                            attrs: { value: row.item.id }
+                          })
+                        ],
+                        1
+                      )
+                    ]
+                  }
+                }
+              : null
+          ],
+          null,
+          true
+        )
+      }),
+      _vm._v(" "),
+      _vm.canChooseQuestions && !_vm.isParagraphs && !_vm.isAudios
+        ? _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              on: { click: _vm.storeQuestions }
+            },
+            [_vm._v("Add Questions")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.canChooseQuestions && _vm.isParagraphs
+        ? _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              on: { click: _vm.storeParagraphs }
+            },
+            [_vm._v("Add Paragraphs")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.canChooseQuestions && _vm.isAudios
+        ? _c(
+            "button",
+            { staticClass: "btn btn-primary", on: { click: _vm.storeAudios } },
+            [_vm._v("Add Audios")]
+          )
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ExamsPanel.vue?vue&type=template&id=bd5f3a4a&":
 /*!*************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ExamsPanel.vue?vue&type=template&id=bd5f3a4a& ***!
@@ -71877,7 +72620,12 @@ var render = function() {
       _c("h1", [_vm._v("Students")]),
       _vm._v(" "),
       _c("b-table", {
-        attrs: { striped: "", hover: "", items: _vm.students },
+        attrs: {
+          striped: "",
+          hover: "",
+          "sticky-header": true,
+          items: _vm.students
+        },
         scopedSlots: _vm._u([
           {
             key: "cell(actions)",
@@ -72007,7 +72755,12 @@ var render = function() {
       _c("h1", [_vm._v("Students")]),
       _vm._v(" "),
       _c("b-table", {
-        attrs: { striped: "", hover: "", items: _vm.students },
+        attrs: {
+          striped: "",
+          hover: "",
+          "sticky-header": true,
+          items: _vm.students
+        },
         scopedSlots: _vm._u([
           {
             key: "cell(actions)",
@@ -72157,7 +72910,6 @@ var render = function() {
             show: _vm.dismissCountDown,
             dismissible: "",
             fade: "",
-            "sticky-header": true,
             variant: _vm.alert
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
@@ -72168,12 +72920,26 @@ var render = function() {
       _c("h1", [_vm._v("Students")]),
       _c("br"),
       _vm._v(" "),
+      _c("b-form-input", {
+        staticClass: "mt-2 mb-2",
+        attrs: { id: "search-input", placeholder: "type to search" },
+        model: {
+          value: _vm.filter,
+          callback: function($$v) {
+            _vm.filter = $$v
+          },
+          expression: "filter"
+        }
+      }),
+      _vm._v(" "),
       _c("b-table", {
         attrs: {
           striped: "",
+          "sticky-header": true,
           fields: _vm.fields,
           hover: "",
-          items: _vm.students
+          items: _vm.students,
+          filter: _vm.filter
         },
         scopedSlots: _vm._u([
           {
@@ -72674,7 +73440,6 @@ var render = function() {
             show: _vm.dismissCountDown,
             dismissible: "",
             fade: "",
-            "sticky-header": true,
             variant: _vm.alert
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
@@ -72935,7 +73700,13 @@ var render = function() {
       ),
       _vm._v(" "),
       _c("b-table", {
-        attrs: { striped: "", fields: _vm.fields, hover: "", items: _vm.users },
+        attrs: {
+          striped: "",
+          fields: _vm.fields,
+          hover: "",
+          "sticky-header": true,
+          items: _vm.users
+        },
         scopedSlots: _vm._u([
           {
             key: "cell(actions)",
@@ -85450,6 +86221,8 @@ Vue.component('marks-panel', __webpack_require__(/*! ./components/MarksPanel.vue
 Vue.component('users-panel', __webpack_require__(/*! ./components/UsersPanel.vue */ "./resources/js/components/UsersPanel.vue")["default"]);
 Vue.component('students-panel', __webpack_require__(/*! ./components/StudentsPanel.vue */ "./resources/js/components/StudentsPanel.vue")["default"]);
 Vue.component('configs-panel', __webpack_require__(/*! ./components/ConfigsPanel.vue */ "./resources/js/components/ConfigsPanel.vue")["default"]);
+Vue.component('display-exams-panel', __webpack_require__(/*! ./components/DisplayExamsPanel.vue */ "./resources/js/components/DisplayExamsPanel.vue")["default"]);
+Vue.component('display-questions-panel', __webpack_require__(/*! ./components/DisplayQuestionsPanel.vue */ "./resources/js/components/DisplayQuestionsPanel.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -85640,6 +86413,144 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfigsPanel_vue_vue_type_template_id_c466b504___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfigsPanel_vue_vue_type_template_id_c466b504___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/DisplayExamsPanel.vue":
+/*!*******************************************************!*\
+  !*** ./resources/js/components/DisplayExamsPanel.vue ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _DisplayExamsPanel_vue_vue_type_template_id_069becb7_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DisplayExamsPanel.vue?vue&type=template&id=069becb7&scoped=true& */ "./resources/js/components/DisplayExamsPanel.vue?vue&type=template&id=069becb7&scoped=true&");
+/* harmony import */ var _DisplayExamsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DisplayExamsPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/DisplayExamsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _DisplayExamsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _DisplayExamsPanel_vue_vue_type_template_id_069becb7_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _DisplayExamsPanel_vue_vue_type_template_id_069becb7_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "069becb7",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/DisplayExamsPanel.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/DisplayExamsPanel.vue?vue&type=script&lang=js&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/DisplayExamsPanel.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DisplayExamsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./DisplayExamsPanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DisplayExamsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DisplayExamsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/DisplayExamsPanel.vue?vue&type=template&id=069becb7&scoped=true&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/DisplayExamsPanel.vue?vue&type=template&id=069becb7&scoped=true& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DisplayExamsPanel_vue_vue_type_template_id_069becb7_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./DisplayExamsPanel.vue?vue&type=template&id=069becb7&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DisplayExamsPanel.vue?vue&type=template&id=069becb7&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DisplayExamsPanel_vue_vue_type_template_id_069becb7_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DisplayExamsPanel_vue_vue_type_template_id_069becb7_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/DisplayQuestionsPanel.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/DisplayQuestionsPanel.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _DisplayQuestionsPanel_vue_vue_type_template_id_4847d784_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DisplayQuestionsPanel.vue?vue&type=template&id=4847d784&scoped=true& */ "./resources/js/components/DisplayQuestionsPanel.vue?vue&type=template&id=4847d784&scoped=true&");
+/* harmony import */ var _DisplayQuestionsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DisplayQuestionsPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/DisplayQuestionsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _DisplayQuestionsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _DisplayQuestionsPanel_vue_vue_type_template_id_4847d784_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _DisplayQuestionsPanel_vue_vue_type_template_id_4847d784_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "4847d784",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/DisplayQuestionsPanel.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/DisplayQuestionsPanel.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/DisplayQuestionsPanel.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DisplayQuestionsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./DisplayQuestionsPanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DisplayQuestionsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DisplayQuestionsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/DisplayQuestionsPanel.vue?vue&type=template&id=4847d784&scoped=true&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/DisplayQuestionsPanel.vue?vue&type=template&id=4847d784&scoped=true& ***!
+  \******************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DisplayQuestionsPanel_vue_vue_type_template_id_4847d784_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./DisplayQuestionsPanel.vue?vue&type=template&id=4847d784&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DisplayQuestionsPanel.vue?vue&type=template&id=4847d784&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DisplayQuestionsPanel_vue_vue_type_template_id_4847d784_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DisplayQuestionsPanel_vue_vue_type_template_id_4847d784_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

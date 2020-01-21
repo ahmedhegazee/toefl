@@ -4,7 +4,6 @@
             :show="dismissCountDown"
             dismissible
             fade
-            :sticky-header="true"
             :variant="alert"
             @dismiss-count-down="countDownChanged"
         >
@@ -13,11 +12,19 @@
 
 
         <h1>Students</h1><br>
+        <b-form-input
+            id="search-input"
+            v-model="filter"
+            class="mt-2 mb-2"
+            placeholder="type to search"
+        ></b-form-input>
         <!--Add New User Modal-->
         <b-table striped
+                 :sticky-header="true"
                  :fields="fields"
                  hover
                  :items="students"
+                 :filter="filter"
         >
 
             <template v-slot:cell(actions)="row">
@@ -242,6 +249,7 @@
                 confirmPhoneState: null,
                 isUniqueEmail: null,
                 isUniquePhone: null,
+                filter:null,
             }
         }, computed: {
             englishNameState: function () {

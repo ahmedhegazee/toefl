@@ -32,7 +32,7 @@
         </tr>
         <tr>
             <td>
-                <h2 style="color: #000; font-size: 0.4in;margin: 10px 0 0 0; font-family: sans-serif;text-transform: uppercase;"><?php echo e($student->user()->name); ?></h2>
+                <h2 style="color: #000; font-size: 0.4in;margin: 10px 0 0 0; font-family: sans-serif;text-transform: uppercase;"><?php echo e($student->user->name); ?></h2>
             </td>
         </tr>
         <tr>

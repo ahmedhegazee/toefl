@@ -4,7 +4,6 @@
             :show="dismissCountDown"
             dismissible
             fade
-            :sticky-header="true"
             :variant="alert"
             @dismiss-count-down="countDownChanged"
         >
@@ -118,6 +117,7 @@
         <b-table striped
                  :fields="fields"
                  hover
+                 :sticky-header="true"
                  :items="users"
         >
 
@@ -529,8 +529,8 @@
                 if (user.roles.indexOf('Super Admin') == -1) {
                     this.$bvModal.msgBoxConfirm('Are you sure about deleting this user ' + user.name, {
                         title: 'Delete User',
-                        size: 'sm',
-                        buttonSize: 'sm',
+                        size:'sm',
+                        buttonSize:'sm',
                         okVariant: 'danger',
                         okTitle: 'YES',
                         cancelTitle: 'NO',

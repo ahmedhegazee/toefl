@@ -18,12 +18,6 @@ use Illuminate\Support\Facades\Cache;
 
 class ExamsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('check_student');
-
-    }
 
     public function showStudentHome()
     {

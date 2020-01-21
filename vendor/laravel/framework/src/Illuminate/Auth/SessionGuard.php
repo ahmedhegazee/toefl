@@ -2,8 +2,6 @@
 
 namespace Illuminate\Auth;
 
-use App\Student;
-use Illuminate\Support\Facades\Cache;
 use RuntimeException;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -483,11 +481,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
     public function logout()
     {
         $user = $this->user();
-        //if the user is student you have to make him offline
-        if($this->user()->roles->contains(2))
-        {
-            Cache::forget('student-is-online-'.$user->id);
-        }
+
         // If we have an event dispatcher instance, we can fire off the logout event
         // so any further processing can be done. This allows the developer to be
         // listening for anytime a user signs out of this application manually.
