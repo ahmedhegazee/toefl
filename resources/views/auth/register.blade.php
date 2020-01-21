@@ -136,7 +136,7 @@
                                     <option value="" disabled>Select how to take exam</option>
 
                                     @foreach($groups as $group)
-                                        <option value="{{$group->id}}" >{{$group->type->type}}</option>
+                                        <option value="{{$group->id}}" >{{$group->type}}</option>
                                     @endforeach
 
 

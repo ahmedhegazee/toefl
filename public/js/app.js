@@ -2943,6 +2943,165 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GroupsPanel.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GroupsPanel.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "GroupsPanel",
+  props: ['data', 'resId'],
+  mounted: function mounted() {
+    this.groups = JSON.parse(this.data);
+  },
+  data: function data() {
+    return {
+      groups: [],
+      dismissSecs: 5,
+      dismissCountDown: 0,
+      message: "",
+      alert: "danger",
+      group: null,
+      name: '',
+      filter: null
+    };
+  },
+  computed: {
+    nameState: function nameState() {
+      if (this.name.length == 0) return null;else return this.name.length >= 5 && this.name.length <= 200 && this.name != this.group.name;
+    }
+  },
+  methods: {
+    countDownChanged: function countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+
+      if (this.dismissCountDown === 0) {
+        this.message = "";
+        this.alert = "danger";
+      }
+    },
+    showAlert: function showAlert(message) {
+      var alert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "danger";
+      this.message = message;
+      this.alert = alert;
+      this.dismissCountDown = this.dismissSecs;
+    },
+    showStudents: function showStudents(group) {
+      window.location.replace("/cpanel/res/" + this.resId + "/group/" + group.id);
+    },
+    showDialog: function showDialog(group) {
+      this.group = group;
+      this.name = group.name;
+      this.$refs.groupModal.show();
+    },
+    handleOk: function handleOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault(); // Trigger submit handler
+
+      this.handleSubmit();
+    },
+    handleSubmit: function handleSubmit() {
+      var _this = this;
+
+      // Exit when the form isn't valid
+      if (!this.nameState) {
+        return;
+      } // Push the name to submitted names
+
+
+      this.sendChange(); // Hide the modal manually
+
+      this.$nextTick(function () {
+        _this.$refs.groupModal.hide();
+      });
+    },
+    sendChange: function sendChange() {
+      var _this2 = this;
+
+      axios.patch('/cpanel/res/' + this.resId + '/group/' + this.group.id, {
+        'name': this.name
+      }).then(function (response) {
+        if (response.data.success) {
+          _this2.group.name = _this2.name;
+
+          _this2.showAlert("Successfully Updated", "success");
+        } else {
+          if (response.data.message !== undefined) _this2.showAlert(response.data.message);else _this2.showAlert("Something happened when updating . Please call Support");
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MarksPanel.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MarksPanel.vue?vue&type=script&lang=js& ***!
@@ -3136,6 +3295,281 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ReservationsPanel.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ReservationsPanel.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "ReservationsPanel",
+  props: ['res'],
+  mounted: function mounted() {
+    this.reservations = JSON.parse(this.res);
+  },
+  data: function data() {
+    return {
+      reservations: [],
+      dismissSecs: 5,
+      dismissCountDown: 0,
+      message: "",
+      alert: "danger",
+      reservation: null,
+      today: '',
+      date: '',
+      edit: false,
+      count: 0,
+      currentDate: '',
+      currentCount: 0,
+      filter: null
+    };
+  },
+  computed: {
+    countState: function countState() {
+      if (parseInt(this.count) == 0) return null;else if (this.edit) return parseInt(this.count) > 2 && parseInt(this.count) != this.currentCount;else return parseInt(this.count) > 2;
+    },
+    dateState: function dateState() {
+      if (this.date.length == 0) return null;else if (this.edit) return Date.parse(this.date) >= Date.parse(this.today) && Date.parse(this.date) != Date.parse(this.currentDate);else return Date.parse(this.date) >= Date.parse(this.today);
+    }
+  },
+  methods: {
+    countDownChanged: function countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+
+      if (this.dismissCountDown === 0) {
+        this.message = "";
+        this.alert = "danger";
+      }
+    },
+    showAlert: function showAlert(message) {
+      var alert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "danger";
+      this.message = message;
+      this.alert = alert;
+      this.dismissCountDown = this.dismissSecs;
+    },
+    showGroups: function showGroups(res) {
+      window.location.replace("/cpanel/res/" + res.id);
+    },
+    showDialog: function showDialog() {
+      var res = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var edit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      this.edit = edit;
+      this.reservation = res;
+
+      if (edit) {
+        this.currentDate = res.start;
+        this.currentCount = res['Max Students Count'];
+        this.date = this.currentDate;
+        this.count = this.currentCount;
+      } else {
+        this.date = this.today;
+        this.count = 2;
+      }
+
+      this.$refs.resModal.show();
+    },
+    resetModal: function resetModal() {
+      var today = new Date();
+      this.today = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+    },
+    handleOk: function handleOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault(); // Trigger submit handler
+
+      this.handleSubmit();
+    },
+    handleSubmit: function handleSubmit() {
+      var _this = this;
+
+      // Exit when the form isn't valid
+      if (!this.countState) {
+        return;
+      }
+
+      if (!this.dateState) {
+        return;
+      } // Push the name to submitted names
+
+
+      if (this.edit) this.sendChange();else this.createReservation(); // Hide the modal manually
+
+      this.$nextTick(function () {
+        _this.$refs.resModal.hide();
+      });
+    },
+    sendChange: function sendChange() {
+      var _this2 = this;
+
+      axios.patch('/cpanel/res/' + this.reservation.id, {
+        'start': this.date,
+        'max_students': this.count
+      }).then(function (response) {
+        if (response.data.success) {
+          _this2.reservation['Max Students Count'] = _this2.count;
+          _this2.reservation.start = _this2.date;
+
+          _this2.showAlert("Successfully Updated", "success");
+        } else {
+          if (response.data.message !== undefined) _this2.showAlert(response.data.message);else _this2.showAlert("Something happened when updating . Please call Support");
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
+      });
+    },
+    createReservation: function createReservation() {
+      var _this3 = this;
+
+      axios.post('/cpanel/res', {
+        'start': this.date,
+        'max_students': this.count
+      }).then(function (response) {
+        if (response.data.success) {
+          _this3.reservations = response.data.res;
+
+          _this3.showAlert("Successfully Added", "success");
+        } else {
+          if (response.data.message !== undefined) _this3.showAlert(response.data.message);else _this3.showAlert("Something happened when processing . Please call Support");
+        }
+      })["catch"](function (error) {
+        console.log(error);
+        this.showAlert("Something happened when processing . Please call Support"); // console.log(error);
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/StudentsDisplayPanel.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/StudentsDisplayPanel.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "StudentsDisplayPanel",
+  props: ['data'],
+  mounted: function mounted() {
+    this.students = JSON.parse(this.data);
+  },
+  data: function data() {
+    return {
+      filter: null,
+      students: []
+    };
   }
 });
 
@@ -3425,7 +3859,9 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     phoneState: function phoneState() {
-      if (this.phone.length == 0) return null;else return this.phone.length == 11;
+      if (this.phone.length == 0) return null;else {
+        return this.phone.length == 11 && this.validatePhone(this.phone);
+      }
     },
     emailState: function emailState() {
       if (this.email.length == 0) return null;else return this.validateEmail(this.email);
@@ -3438,6 +3874,10 @@ __webpack_require__.r(__webpack_exports__);
     validateEmail: function validateEmail(email) {
       var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);
+    },
+    validatePhone: function validatePhone(phone) {
+      var re = /^(010|011|012|015){1}[0-9]{8}$/;
+      return re.test(phone);
     },
     countDownChanged: function countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
@@ -72659,6 +73099,169 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GroupsPanel.vue?vue&type=template&id=d46f1116&scoped=true&":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/GroupsPanel.vue?vue&type=template&id=d46f1116&scoped=true& ***!
+  \**************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-alert",
+        {
+          attrs: {
+            show: _vm.dismissCountDown,
+            dismissible: "",
+            fade: "",
+            variant: _vm.alert
+          },
+          on: { "dismiss-count-down": _vm.countDownChanged }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+      ),
+      _vm._v(" "),
+      _c("b-form-input", {
+        staticClass: "mt-2 mb-2",
+        attrs: { id: "search-input", placeholder: "type to search" },
+        model: {
+          value: _vm.filter,
+          callback: function($$v) {
+            _vm.filter = $$v
+          },
+          expression: "filter"
+        }
+      }),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          striped: "",
+          hover: "",
+          "sticky-header": true,
+          items: _vm.groups,
+          filter: _vm.filter
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(actions)",
+            fn: function(row) {
+              return [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    on: {
+                      click: function($event) {
+                        return _vm.showStudents(row.item)
+                      }
+                    }
+                  },
+                  [_vm._v("Show Students")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    on: {
+                      click: function($event) {
+                        return _vm.showDialog(row.item)
+                      }
+                    }
+                  },
+                  [_vm._v("Edit")]
+                )
+              ]
+            }
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "groupModal",
+          attrs: { id: "modal-prevent-closing", title: "EditReservation" },
+          on: { ok: _vm.handleOk }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  return _vm.handleSubmit($event)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.nameState,
+                    label: "Group Name",
+                    "label-for": "name-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "hours-input",
+                      type: "text",
+                      state: _vm.nameState,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.name,
+                      callback: function($$v) {
+                        _vm.name = $$v
+                      },
+                      expression: "name"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.nameState } },
+                    [
+                      _vm._v(
+                        "\n                    The name length must be between 5 and 200 characters.                    "
+                      )
+                    ]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ]
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MarksPanel.vue?vue&type=template&id=c9089fee&":
 /*!*************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MarksPanel.vue?vue&type=template&id=c9089fee& ***!
@@ -72874,6 +73477,273 @@ var render = function() {
           )
         ]
       )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ReservationsPanel.vue?vue&type=template&id=1d341ac2&scoped=true&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ReservationsPanel.vue?vue&type=template&id=1d341ac2&scoped=true& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-alert",
+        {
+          attrs: {
+            show: _vm.dismissCountDown,
+            dismissible: "",
+            fade: "",
+            variant: _vm.alert
+          },
+          on: { "dismiss-count-down": _vm.countDownChanged }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "btn btn-primary mt-2 mb-2",
+          on: {
+            click: function($event) {
+              return _vm.showDialog()
+            }
+          }
+        },
+        [_vm._v("Add Reservation")]
+      ),
+      _vm._v(" "),
+      _c("b-form-input", {
+        staticClass: "mt-2 mb-2",
+        attrs: { id: "search-input", placeholder: "type to search" },
+        model: {
+          value: _vm.filter,
+          callback: function($$v) {
+            _vm.filter = $$v
+          },
+          expression: "filter"
+        }
+      }),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          striped: "",
+          hover: "",
+          "sticky-header": true,
+          items: _vm.reservations,
+          filter: _vm.filter
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(actions)",
+            fn: function(row) {
+              return [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    on: {
+                      click: function($event) {
+                        return _vm.showGroups(row.item)
+                      }
+                    }
+                  },
+                  [_vm._v("Show")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    on: {
+                      click: function($event) {
+                        return _vm.showDialog(row.item, true)
+                      }
+                    }
+                  },
+                  [_vm._v("Edit")]
+                )
+              ]
+            }
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "resModal",
+          attrs: { id: "modal-prevent-closing", title: "EditReservation" },
+          on: { shown: _vm.resetModal, ok: _vm.handleOk }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  return _vm.handleSubmit($event)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.dateState,
+                    label: "Start Date",
+                    "label-for": "date-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "date-input",
+                      type: "date",
+                      state: _vm.dateState,
+                      min: _vm.today,
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.date,
+                      callback: function($$v) {
+                        _vm.date = $$v
+                      },
+                      expression: "date"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.dateState } },
+                    [
+                      _vm._v(
+                        "\n                    Put correct Date\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    state: _vm.countState,
+                    label: "Students Count",
+                    "label-for": "name-input"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "hours-input",
+                      type: "number",
+                      state: _vm.countState,
+                      min: "2",
+                      required: ""
+                    },
+                    model: {
+                      value: _vm.count,
+                      callback: function($$v) {
+                        _vm.count = $$v
+                      },
+                      expression: "count"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "b-form-invalid-feedback",
+                    { attrs: { state: _vm.countState } },
+                    [
+                      _vm._v(
+                        "\n                    Put correct count\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ]
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/StudentsDisplayPanel.vue?vue&type=template&id=cf7517f6&scoped=true&":
+/*!***********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/StudentsDisplayPanel.vue?vue&type=template&id=cf7517f6&scoped=true& ***!
+  \***********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("b-form-input", {
+        staticClass: "mt-2 mb-2",
+        attrs: { id: "search-input", placeholder: "type to search" },
+        model: {
+          value: _vm.filter,
+          callback: function($$v) {
+            _vm.filter = $$v
+          },
+          expression: "filter"
+        }
+      }),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: {
+          striped: "",
+          hover: "",
+          "sticky-header": true,
+          items: _vm.students,
+          filter: _vm.filter
+        }
+      })
     ],
     1
   )
@@ -86221,7 +87091,10 @@ Vue.component('marks-panel', __webpack_require__(/*! ./components/MarksPanel.vue
 Vue.component('users-panel', __webpack_require__(/*! ./components/UsersPanel.vue */ "./resources/js/components/UsersPanel.vue")["default"]);
 Vue.component('students-panel', __webpack_require__(/*! ./components/StudentsPanel.vue */ "./resources/js/components/StudentsPanel.vue")["default"]);
 Vue.component('configs-panel', __webpack_require__(/*! ./components/ConfigsPanel.vue */ "./resources/js/components/ConfigsPanel.vue")["default"]);
+Vue.component('reservations-panel', __webpack_require__(/*! ./components/ReservationsPanel.vue */ "./resources/js/components/ReservationsPanel.vue")["default"]);
+Vue.component('groups-panel', __webpack_require__(/*! ./components/GroupsPanel.vue */ "./resources/js/components/GroupsPanel.vue")["default"]);
 Vue.component('display-exams-panel', __webpack_require__(/*! ./components/DisplayExamsPanel.vue */ "./resources/js/components/DisplayExamsPanel.vue")["default"]);
+Vue.component('display-students-panel', __webpack_require__(/*! ./components/StudentsDisplayPanel.vue */ "./resources/js/components/StudentsDisplayPanel.vue")["default"]);
 Vue.component('display-questions-panel', __webpack_require__(/*! ./components/DisplayQuestionsPanel.vue */ "./resources/js/components/DisplayQuestionsPanel.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -86625,6 +87498,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/GroupsPanel.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/components/GroupsPanel.vue ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _GroupsPanel_vue_vue_type_template_id_d46f1116_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GroupsPanel.vue?vue&type=template&id=d46f1116&scoped=true& */ "./resources/js/components/GroupsPanel.vue?vue&type=template&id=d46f1116&scoped=true&");
+/* harmony import */ var _GroupsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./GroupsPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/GroupsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _GroupsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _GroupsPanel_vue_vue_type_template_id_d46f1116_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _GroupsPanel_vue_vue_type_template_id_d46f1116_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "d46f1116",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/GroupsPanel.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/GroupsPanel.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/GroupsPanel.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GroupsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./GroupsPanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GroupsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_GroupsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/GroupsPanel.vue?vue&type=template&id=d46f1116&scoped=true&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/GroupsPanel.vue?vue&type=template&id=d46f1116&scoped=true& ***!
+  \********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GroupsPanel_vue_vue_type_template_id_d46f1116_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./GroupsPanel.vue?vue&type=template&id=d46f1116&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/GroupsPanel.vue?vue&type=template&id=d46f1116&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GroupsPanel_vue_vue_type_template_id_d46f1116_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_GroupsPanel_vue_vue_type_template_id_d46f1116_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/MarksPanel.vue":
 /*!************************************************!*\
   !*** ./resources/js/components/MarksPanel.vue ***!
@@ -86689,6 +87631,144 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MarksPanel_vue_vue_type_template_id_c9089fee___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MarksPanel_vue_vue_type_template_id_c9089fee___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ReservationsPanel.vue":
+/*!*******************************************************!*\
+  !*** ./resources/js/components/ReservationsPanel.vue ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ReservationsPanel_vue_vue_type_template_id_1d341ac2_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ReservationsPanel.vue?vue&type=template&id=1d341ac2&scoped=true& */ "./resources/js/components/ReservationsPanel.vue?vue&type=template&id=1d341ac2&scoped=true&");
+/* harmony import */ var _ReservationsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ReservationsPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/ReservationsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ReservationsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ReservationsPanel_vue_vue_type_template_id_1d341ac2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ReservationsPanel_vue_vue_type_template_id_1d341ac2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "1d341ac2",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ReservationsPanel.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ReservationsPanel.vue?vue&type=script&lang=js&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/ReservationsPanel.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ReservationsPanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ReservationsPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationsPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ReservationsPanel.vue?vue&type=template&id=1d341ac2&scoped=true&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/ReservationsPanel.vue?vue&type=template&id=1d341ac2&scoped=true& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationsPanel_vue_vue_type_template_id_1d341ac2_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ReservationsPanel.vue?vue&type=template&id=1d341ac2&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ReservationsPanel.vue?vue&type=template&id=1d341ac2&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationsPanel_vue_vue_type_template_id_1d341ac2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReservationsPanel_vue_vue_type_template_id_1d341ac2_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/StudentsDisplayPanel.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/StudentsDisplayPanel.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _StudentsDisplayPanel_vue_vue_type_template_id_cf7517f6_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./StudentsDisplayPanel.vue?vue&type=template&id=cf7517f6&scoped=true& */ "./resources/js/components/StudentsDisplayPanel.vue?vue&type=template&id=cf7517f6&scoped=true&");
+/* harmony import */ var _StudentsDisplayPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./StudentsDisplayPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/StudentsDisplayPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _StudentsDisplayPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _StudentsDisplayPanel_vue_vue_type_template_id_cf7517f6_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _StudentsDisplayPanel_vue_vue_type_template_id_cf7517f6_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "cf7517f6",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/StudentsDisplayPanel.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/StudentsDisplayPanel.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/StudentsDisplayPanel.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_StudentsDisplayPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./StudentsDisplayPanel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/StudentsDisplayPanel.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_StudentsDisplayPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/StudentsDisplayPanel.vue?vue&type=template&id=cf7517f6&scoped=true&":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/components/StudentsDisplayPanel.vue?vue&type=template&id=cf7517f6&scoped=true& ***!
+  \*****************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_StudentsDisplayPanel_vue_vue_type_template_id_cf7517f6_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./StudentsDisplayPanel.vue?vue&type=template&id=cf7517f6&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/StudentsDisplayPanel.vue?vue&type=template&id=cf7517f6&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_StudentsDisplayPanel_vue_vue_type_template_id_cf7517f6_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_StudentsDisplayPanel_vue_vue_type_template_id_cf7517f6_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
