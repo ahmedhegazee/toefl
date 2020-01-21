@@ -7,6 +7,7 @@ use App\Config;
 use App\Group;
 use App\GroupType;
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Reservation;
 use App\Role;
 use App\Student;
@@ -27,18 +28,28 @@ class ApiController extends Controller
         if ($count > 0) {
 
             if (
-                Cache::has('student-' . $student->id . '-grammar') ||
-                Cache::has('student-' . $student->id . '-reading') ||
+//                Cache::has('student-' . $student->id . '-grammar') ||
+//                Cache::has('student-' . $student->id . '-reading') ||
                 !is_null($student->attempts->last()->result)
-            )
+            ){
+                $message = "can't delete this attempt {".$student->attempts->last()->id."}.The student has solved the exam whose id ".$student->id." and name is ".$student->user->name;
+                Logging::logAdmin(auth()->user(), $message);
                 return response()->make("you can't delete this attempt.The student has solved the exam");
+
+            }
             else {
+                $message = " delete this attempt {".$student->attempts->last()->id."} of this student whose id ".$student->id." and name is ".$student->user->name;
+                Logging::logAdmin(auth()->user(), $message);
                 $student->attempts->last()->delete();
 
                 return response()->make("Successful deleting");
             }
-        } else
+        } else{
+            $message = "can't delete this attempt.The student doesn't have attempt in this reservation whose id ".$student->id." and name is ".$student->user->name;
+            Logging::logAdmin(auth()->user(), $message);
             return response()->make("the student doesn't have attempt in this reservation");
+
+        }
     }
 
     public function printPDF(Reservation $reservation)
@@ -58,6 +69,9 @@ class ApiController extends Controller
         $pdf->loadHTML($html)->stream();
 //    return view('certificate', compact('students'));
 //    $pdf = PDF::loadView('certificate', $students);
+        $message = "print certificates of reservation id " . $reservation->id . " which has start data is " . $reservation->start;
+        Logging::logAdmin(auth()->user(), $message);
+
         return $pdf->download('certificates ' . $reservation->start . '.pdf');
 
     }
@@ -141,55 +155,6 @@ class ApiController extends Controller
         return response()->json($res->groups()->get(['id', 'name'])->toArray());
     }
 
-
-
-    public function getRoles($roles)
-    {
-        $data = '';
-        foreach ($roles as $role)
-            $data .= $role['title'] . " , ";
-        return $data;
-    }
-
-    public function getAllUsers()
-    {
-        $users = User::all();
-        $users = $users->filter(function ($user) {
-            if (!$user->roles->contains(2))
-                return $user;
-        })->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $this->getRoles($user->roles->toArray()),
-                'selectedRoles' => $user->roles->pluck('id')->toArray(),
-                'Actions' => '',
-            ];
-        })->values();
-        $roles = Role::all()
-            ->map(function ($role) {
-
-                if ($role->id == 1 || $role->id == 2)
-                    return [
-                        'value' => $role->id,
-                        'text' => $role->title,
-                        'disabled' => true,
-                    ];
-                else
-                    return [
-                        'value' => $role->id,
-                        'text' => $role->title
-                    ];
-            })->values();
-        $data = [
-            'users' => $users,
-            'roles' => $roles
-        ];
-        return response()->json($data);
-
-    }
-
     public function updateStudentMarks(Request $request)
     {
         $student = Student::findOrFail($request->id);
@@ -197,7 +162,9 @@ class ApiController extends Controller
         $currentScore = $student->results->last()->mark;
         $requiredScore = $student->required_score;
         $score = $request->score;
+        $message = "";
         if ($score < 500 && $score > $currentScore && $score >= $requiredScore) {
+            $message = "update student mark whose name is " . $student->user->name . " and id is " . $student->id . " from " . $student->results->last()->mark . " to " . $score;
             $check = $student->results->last()->update(
                 [
                     'mark' => $request->score,
@@ -207,86 +174,13 @@ class ApiController extends Controller
 
         } else {
             $check = false;
+            $message = "failed in updating student mark whose name is " . $student->user->name . " and id is " . $student->id . " from " . $student->results->last()->mark . " to " . $score;
+
         }
+        Logging::logProfessor(auth()->user(), $message);
 
 
         return response()->json(['success' => $check]);
-    }
-
-    public function getConfigs()
-    {
-        $configs = Config::all()->map(function ($config) {
-            return [
-                'id' => $config->id,
-                'name' => $config->name,
-                'value' => $config->value,
-                'actions' => ''
-            ];
-        });
-        return response()->json($configs);
-    }
-
-    public function updateConfig(Request $request)
-    {
-        $config = Config::findOrFail($request->id);
-//        dd($request);
-        $check = $config->update([
-            'value' => $request->value,
-        ]);
-        return response()->json(['success' => $check]);
-    }
-
-    public function updateUser(Request $request, User $user)
-    {
-//        dd($request);
-        $checkEmail = true;
-        $checkName = true;
-        $checkPassword = true;
-
-
-        if (strlen($request->name) > 0)
-            $checkName = $user->update([
-                'name' => $request->name,
-            ]);
-        if (strlen($request->email) > 0)
-            $checkEmail = $user->update([
-                'email' => $request->email,
-            ]);
-        if (strlen($request->password) > 0)
-            $checkPassword = $user->update([
-                'password' => Hash::make($request->password),
-            ]);
-        $check = $checkEmail && $checkName && $checkPassword;
-        return response()->json(['success' => $check]);
-    }
-
-    public function updateUserRoles(Request $request, User $user)
-    {
-//        dd($request);
-        $user->roles()->sync($request->roles);
-        return response()->json(['success' => true]);
-    }
-
-    public function addNewUser(Request $request)
-    {
-        $user = User::create([
-            'name' => $request->name,
-            'password' => Hash::make($request->password),
-            'email' => $request->email,
-        ]);
-        $user->roles()->attach(1);
-        $data = [
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $this->getRoles($user->roles->toArray()),
-                'selectedRoles' => $user->roles->pluck('id')->toArray(),
-                'Actions' => '',
-            ],
-            'success' => true
-        ];
-        return response()->json($data);
     }
 
     public function checkEmailIsUnique(Request $request)
@@ -304,12 +198,6 @@ class ApiController extends Controller
         return response()->json(['check' => $check]);
     }
 
-    public function destroyUser(User $user)
-    {
-        $user->roles()->sync([]);
-        $user->delete();
-
-    }
 
     public function getAvailableReservations()
     {

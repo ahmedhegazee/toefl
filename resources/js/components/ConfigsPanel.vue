@@ -11,11 +11,26 @@
         </b-alert>
 
 
-        <h1>Configuration</h1>
+        <h1 class="mb-2">Exam Configuration</h1>
         <b-table striped
                  hover
                  :sticky-header="true"
-                 :items="configs"
+                 :items="examConfigs"
+                 class="mb-2 mt-2"
+        >
+            <template v-slot:cell(actions)="row">
+                <button class="btn btn-success" @click="showDialog(row.item)">Edit Config</button>
+
+            </template>
+
+        </b-table>
+        <hr>
+        <h1 class="mt-4 mb-2">Certificates Configuration</h1>
+        <b-table striped
+                 hover
+                 :sticky-header="true"
+                 :items="certificateConfigs"
+                 class="mt-2 mb-2"
         >
             <template v-slot:cell(actions)="row">
                 <button class="btn btn-success" @click="showDialog(row.item)">Edit Config</button>
@@ -28,7 +43,6 @@
             id="modal-prevent-closing"
             ref="nameChanger"
             title="Change Position Name"
-            @shown="name=''"
             @ok="handleOk"
         >
             <form ref="form" @submit.stop.prevent="handleNameSubmit">
@@ -143,7 +157,8 @@
         mounted() {
             axios.get('/configs/')
                 .then(response => {
-                    this.configs = response.data;
+                    this.examConfigs = response.data.exam;
+                    this.certificateConfigs = response.data.certificate;
                     // console.log(response.data);
                 }).catch(errors => {
 
@@ -151,7 +166,8 @@
         },
         data: function () {
             return {
-                configs: [],
+                examConfigs: [],
+                certificateConfigs: [],
                 dismissSecs: 5,
                 dismissCountDown: 0,
                 message: "",
@@ -217,6 +233,7 @@
                     case 1:
                         this.config = config;
                         this.currentCount = config.value;
+                        this.count = config.value;
                         this.$refs.countChanger.show();
                         break;
                     case 2:
@@ -225,7 +242,9 @@
                         this.config = config;
                         var time = config.value;
                         this.currentHours = time.split(':')[0];
+                        this.hours = time.split(':')[0];
                         this.currentMinutes = time.split(':')[1];
+                        this.minutes = time.split(':')[1];
                         this.$refs.timeChanger.show();
                         break;
                     case 5:
@@ -233,6 +252,7 @@
                     case 7:
                         this.config = config;
                         this.currentName = config.value;
+                        this.name = this.currentName;
                         this.pos_name = config.name;
                         this.$refs.nameChanger.show();
                         break;
@@ -242,9 +262,9 @@
             },
 
             resetModal() {
-                this.hours = 0;
-                this.minutes = 0;
-                this.count = 0;
+                // this.hours = 0;
+                // this.minutes = 0;
+                // this.count = 0;
             },
             handleOk(bvModalEvt) {
                 // Prevent modal from closing
@@ -308,8 +328,7 @@
             },
 
             sendChange() {
-                axios.patch('/configs/update', {
-                    'id': this.config.id,
+                axios.patch('/configs/'+this.config.id, {
                     'value': this.newValue,
                 }).then(response => {
                     if (response.data.success) {

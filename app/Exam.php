@@ -10,6 +10,8 @@ class Exam{
     private static function makeCache($name){
         $expiresAt = Carbon::now()->addHours(4);
         Cache::put($name, true, $expiresAt);
+        $message = " make cache which its name is  " . $name . " for 4 hours";
+        Logging::logAdmin(auth()->user(), $message);
     }
     public static function studentsCanEnterExam(Group $group)
     {
@@ -28,7 +30,8 @@ class Exam{
             Cache::has('group-can-enter-exam-' . $group->id)
             && Cache::has('group-can-start-exam-' . $group->id)
         ) {
-
+            $message = " end exam  for group with id is" . $group->id ;
+            Logging::logAdmin(auth()->user(), $message);
             $group->students()->each(function ($student) {
                 $attempt = Attempt::where('student_id', $student->id)
                     ->where('reservation_id', $student->reservation->id)

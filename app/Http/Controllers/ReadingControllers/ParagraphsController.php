@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ReadingControllers;
 
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Question;
 use App\Reading\Paragraph;
 use Illuminate\Http\Request;
@@ -43,6 +44,8 @@ class ParagraphsController extends Controller
     public function store(Request $request)
     {
         $paragraph=Paragraph::create($this->validateData());
+        $message=" make new paragraph {".$paragraph->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         return Redirect::route('paragraph.question.create',['paragraph'=>$paragraph]);
     }
 
@@ -87,6 +90,8 @@ class ParagraphsController extends Controller
     public function update(Request $request, Paragraph $paragraph)
     {
         $paragraph->update($this->validateData());
+        $message=" update paragraph {".$paragraph->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         if(session()->has('previous'))
             return \redirect()->to(session()->get('previous'));
         else
@@ -104,6 +109,8 @@ class ParagraphsController extends Controller
     {
         $check=false;
         if($paragraph->exam()->count()==0){
+            $message=" delete paragraph {".$paragraph->id."} ";
+            Logging::logProfessor(auth()->user(),$message);
             foreach ($paragraph->questions as $question){
                 $question->options()->delete();
             }

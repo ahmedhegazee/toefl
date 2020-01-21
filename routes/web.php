@@ -208,14 +208,10 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::view('/cpanel/users-panel', 'cpanel.userspanel')->name('cpanel.users-panel');
         Route::view('/cpanel/configs-panel', 'cpanel.configpanel')->name('cpanel.configs-panel');
 
-
-        Route::get('/users', 'ApiControllers\ApiController@getAllUsers');
-        Route::get('/configs', 'ApiControllers\ApiController@getConfigs');
-        Route::patch('/configs/update', 'ApiControllers\ApiController@updateConfig');
-        Route::patch('/users/{user}', 'ApiControllers\ApiController@updateUser');
-        Route::delete('/users/{user}', 'ApiControllers\ApiController@destroyUser');
-        Route::patch('/roles/{user}', 'ApiControllers\ApiController@updateUserRoles');
-        Route::post('/users/store', 'ApiControllers\ApiController@addNewUser');
+        Route::resource('/users','ApiControllers\UsersController')
+            ->only(['index','update','store','destroy']);
+        Route::patch('/roles/{user}', 'ApiControllers\UsersController@updateRoles');
+        Route::resource('/configs','ApiControllers\ConfigsController')->only(['index','update']);
     });
     Route::group(['middleware' => ['manage-reservations-panel']], function () {
         Route::resource('/cpanel/res', 'ReservationsController')

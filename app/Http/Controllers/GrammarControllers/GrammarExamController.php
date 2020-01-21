@@ -7,6 +7,7 @@ use App\Grammar\GrammarQuestion;
 use App\Group;
 use App\GroupType;
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Question;
 use App\Reservation;
 use Illuminate\Http\Request;
@@ -57,18 +58,23 @@ class GrammarExamController extends Controller
      */
     public function store(Request $request)
     {
+
         $res = intval($request['reservation']);
 //        $type=intval($request['type']);
 //        $count =GrammarExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
         $count = GrammarExam::where('reservation_id', $res)->count();
 
         if ($count == 0) {
-            GrammarExam::create([
+           $exam= GrammarExam::create([
                 'reservation_id' => $res,
 //                'group_type_id'=>$type,
             ]);
+            $message=" add new grammar exam with id {".$exam->id."} for reservation with id {".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             return redirect()->to(route('grammar.exam.index'));
         } else {
+            $message=" have made exam to this reservation with id {".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             return redirect()->back()->with('error', 'You have made exam to this reservation');
         }
 
@@ -120,12 +126,16 @@ class GrammarExamController extends Controller
         $count = GrammarExam::where('reservation_id', $res)->count();
 
         if ($count == 0) {
+            $message=" update grammar exam with id {".$exam->id."} and old reservation is {".$exam->reservation->id."} and new reservation id is{".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             $exam->update([
                 'reservation_id' => intval($request['reservation']),
 //            'group_type_id'=>intval($request['type']),
             ]);
             return redirect()->to(route('grammar.exam.index'));
         } else {
+            $message=" have made exam to this reservation with id {".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             return redirect()->back()->with('error', 'You have made exam to this reservation ');
         }
     }
@@ -140,6 +150,8 @@ class GrammarExamController extends Controller
     public function destroy(GrammarExam $exam)
     {
 
+        $message=" delete grammar exam with id {".$exam->id."} and  reservation id is {".$exam->reservation->id."}";
+        Logging::logProfessor(auth()->user(),$message);
         $exam->questions()->detach($exam->questions);
         $exam->delete();
 //        return redirect()->action('GrammarExamController@index');

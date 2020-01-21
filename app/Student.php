@@ -80,6 +80,8 @@ class Student extends Model
             'mark'=>$marks,
             'success'=>$marks > $this->required_score,
         ]);
+        $message=" solved toefl exam and has {".$marks."}";
+        Logging::logStudent(auth()->user()->getStudent(), $message);
     }
     public function isVerified()
     {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Grammar\GrammarQuestion;
 use App\Group;
+use App\Logging;
 use App\Reading\Paragraph;
 use App\Reading\VocabQuestion;
 use App\Reservation;
@@ -94,6 +95,8 @@ class GroupsController extends Controller
     public function update(Request $request, Reservation $re, Group $group)
     {
         $check=$group->update($this->validateData());
+        $message=" update group {".$group->id."} ";
+        Logging::logAdmin(auth()->user(),$message);
         return response()->json(['success'=>$check]);
 //        return redirect(route('res.show', ['re' => $group->reservation]));
     }

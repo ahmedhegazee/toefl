@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ListeningControllers;
 use App\Http\Controllers\Controller;
 use App\Listening\Audio;
 use App\Listening\ListeningExam;
+use App\Logging;
 use Illuminate\Http\Request;
 
 class ListeningExamAudiosController extends Controller
@@ -23,12 +24,16 @@ class ListeningExamAudiosController extends Controller
     {
 //        dd($request['questions']);
         $audios =Audio::whereIn('id',$request['audios'])->get();
+        $message=" add  audios {".$request['audios']."} to listening exam  with id {".$exam->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         $exam->audios()->sync($audios);
 //        dd($exam->questions);
 //        return redirect()->back();
     }
     public function destroy(ListeningExam $exam,Audio $audio)
     {
+        $message=" remove audio {".$audio->id."} from listening exam  with id {".$exam->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         $exam->audios()->detach($audio);
         return response()->json(['success'=>true]);
     }

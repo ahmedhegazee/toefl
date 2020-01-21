@@ -2154,17 +2154,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
 
     axios.get('/configs/').then(function (response) {
-      _this.configs = response.data; // console.log(response.data);
+      _this.examConfigs = response.data.exam;
+      _this.certificateConfigs = response.data.certificate; // console.log(response.data);
     })["catch"](function (errors) {});
   },
   data: function data() {
     return {
-      configs: [],
+      examConfigs: [],
+      certificateConfigs: [],
       dismissSecs: 5,
       dismissCountDown: 0,
       message: "",
@@ -2220,6 +2236,7 @@ __webpack_require__.r(__webpack_exports__);
         case 1:
           this.config = config;
           this.currentCount = config.value;
+          this.count = config.value;
           this.$refs.countChanger.show();
           break;
 
@@ -2229,7 +2246,9 @@ __webpack_require__.r(__webpack_exports__);
           this.config = config;
           var time = config.value;
           this.currentHours = time.split(':')[0];
+          this.hours = time.split(':')[0];
           this.currentMinutes = time.split(':')[1];
+          this.minutes = time.split(':')[1];
           this.$refs.timeChanger.show();
           break;
 
@@ -2238,15 +2257,15 @@ __webpack_require__.r(__webpack_exports__);
         case 7:
           this.config = config;
           this.currentName = config.value;
+          this.name = this.currentName;
           this.pos_name = config.name;
           this.$refs.nameChanger.show();
           break;
       }
     },
-    resetModal: function resetModal() {
-      this.hours = 0;
-      this.minutes = 0;
-      this.count = 0;
+    resetModal: function resetModal() {// this.hours = 0;
+      // this.minutes = 0;
+      // this.count = 0;
     },
     handleOk: function handleOk(bvModalEvt) {
       // Prevent modal from closing
@@ -2321,8 +2340,7 @@ __webpack_require__.r(__webpack_exports__);
     sendChange: function sendChange() {
       var _this5 = this;
 
-      axios.patch('/configs/update', {
-        'id': this.config.id,
+      axios.patch('/configs/' + this.config.id, {
         'value': this.newValue
       }).then(function (response) {
         if (response.data.success) {
@@ -3186,7 +3204,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
@@ -3242,14 +3259,14 @@ __webpack_require__.r(__webpack_exports__);
       this.student = student;
       this.requiredScore = student.required_score;
       this.currentScore = student.score;
+      this.score = student.score;
       this.st_name = student.english_name;
       this.$refs.modal.show();
     },
-    resetModal: function resetModal() {
-      this.id = 0;
-      this.requiredScore = 0;
-      this.currentScore = 0;
-      this.st_name = '';
+    resetModal: function resetModal() {// this.id=0;
+      // this.requiredScore=0;
+      // this.currentScore=0;
+      // this.st_name='';
     },
     handleOk: function handleOk(bvModalEvt) {
       // Prevent modal from closing
@@ -4556,7 +4573,7 @@ __webpack_require__.r(__webpack_exports__);
     addNewUser: function addNewUser() {
       var _this6 = this;
 
-      axios.post('/users/store', {
+      axios.post('/users', {
         'name': this.name,
         'email': this.email,
         'password': this.password
@@ -72172,14 +72189,52 @@ var render = function() {
         [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
       ),
       _vm._v(" "),
-      _c("h1", [_vm._v("Configuration")]),
+      _c("h1", { staticClass: "mb-2" }, [_vm._v("Exam Configuration")]),
       _vm._v(" "),
       _c("b-table", {
+        staticClass: "mb-2 mt-2",
         attrs: {
           striped: "",
           hover: "",
           "sticky-header": true,
-          items: _vm.configs
+          items: _vm.examConfigs
+        },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(actions)",
+            fn: function(row) {
+              return [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    on: {
+                      click: function($event) {
+                        return _vm.showDialog(row.item)
+                      }
+                    }
+                  },
+                  [_vm._v("Edit Config")]
+                )
+              ]
+            }
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c("h1", { staticClass: "mt-4 mb-2" }, [
+        _vm._v("Certificates Configuration")
+      ]),
+      _vm._v(" "),
+      _c("b-table", {
+        staticClass: "mt-2 mb-2",
+        attrs: {
+          striped: "",
+          hover: "",
+          "sticky-header": true,
+          items: _vm.certificateConfigs
         },
         scopedSlots: _vm._u([
           {
@@ -72209,12 +72264,7 @@ var render = function() {
         {
           ref: "nameChanger",
           attrs: { id: "modal-prevent-closing", title: "Change Position Name" },
-          on: {
-            shown: function($event) {
-              _vm.name = ""
-            },
-            ok: _vm.handleOk
-          }
+          on: { ok: _vm.handleOk }
         },
         [
           _c(
@@ -73392,13 +73442,7 @@ var render = function() {
         {
           ref: "modal",
           attrs: { id: "modal-prevent-closing", title: "Submit Your Name" },
-          on: {
-            shown: function($event) {
-              _vm.score = 0
-            },
-            hidden: _vm.resetModal,
-            ok: _vm.handleOk
-          }
+          on: { hidden: _vm.resetModal, ok: _vm.handleOk }
         },
         [
           _c(

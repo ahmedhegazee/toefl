@@ -5,6 +5,7 @@ namespace App\Http\Controllers\GrammarControllers;
 use App\Grammar\GrammarQuestion;
 use App\Grammar\GrammarQuestionType;
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Question;
 use \Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -71,6 +72,8 @@ class GrammarQuestionsController extends Controller
            'content'=>$request['content'],
            'grammar_question_type_id'=>$request['type']
        ]);
+        $message=" add new grammar question with id {".$question->id."}";
+        Logging::logProfessor(auth()->user(),$message);
        foreach($request->options as $option){
            $question->options()->create([
                'content'=>$option
@@ -115,7 +118,8 @@ class GrammarQuestionsController extends Controller
     public function update(Request $request, GrammarQuestion $question)
     {
         $this->validator($request->all())->validate();
-
+        $message=" update grammar question with id {".$question->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         $question->update([
             'content'=>$request['content'],
             'grammar_question_type_id'=>$request['type'],
@@ -145,6 +149,8 @@ class GrammarQuestionsController extends Controller
     {
         $check=false;
         if($question->exam()->count()==0){
+            $message=" delete grammar question with id {".$question->id."} ";
+            Logging::logProfessor(auth()->user(),$message);
             $question->options()->delete();
             $question->delete();
             $check=true;

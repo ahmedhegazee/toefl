@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ReadingControllers;
 
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Question;
 use App\Reading\VocabQuestion;
 use Illuminate\Http\Request;
@@ -53,7 +54,8 @@ class VocabQuestionsController extends Controller
         $question= VocabQuestion::create([
             'content'=>$request['content'],
         ]);
-
+        $message=" add new vocab question with id {".$question->id."}";
+        Logging::logProfessor(auth()->user(),$message);
         foreach($request->options as $option){
             $question->options()->create([
                 'content'=>$option
@@ -99,6 +101,8 @@ class VocabQuestionsController extends Controller
         $this->validator($request->all())->validate();
 
         $question=$vocab;
+        $message=" update vocab question with id {".$question->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         $question->update(['content'=>$request['content']]);
         $question->options()->delete();
 
@@ -127,6 +131,8 @@ class VocabQuestionsController extends Controller
         $question=$vocab;
         $check=false;
         if($question->exam()->count()==0){
+            $message=" delete vocab question with id {".$question->id."} ";
+            Logging::logProfessor(auth()->user(),$message);
             $question->options()->delete();
             $question->delete();
             $check=true;

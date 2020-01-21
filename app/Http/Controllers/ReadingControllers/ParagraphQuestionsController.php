@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ReadingControllers;
 
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Reading\Paragraph;
 use App\Reading\ParagraphQuestion;
 use App\Reading\VocabQuestion;
@@ -43,7 +44,8 @@ class ParagraphQuestionsController extends Controller
         $question= $paragraph->questions()->create([
             'content'=>$request['content'],
         ]);
-
+        $message=" add new paragraph question with id {".$question->id."}";
+        Logging::logProfessor(auth()->user(),$message);
         foreach($request->options as $option){
             $question->options()->create([
                 'content'=>$option
@@ -87,7 +89,8 @@ class ParagraphQuestionsController extends Controller
     public function update(Request $request, Paragraph $paragraph, ParagraphQuestion $question)
     {
         $this->validator($request->all())->validate();
-
+        $message=" update paragraph question with id {".$question->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         $question->update(['content'=>$request['content']]);
         $question->options()->delete();
 
@@ -116,6 +119,8 @@ class ParagraphQuestionsController extends Controller
     {
         $check=false;
         if($paragraph->exam()->count()==0){
+            $message=" delete paragraph question with id {".$question->id."} ";
+            Logging::logProfessor(auth()->user(),$message);
             $question->options()->delete();
             $question->delete();
             $check=true;

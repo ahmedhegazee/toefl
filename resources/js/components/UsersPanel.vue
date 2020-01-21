@@ -459,7 +459,7 @@
 
             },
             addNewUser() {
-                axios.post('/users/store', {
+                axios.post('/users', {
                     'name': this.name,
                     'email': this.email,
                     'password': this.password,

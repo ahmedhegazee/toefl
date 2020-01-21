@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ReadingControllers;
 use App\Exam;
 use App\GroupType;
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Question;
 use App\Reading\Paragraph;
 use App\Reading\ReadingExam;
@@ -68,13 +69,17 @@ class ReadingExamsController extends Controller
         $count =ReadingExam::where('reservation_id',$res)->count();
 
         if($count==0){
-            ReadingExam::create([
+          $exam=  ReadingExam::create([
                 'reservation_id'=>$res,
 //                'group_type_id'=>$type,
             ]);
+            $message=" add new listening exam with id {".$exam->id."} for reservation with id {".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             return redirect()->to(route('reading.exam.index'));
         }
         else{
+            $message=" have made exam to this reservation with id {".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             return redirect()->back()->with('error','You have made exam to this reservation');
         }
     }
@@ -112,12 +117,16 @@ class ReadingExamsController extends Controller
         $count =ReadingExam::where('reservation_id',$res)->count();
 
         if($count==0){
+            $message=" update reading exam with id {".$exam->id."} and old reservation is {".$exam->reservation->id."} and new reservation id is{".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             $exam->update([
                 'reservation_id'=>intval($request['reservation']),
 //                'group_type_id'=>intval($request['type']),
             ]);
             return redirect()->to(route('reading.exam.index'));        }
         else{
+            $message=" have made exam to this reservation with id {".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             return redirect()->back()->with('error','You have made exam to this reservation ');
         }
     }
@@ -130,6 +139,8 @@ class ReadingExamsController extends Controller
      */
     public function destroy(ReadingExam $exam)
     {
+        $message=" delete reading exam with id {".$exam->id."} and  reservation id is {".$exam->reservation->id."}";
+        Logging::logProfessor(auth()->user(),$message);
         $exam->paragraphs()->detach($exam->paragraphs);
         $exam->vocabQuestions()->detach($exam->vocabQuestions);
         $exam->delete();

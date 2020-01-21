@@ -6,6 +6,7 @@ use App\GroupType;
 use App\Http\Controllers\Controller;
 use App\Listening\Audio;
 use App\Listening\ListeningExam;
+use App\Logging;
 use App\Reservation;
 use Illuminate\Http\Request;
 
@@ -57,12 +58,16 @@ class ListeningExamController extends Controller
         $count = ListeningExam::where('reservation_id', $res)->count();
 
         if ($count == 0) {
-            ListeningExam::create([
+           $exam= ListeningExam::create([
                 'reservation_id' => $res,
 //                'group_type_id'=>$type,
             ]);
+            $message=" add new listening exam with id {".$exam->id."} for reservation with id {".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             return redirect()->to(route('listening.index'));
         } else {
+            $message=" have made exam to this reservation with id {".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             return redirect()->back()->with('error', 'You have made exam to this reservation');
         }
 
@@ -112,12 +117,16 @@ class ListeningExamController extends Controller
         $count = ListeningExam::where('reservation_id', $res)->count();
 
         if ($count == 0) {
+            $message=" update listening exam with id {".$exam->id."} and old reservation is {".$exam->reservation->id."} and new reservation id is{".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             $exam->update([
                 'reservation_id' => intval($request['reservation']),
 //                'group_type_id'=>intval($request['type']),
             ]);
             return redirect()->to(route('listening.index'));
         } else {
+            $message=" have made exam to this reservation with id {".$res."}";
+            Logging::logProfessor(auth()->user(),$message);
             return redirect()->back()->with('error', 'You have made exam to this reservation ');
         }
     }
@@ -131,6 +140,8 @@ class ListeningExamController extends Controller
      */
     public function destroy(ListeningExam $exam)
     {
+        $message=" delete listening exam with id {".$exam->id."} and  reservation id is {".$exam->reservation->id."}";
+        Logging::logProfessor(auth()->user(),$message);
         $exam->audios()->detach($exam->audios);
         $exam->delete();
 //        return redirect()->action('ListeningExamController@index');
