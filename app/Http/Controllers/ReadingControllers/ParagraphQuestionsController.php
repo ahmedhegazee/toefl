@@ -128,6 +128,40 @@ class ParagraphQuestionsController extends Controller
         return response()->json(['success'=>$check]);
 //        return redirect(route('paragraph.show',['paragraph'=>$paragraph]));
     }
+    public function showMultipleQuestions(Paragraph $paragraph)
+    {
+        $title="Add Multiple Paragraph Questions";
+        $isGrammar=false;
+        $storeRoute=route('paragraph.multiple-questions.store',compact('paragraph'));
+        $redirectRoute=route('paragraph.show',compact('paragraph'));
+        return view('multiple-questions',compact('isGrammar','redirectRoute','storeRoute','title'));
+    }
+    public function storeMultipleQuestions(Request $request,Paragraph $paragraph)
+    {
+//        dd(collect($request->questions));
+        collect($request->questions)->map(function ($question)use($paragraph) {
+            $question1 = $paragraph->questions()->create([
+                'content' => $question['question'],
+            ]);
+            $message = " add new listening question with id {" . $question1->id . "}";
+            Logging::logProfessor(auth()->user(), $message);
+            $question1->options()->create([
+                'content' => $question['First Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Second Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Third Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Fourth Option']
+            ]);
+            $question1->options[$question['correct'] - 1]->update(['correct' => 1]);
+
+        });
+
+    }
     /**
      * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator

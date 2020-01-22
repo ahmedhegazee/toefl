@@ -143,6 +143,42 @@ class ListeningQuestionsController extends Controller
         return response()->json(['success'=>$check]);
 //        return redirect(route('audio.show',['audio'=>$audio]));
     }
+
+    public function showMultipleQuestions(Audio $audio)
+    {
+        $title="Add Multiple Listening Questions";
+        $isGrammar=false;
+        $storeRoute=route('listening.multiple-questions.store',compact('audio'));
+        $redirectRoute=route('audio.show',compact('audio'));
+        return view('multiple-questions',compact('isGrammar','redirectRoute','storeRoute','title'));
+    }
+    public function storeMultipleQuestions(Request $request,Audio $audio)
+    {
+//        dd(collect($request->questions));
+        collect($request->questions)->map(function ($question)use($audio) {
+            $question1 = $audio->questions()->create([
+                'content' => $question['question'],
+            ]);
+            $message = " add new listening question with id {" . $question1->id . "}";
+            Logging::logProfessor(auth()->user(), $message);
+            $question1->options()->create([
+                'content' => $question['First Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Second Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Third Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Fourth Option']
+            ]);
+            $question1->options[$question['correct'] - 1]->update(['correct' => 1]);
+
+        });
+
+    }
+
     public function validator( $data)
     {
         $message=[

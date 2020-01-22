@@ -489,8 +489,8 @@
                 var data = '';
                 for (var i = 0; i < this.selected.length; i++) {
                     var role = this.selected[i] - 1;
-                    console.log('index ' + role);
-                    console.log('role ' + this.roles[role]['text']);
+                    // console.log('index ' + role);
+                    // console.log('role ' + this.roles[role]['text']);
                     data += this.roles[role]['text'] + ' ,';
                 }
                 return data;

@@ -4,7 +4,9 @@
     <div class="container ">
         <h2>Vocab Questions </h2>
         <a href="{{route('vocab.create')}}" class="btn btn-primary">Add Vocab Question</a>
-{{--        <table border="2px solid">--}}
+        <a href="{{route('vocab.multiple-questions')}}" class="btn btn-primary">Add Multiple Vocab Question</a>
+
+        {{--        <table border="2px solid">--}}
 {{--            <tr>--}}
 {{--                <th>ID</th>--}}
 {{--                <th>Question</th>--}}

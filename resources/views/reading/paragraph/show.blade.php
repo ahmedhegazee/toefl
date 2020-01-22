@@ -5,8 +5,9 @@
         <h2>{{$paragraph->title}}</h2>
         <p>
             {{$paragraph->content}}
-        </p>
-        <a href="{{route('paragraph.question.create',['paragraph'=>$paragraph])}}" class="btn btn-primary mb-5">Add Paragraph Question</a>
+        </p><br>
+        <a href="{{route('paragraph.question.create',['paragraph'=>$paragraph])}}" class="btn btn-primary mr-2 mb-3">Add Paragraph Question</a>
+        <a href="{{route('paragraph.multiple-questions',compact('paragraph'))}}" class="btn btn-primary  mb-3">Add Multiple Paragraph Question</a>
 
 {{--        <table border="2px solid">--}}
 

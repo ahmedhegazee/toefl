@@ -4,8 +4,9 @@
         <p>
             <?php echo e($paragraph->content); ?>
 
-        </p>
-        <a href="<?php echo e(route('paragraph.question.create',['paragraph'=>$paragraph])); ?>" class="btn btn-primary mb-5">Add Paragraph Question</a>
+        </p><br>
+        <a href="<?php echo e(route('paragraph.question.create',['paragraph'=>$paragraph])); ?>" class="btn btn-primary mr-2 mb-3">Add Paragraph Question</a>
+        <a href="<?php echo e(route('paragraph.multiple-questions',compact('paragraph'))); ?>" class="btn btn-primary  mb-3">Add Multiple Paragraph Question</a>
 
 
 

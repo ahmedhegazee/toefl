@@ -142,6 +142,42 @@ class VocabQuestionsController extends Controller
 //        return Redirect::action('VocabQuestionsController@index');
 
     }
+
+    public function showMultipleQuestions()
+    {
+        $title="Add Multiple Vocab Questions";
+        $isGrammar='false';
+        $storeRoute=route('vocab.multiple-questions.store');
+        $redirectRoute=route('vocab.index');
+        return view('multiple-questions',compact('isGrammar','redirectRoute','storeRoute','title'));
+    }
+    public function storeMultipleQuestions(Request $request)
+    {
+//        dd(collect($request->questions));
+        collect($request->questions)->map(function ($question) {
+            $question1 = VocabQuestion::create([
+                'content' => $question['question'],
+            ]);
+            $message = " add new vocab question with id {" . $question1->id . "}";
+            Logging::logProfessor(auth()->user(), $message);
+            $question1->options()->create([
+                'content' => $question['First Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Second Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Third Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Fourth Option']
+            ]);
+            $question1->options[$question['correct'] - 1]->update(['correct' => 1]);
+
+        });
+
+    }
+
     /**
      * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator

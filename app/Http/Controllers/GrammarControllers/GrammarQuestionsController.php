@@ -35,10 +35,10 @@ class GrammarQuestionsController extends Controller
 //                    'actions' => '',
 //                ];
 //            })->values()->toArray();
-        $questions1=Question::getGrammarQuestions(GrammarQuestion::all());
+        $questions1 = Question::getGrammarQuestions(GrammarQuestion::all());
         $questions1 = json_encode($questions1);
 //        return view('grammar.questions.index',compact('questions','questions1'));
-        return view('grammar.questions.index',compact('questions1'));
+        return view('grammar.questions.index', compact('questions1'));
     }
 
     /**
@@ -49,37 +49,37 @@ class GrammarQuestionsController extends Controller
     public function create()
     {
         $options = [
-            0=>'First Option',
-            1=>'Second Option',
-            2=>'Third Option',
-            3=>'Fourth Option',
+            0 => 'First Option',
+            1 => 'Second Option',
+            2 => 'Third Option',
+            3 => 'Fourth Option',
         ];
-        $types=GrammarQuestionType::all();
-        return view('grammar.questions.create',compact('options','types'));
+        $types = GrammarQuestionType::all();
+        return view('grammar.questions.create', compact('options', 'types'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         $this->validator($request->all())->validate();
 
-        $question=GrammarQuestion::create([
-           'content'=>$request['content'],
-           'grammar_question_type_id'=>$request['type']
-       ]);
-        $message=" add new grammar question with id {".$question->id."}";
-        Logging::logProfessor(auth()->user(),$message);
-       foreach($request->options as $option){
-           $question->options()->create([
-               'content'=>$option
-           ]);
-       }
-       $question->options[$request->correct-1]->update(['correct'=>1]);
+        $question = GrammarQuestion::create([
+            'content' => $request['content'],
+            'grammar_question_type_id' => $request['type']
+        ]);
+        $message = " add new grammar question with id {" . $question->id . "}";
+        Logging::logProfessor(auth()->user(), $message);
+        foreach ($request->options as $option) {
+            $question->options()->create([
+                'content' => $option
+            ]);
+        }
+        $question->options[$request->correct - 1]->update(['correct' => 1]);
         return \redirect()->to(route('grammar.question.index'));
     }
 
@@ -93,18 +93,18 @@ class GrammarQuestionsController extends Controller
     public function edit(GrammarQuestion $question)
     {
 
-        $previous=url()->previous();
+        $previous = url()->previous();
         session([
-            'previous'=>$previous,
+            'previous' => $previous,
         ]);
         $options = [
-            0=>'First Option',
-            1=>'Second Option',
-            2=>'Third Option',
-            3=>'Fourth Option',
+            0 => 'First Option',
+            1 => 'Second Option',
+            2 => 'Third Option',
+            3 => 'Fourth Option',
         ];
-        $types=GrammarQuestionType::all();
-        return view('grammar.questions.update',compact('question','options','types'));
+        $types = GrammarQuestionType::all();
+        return view('grammar.questions.update', compact('question', 'options', 'types'));
 
     }
 
@@ -118,21 +118,21 @@ class GrammarQuestionsController extends Controller
     public function update(Request $request, GrammarQuestion $question)
     {
         $this->validator($request->all())->validate();
-        $message=" update grammar question with id {".$question->id."} ";
-        Logging::logProfessor(auth()->user(),$message);
+        $message = " update grammar question with id {" . $question->id . "} ";
+        Logging::logProfessor(auth()->user(), $message);
         $question->update([
-            'content'=>$request['content'],
-            'grammar_question_type_id'=>$request['type'],
-            ]);
+            'content' => $request['content'],
+            'grammar_question_type_id' => $request['type'],
+        ]);
         $question->options()->delete();
-        foreach($request->options as $option){
+        foreach ($request->options as $option) {
             $question->options()->create([
-                'content'=>$option,
+                'content' => $option,
 
             ]);
         }
-        $question->options[$request->correct-1]->update(['correct'=>1]);
-        if(session()->has('previous'))
+        $question->options[$request->correct - 1]->update(['correct' => 1]);
+        if (session()->has('previous'))
             return \redirect()->to(session()->get('previous'));
         else
             return \redirect()->to(route('grammar.question.index'));
@@ -147,16 +147,52 @@ class GrammarQuestionsController extends Controller
      */
     public function destroy(GrammarQuestion $question)
     {
-        $check=false;
-        if($question->exam()->count()==0){
-            $message=" delete grammar question with id {".$question->id."} ";
-            Logging::logProfessor(auth()->user(),$message);
+        $check = false;
+        if ($question->exam()->count() == 0) {
+            $message = " delete grammar question with id {" . $question->id . "} ";
+            Logging::logProfessor(auth()->user(), $message);
             $question->options()->delete();
             $question->delete();
-            $check=true;
+            $check = true;
         }
-        return response()->json(['success'=>$check]);
+        return response()->json(['success' => $check]);
 //        return Redirect::action('GrammarQuestionsController@index');
+
+    }
+
+    public function showMultipleQuestions()
+    {
+        $title="Add Multiple Grammar Questions";
+        $isGrammar='true';
+        $storeRoute=route('grammar.multiple-questions.store');
+        $redirectRoute=route('grammar.question.index');
+        return view('multiple-questions',compact('isGrammar','redirectRoute','storeRoute','title'));
+}
+    public function storeMultipleQuestions(Request $request)
+    {
+//        dd(collect($request->questions));
+        collect($request->questions)->map(function ($question) {
+            $question1 = GrammarQuestion::create([
+                'content' => $question['question'],
+                'grammar_question_type_id' => $question['type']
+            ]);
+            $message = " add new grammar question with id {" . $question1->id . "}";
+            Logging::logProfessor(auth()->user(), $message);
+            $question1->options()->create([
+                'content' => $question['First Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Second Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Third Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Fourth Option']
+            ]);
+            $question1->options[$question['correct'] - 1]->update(['correct' => 1]);
+
+        });
 
     }
 
@@ -164,24 +200,24 @@ class GrammarQuestionsController extends Controller
      * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validator( $data)
+    public function validator($data)
     {
-        $message=[
-            'options.0.required'=>'First Option field is required.',
-            'options.1.required'=>'Second Option field is required.',
-            'options.2.required'=>'Third Option field is required.',
-            'options.3.required'=>'Fourth Option field is required.',
-            'content.required'=>'Question Content field is required.',
+        $message = [
+            'options.0.required' => 'First Option field is required.',
+            'options.1.required' => 'Second Option field is required.',
+            'options.2.required' => 'Third Option field is required.',
+            'options.3.required' => 'Fourth Option field is required.',
+            'content.required' => 'Question Content field is required.',
 
         ];
-        $roles =[
+        $roles = [
             'content' => 'required|string',
             'options' => 'required|array|min:4',
             'options.*' => 'required|string|distinct',
-            'correct'=>'required|numeric',
-            'type'=>'required|numeric'
+            'correct' => 'required|numeric',
+            'type' => 'required|numeric'
         ];
-       return Validator::make($data,$roles,$message);
+        return Validator::make($data, $roles, $message);
 
     }
 

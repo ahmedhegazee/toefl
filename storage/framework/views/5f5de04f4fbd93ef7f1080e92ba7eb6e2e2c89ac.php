@@ -2,7 +2,9 @@
     <div class="container ">
         <h2>Vocab Questions </h2>
         <a href="<?php echo e(route('vocab.create')); ?>" class="btn btn-primary">Add Vocab Question</a>
+        <a href="<?php echo e(route('vocab.multiple-questions')); ?>" class="btn btn-primary">Add Multiple Vocab Question</a>
 
+        
 
 
 

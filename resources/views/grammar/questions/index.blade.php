@@ -3,7 +3,8 @@
 @section('content')
     <div class="container ">
         <h2>Grammar Questions </h2>
-        <a href="{{route('grammar.question.create')}}" class="btn btn-primary">Add Grammar Question</a>
+        <a href="{{route('grammar.question.create')}}" class="btn btn-primary mr-4">Add Grammar Question</a>
+        <a href="{{route('grammar.multiple-questions')}}" class="btn btn-primary">Add Multiple Grammar Question</a>
 {{--        <table border="2px solid">--}}
 {{--            <tr>--}}
 {{--                <th>ID</th>--}}

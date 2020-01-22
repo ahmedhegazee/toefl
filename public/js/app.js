@@ -3317,6 +3317,310 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MultipleQuestionsComponent.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MultipleQuestionsComponent.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "MultipleQuestionsComponent",
+  props: ['storeRoute', 'isGrammar', 'redirectRoute'],
+  mounted: function mounted() {
+    if (this.isGrammar == 'true') {
+      this.img = "/img/grammar_question_description.png";
+      this.fields = ['id', 'question', 'question type', 'First Option', 'Second Option', 'Third Option', 'Fourth Option', 'Correct Answer', 'actions'];
+      this.description = 'To add multiple questions .You have to follow specific format.\n' + 'Question Content%Question Type%Option 1%Option 2%Option 3%Option 4%the number of correct answer\n ' + 'use - to separate between questions\n Question Types :\n 1 for Fill in the space \n 2 for Find the mistake\n' + 'For example :\n What is  your name?%1%Ali%Ahmed%Khaled%Waleed%4-What old are you?%2%18%22%32%40%3\n' + 'So the questions will be like this';
+    } else {
+      this.img = "/img/question_description.png";
+      this.fields = ['id', 'question', 'First Option', 'Second Option', 'Third Option', 'Fourth Option', 'Correct Answer', 'actions'];
+      this.description = 'To add multiple questions .You have to follow specific format.\n' + 'Question Content%Option 1%Option 2%Option 3%Option 4%the number of correct answer-\n use - to separate between questions\n' + 'For example :\n What is  your name?%Ali%Ahmed%Khaled%Waleed%4-What old are you?%18%22%32%40%3\n' + 'So the questions will be like this';
+    }
+  },
+  data: function data() {
+    return {
+      img: '',
+      fields: [],
+      questions: [],
+      question: null,
+      dismissSecs: 4,
+      dismissCountDown: 0,
+      message: "",
+      alertVariant: "danger",
+      alert: {
+        message: [],
+        variant: 'danger',
+        show: false
+      },
+      text: '',
+      description: '',
+      buttonStatus: {
+        convert: false,
+        done: false
+      },
+      filter: null
+    };
+  },
+  computed: {
+    convertStatus: function convertStatus() {
+      if (this.text.length == 0) return false;else return true;
+    },
+    doneStatus: function doneStatus() {
+      if (this.questions.length == 0) return false;else return true;
+    }
+  },
+  methods: {
+    countDownChanged: function countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+
+      if (this.dismissCountDown === 0) {
+        this.message = "";
+        this.alertVariant = "danger";
+      }
+    },
+    showAlert: function showAlert(message) {
+      var alert = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "danger";
+      this.message = message;
+      this.alertVariant = alert;
+      this.dismissCountDown = this.dismissSecs;
+    },
+    getCorrectOption: function getCorrectOption(option) {
+      var options = ['First Option', 'Second Option', 'Third Option', 'Fourth Option'];
+      return options[option];
+    },
+    getQuestionTypes: function getQuestionTypes(type) {
+      var types = ['Fill in the space', 'Find the mistake'];
+      return types[type];
+    },
+    convertQuestions: function convertQuestions() {
+      var questions = this.text.split('-');
+      this.questions = [];
+      this.alert.show = false;
+      this.alert.message = [];
+
+      if (this.isGrammar == 'true') {
+        for (var i = 0; i < questions.length; i++) {
+          if (questions[i].length == 0) {
+            this.alert.show = true;
+            this.alert.message.push("write correct question which its id is " + (i + 1) + " using specific format please  ");
+            var question = {
+              'id': i + 1,
+              'question': '',
+              'question type': '',
+              'First Option': '',
+              'Second Option': '',
+              'Third Option': '',
+              'Fourth Option': '',
+              'Correct Answer': '',
+              'correct': '',
+              'actions': ''
+            };
+            this.questions.push(question);
+          } else {
+            var answers = questions[i].split('%'); // console.log(answers);
+            // console.log(answers[6].length == 0);
+
+            if (answers.length < 7) {
+              this.alert.show = true;
+              this.alert.message.push("write correct options in the question with id " + (i + 1));
+            } else if (answers[6].length == 0) {
+              this.alert.show = true;
+              this.alert.message.push("write correct answer in the question with id " + (i + 1));
+            }
+
+            var question = {
+              'id': i + 1,
+              'question': answers[0],
+              'question type': this.getQuestionTypes(answers[1] - 1),
+              'First Option': answers[2],
+              'Second Option': answers[3],
+              'Third Option': answers[4],
+              'Fourth Option': answers[5],
+              'Correct Answer': this.getCorrectOption(answers[6] - 1),
+              'correct': answers[6],
+              'type': answers[1],
+              'actions': ''
+            };
+            this.questions.push(question);
+          }
+        }
+      } else {
+        for (var i = 0; i < questions.length; i++) {
+          if (questions[i].length == 0) {
+            this.alert.show = true;
+            this.alert.message.push("write correct question which its id is " + (i + 1) + " using specific format please  ");
+            var question = {
+              'id': i + 1,
+              'question': '',
+              'First Option': '',
+              'Second Option': '',
+              'Third Option': '',
+              'Fourth Option': '',
+              'Correct Answer': '',
+              'correct': '',
+              'actions': ''
+            };
+            this.questions.push(question);
+          } else {
+            var answers = questions[i].split('%');
+
+            if (answers.length < 6) {
+              this.alert.show = true;
+              this.alert.message.push("write correct options in the question with id " + (i + 1));
+            } else if (answers[5].length == 0) {
+              this.alert.show = true;
+              this.alert.message.push("write correct answer in the question with id " + (i + 1));
+            }
+
+            var question = {
+              'id': i + 1,
+              'question': answers[0],
+              'First Option': answers[1],
+              'Second Option': answers[2],
+              'Third Option': answers[3],
+              'Fourth Option': answers[4],
+              'Correct Answer': this.getCorrectOption(answers[5] - 1),
+              'correct': answers[5],
+              'actions': ''
+            };
+            this.questions.push(question);
+          }
+        }
+      }
+    },
+    deleteQuestion: function deleteQuestion(question) {
+      var index = this.questions.indexOf(question);
+
+      if (index > -1) {
+        this.questions.splice(index, 1);
+      }
+    },
+    storeQuestions: function storeQuestions() {
+      var _this = this;
+
+      if (!this.alert.show) {
+        this.$bvModal.msgBoxConfirm('Are you sure about storing these questions ', {
+          title: 'Storing Questions',
+          size: 'sm',
+          buttonSize: 'sm',
+          okVariant: 'success',
+          okTitle: 'YES',
+          cancelTitle: 'NO',
+          footerClass: 'p-2',
+          hideHeaderClose: false,
+          centered: true
+        }).then(function (value) {
+          if (value == true) {
+            axios.post(_this.storeRoute, {
+              'questions': _this.questions
+            }).then(function (response) {
+              if (response.status == 200) {
+                _this.showAlert('Successfully stored', 'success');
+
+                var r = _this.redirectRoute;
+                setTimeout(function () {
+                  // window.history.back();
+                  window.location.replace(r);
+                }, 3000);
+              } else {
+                _this.showAlert("Something happened. Please call support");
+              }
+            })["catch"](function (error) {
+              console.log(error);
+
+              _this.showAlert('Something happened. Please call support');
+            });
+          }
+        })["catch"](function (err) {
+          // An error occurred
+          console.log(err);
+        });
+      } else {
+        this.$bvModal.msgBoxOk("Please check the errors for correction them", {
+          title: 'Attention',
+          size: 'sm',
+          buttonSize: 'sm',
+          okVariant: 'primary',
+          okTitle: 'OK',
+          footerClass: 'p-2',
+          hideHeaderClose: false,
+          centered: true
+        }).then()["catch"]();
+      }
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ReservationsPanel.vue?vue&type=script&lang=js&":
 /*!****************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ReservationsPanel.vue?vue&type=script&lang=js& ***!
@@ -4599,9 +4903,9 @@ __webpack_require__.r(__webpack_exports__);
       var data = '';
 
       for (var i = 0; i < this.selected.length; i++) {
-        var role = this.selected[i] - 1;
-        console.log('index ' + role);
-        console.log('role ' + this.roles[role]['text']);
+        var role = this.selected[i] - 1; // console.log('index ' + role);
+        // console.log('role ' + this.roles[role]['text']);
+
         data += this.roles[role]['text'] + ' ,';
       }
 
@@ -73532,6 +73836,184 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MultipleQuestionsComponent.vue?vue&type=template&id=675b170b&scoped=true&":
+/*!*****************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MultipleQuestionsComponent.vue?vue&type=template&id=675b170b&scoped=true& ***!
+  \*****************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "b-alert",
+        {
+          attrs: {
+            show: _vm.dismissCountDown,
+            dismissible: "",
+            fade: "",
+            variant: _vm.alertVariant
+          },
+          on: { "dismiss-count-down": _vm.countDownChanged }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+      ),
+      _vm._v(" "),
+      _vm.alert.show
+        ? _c("b-alert", { attrs: { variant: _vm.alert.variant, show: "" } }, [
+            _c(
+              "ul",
+              _vm._l(_vm.alert.message, function(message) {
+                return _c("li", { domProps: { textContent: _vm._s(message) } })
+              }),
+              0
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c("b-form-textarea", {
+        attrs: {
+          id: "textarea-plaintext",
+          plaintext: "",
+          value: _vm.description,
+          rows: "10",
+          "no-resize": ""
+        }
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "clearfix mb-2 mt-2" },
+        [
+          _c("b-img", {
+            staticStyle: {
+              "max-width": "70vw",
+              "border-width": "3px !important"
+            },
+            attrs: {
+              center: "",
+              thumbnail: "",
+              src: _vm.img,
+              alt: "Description Image"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("b-form-textarea", {
+        attrs: {
+          id: "textarea-questions",
+          placeholder: "Write multiple questions using the specific format",
+          rows: "6",
+          "no-resize": ""
+        },
+        model: {
+          value: _vm.text,
+          callback: function($$v) {
+            _vm.text = $$v
+          },
+          expression: "text"
+        }
+      }),
+      _vm._v(" "),
+      _vm.convertStatus
+        ? _c(
+            "b-button",
+            {
+              staticClass: "mt-2 mb-2",
+              attrs: { size: "lg", variant: "primary" },
+              on: { click: _vm.convertQuestions }
+            },
+            [_vm._v("Convert\n    ")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.questions.length > 0
+        ? _c("b-form-input", {
+            staticClass: "mt-2 mb-2",
+            attrs: { id: "search-input", placeholder: "type to search" },
+            model: {
+              value: _vm.filter,
+              callback: function($$v) {
+                _vm.filter = $$v
+              },
+              expression: "filter"
+            }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.questions.length > 0
+        ? _c("b-table", {
+            attrs: {
+              striped: "",
+              hover: "",
+              "sticky-header": true,
+              items: _vm.questions,
+              filter: _vm.filter,
+              fields: _vm.fields,
+              "sort-by": "id"
+            },
+            scopedSlots: _vm._u(
+              [
+                {
+                  key: "cell(actions)",
+                  fn: function(row) {
+                    return [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger",
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteQuestion(row.item)
+                            }
+                          }
+                        },
+                        [_vm._v("Remove")]
+                      )
+                    ]
+                  }
+                }
+              ],
+              null,
+              false,
+              637406691
+            )
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.doneStatus
+        ? _c(
+            "b-button",
+            {
+              staticClass: "mt-2 mb-2",
+              attrs: { size: "lg", variant: "primary" },
+              on: { click: _vm.storeQuestions }
+            },
+            [_vm._v("Done")]
+          )
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ReservationsPanel.vue?vue&type=template&id=1d341ac2&scoped=true&":
 /*!********************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ReservationsPanel.vue?vue&type=template&id=1d341ac2&scoped=true& ***!
@@ -87140,6 +87622,7 @@ Vue.component('groups-panel', __webpack_require__(/*! ./components/GroupsPanel.v
 Vue.component('display-exams-panel', __webpack_require__(/*! ./components/DisplayExamsPanel.vue */ "./resources/js/components/DisplayExamsPanel.vue")["default"]);
 Vue.component('display-students-panel', __webpack_require__(/*! ./components/StudentsDisplayPanel.vue */ "./resources/js/components/StudentsDisplayPanel.vue")["default"]);
 Vue.component('display-questions-panel', __webpack_require__(/*! ./components/DisplayQuestionsPanel.vue */ "./resources/js/components/DisplayQuestionsPanel.vue")["default"]);
+Vue.component('multiple-questions', __webpack_require__(/*! ./components/MultipleQuestionsComponent.vue */ "./resources/js/components/MultipleQuestionsComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -87675,6 +88158,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MarksPanel_vue_vue_type_template_id_c9089fee___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MarksPanel_vue_vue_type_template_id_c9089fee___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/MultipleQuestionsComponent.vue":
+/*!****************************************************************!*\
+  !*** ./resources/js/components/MultipleQuestionsComponent.vue ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _MultipleQuestionsComponent_vue_vue_type_template_id_675b170b_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MultipleQuestionsComponent.vue?vue&type=template&id=675b170b&scoped=true& */ "./resources/js/components/MultipleQuestionsComponent.vue?vue&type=template&id=675b170b&scoped=true&");
+/* harmony import */ var _MultipleQuestionsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MultipleQuestionsComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/MultipleQuestionsComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _MultipleQuestionsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _MultipleQuestionsComponent_vue_vue_type_template_id_675b170b_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _MultipleQuestionsComponent_vue_vue_type_template_id_675b170b_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "675b170b",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/MultipleQuestionsComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/MultipleQuestionsComponent.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/MultipleQuestionsComponent.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MultipleQuestionsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./MultipleQuestionsComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MultipleQuestionsComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MultipleQuestionsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/MultipleQuestionsComponent.vue?vue&type=template&id=675b170b&scoped=true&":
+/*!***********************************************************************************************************!*\
+  !*** ./resources/js/components/MultipleQuestionsComponent.vue?vue&type=template&id=675b170b&scoped=true& ***!
+  \***********************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MultipleQuestionsComponent_vue_vue_type_template_id_675b170b_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./MultipleQuestionsComponent.vue?vue&type=template&id=675b170b&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MultipleQuestionsComponent.vue?vue&type=template&id=675b170b&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MultipleQuestionsComponent_vue_vue_type_template_id_675b170b_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MultipleQuestionsComponent_vue_vue_type_template_id_675b170b_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

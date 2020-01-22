@@ -1,7 +1,8 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
         <h2>Grammar Questions </h2>
-        <a href="<?php echo e(route('grammar.question.create')); ?>" class="btn btn-primary">Add Grammar Question</a>
+        <a href="<?php echo e(route('grammar.question.create')); ?>" class="btn btn-primary mr-4">Add Grammar Question</a>
+        <a href="<?php echo e(route('grammar.multiple-questions')); ?>" class="btn btn-primary">Add Multiple Grammar Question</a>
 
 
 

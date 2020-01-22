@@ -69,6 +69,10 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
                 'index' => 'grammar.question.index',
                 'destroy' => 'grammar.question.destroy',
             ]);
+        Route::get('/cpanel/grammar/multiple-questions','GrammarControllers\GrammarQuestionsController@showMultipleQuestions')
+            ->name('grammar.multiple-questions');;
+        Route::post('/cpanel/grammar/multiple-questions','GrammarControllers\GrammarQuestionsController@storeMultipleQuestions')
+        ->name('grammar.multiple-questions.store');
         Route::resource('/cpanel/grammar/exam', 'GrammarControllers\GrammarExamController')
             ->names([
                 'create' => 'grammar.exam.create',
@@ -96,8 +100,16 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::view('/cpanel/reading', 'reading.index')->name('reading.index');
         Route::view('/cpanel/reading/questions', 'reading.questions')->name('reading.questions.index');
 
+        Route::get('/cpanel/reading/vocab/multiple-questions','ReadingControllers\VocabQuestionsController@showMultipleQuestions')
+            ->name('vocab.multiple-questions');;
+        Route::post('/cpanel/reading/vocab/multiple-questions','ReadingControllers\VocabQuestionsController@storeMultipleQuestions')
+            ->name('vocab.multiple-questions.store');
         Route::resource('/cpanel/reading/vocab', 'ReadingControllers\VocabQuestionsController')->except(['show']);
 
+        Route::get('/cpanel/reading/{paragraph}/multiple-questions','ReadingControllers\ParagraphQuestionsController@showMultipleQuestions')
+            ->name('paragraph.multiple-questions');
+        Route::post('/cpanel/reading/{paragraph}/multiple-questions','ReadingControllers\ParagraphQuestionsController@storeMultipleQuestions')
+            ->name('paragraph.multiple-questions.store');
         Route::resource('/cpanel/reading/paragraph', 'ReadingControllers\ParagraphsController')->middleware(['auth', 'admin']);
         Route::resource('/cpanel/reading/{paragraph}/question', 'ReadingControllers\ParagraphQuestionsController')
             ->except(['index', 'show'])
@@ -171,6 +183,10 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
                     'destroy' => 'listening.exam.audio.destroy',
                     'index' => 'listening.exam.audio.index'
                 ]);
+        Route::get('/cpanel/listening/audio/{audio}/multiple-questions','ListeningControllers\ListeningQuestionsController@showMultipleQuestions')
+            ->name('listening.multiple-questions');
+        Route::post('/cpanel/listening/audio/{audio}/multiple-questions','ListeningControllers\ListeningQuestionsController@storeMultipleQuestions')
+            ->name('listening.multiple-questions.store');
 //        Route::get('/cpanel/listening/exam/{exam}/audio', 'ListeningControllers\ListeningExamController@showAudios')->name('listening.exam.audios.show');
 //        Route::post('/cpanel/listening/exam/{exam}/audio', 'ListeningControllers\ListeningExamController@storeAudios')->name('listening.exam.audios.store');
 //        Route::delete('/cpanel/listening/exam/{exam}/audio/{audio}', 'ListeningControllers\ListeningExamController@destroyAudios')->name('listening.exam.audios.destroy');
