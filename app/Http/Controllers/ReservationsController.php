@@ -7,6 +7,7 @@ use App\Grammar\GrammarQuestion;
 use App\Group;
 use App\GroupType;
 use App\Logging;
+use App\Providers\ClosedReservation;
 use App\Reservation;
 use DateTime;
 use Illuminate\Http\Request;
@@ -63,7 +64,7 @@ class ReservationsController extends Controller
             $this->generateGroups($res);
             $message=" create new reservation {".$res->id."} ";
             Logging::logAdmin(auth()->user(),$message);
-            $reservations=$this->getAllReservations(Reservation::all());
+            $reservations=$this->getReservations(Reservation::all());
             $reservations=json_encode($reservations);
             return response()->json(['success'=>true,'res'=>$reservations]);
         } else{
@@ -123,6 +124,8 @@ class ReservationsController extends Controller
 //        dd($request['max_students']);
 
         if ($re->done == 0) {
+            if($re->students->count()==$request->max_students)
+                event(new ClosedReservation($re));
            $check= $re->update($this->validateData());
             $message=" update reservation {".$re->id."} ";
             Logging::logAdmin(auth()->user(),$message);

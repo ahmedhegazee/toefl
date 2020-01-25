@@ -196,7 +196,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     });
     Route::group(['middleware' => ['print-certificates']], function () {
         Route::view('/cpanel/certificates-panel', 'cpanel.certificatesControlPanel')->name('cpanel.certificates-panel');
-        Route::get('/students/{reservation}/print', 'ApiControllers\ApiController@printPDF');
+        Route::post('/students/{reservation}/print', 'ApiControllers\ApiController@printPDF');
         Route::get('/students/{reservation}/certificates', 'ApiControllers\ApiController@getStudentsForCertificates');
     });
     Route::group(['middleware' => ['edit-student-marks']], function () {
@@ -208,6 +208,10 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     });
     Route::group(['middleware' => ['manage-exams-panel']], function () {
         Route::view('/cpanel/exam-panel', 'exams.examControlPanel')->name('cpanel.exams-panel');
+
+        Route::view('/cpanel/student-data', 'students-data')->name('cpanel.student-data');
+        Route::patch('/cpanel/student/{student}/edit', 'ApiControllers\ApiController@editStudentResult');
+
         Route::post('/attempt/{student}', 'ApiControllers\ApiController@checkStudentAttempt');
         Route::get('/reservations/', 'ApiControllers\ApiController@getReservations');
         Route::get('/groups/{res}', 'ApiControllers\ApiController@getGroups');
@@ -215,6 +219,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::post('/students/{group}/enter', 'ApiControllers\ExamsApiController@studentsCanEnterExam');
         Route::post('/students/{group}/start', 'ApiControllers\ExamsApiController@studentsCanStartExam');
         Route::post('/students/{group}/stop', 'ApiControllers\ExamsApiController@endExam');
+        Route::post('/students/{group}/close', 'ApiControllers\ExamsApiController@closeExam');
         Route::get('/students/{group}/entered', 'ApiControllers\ExamsApiController@isExamEntered');
         Route::get('/students/{group}/started', 'ApiControllers\ExamsApiController@isExamStarted');
         Route::get('/students/{group}/working', 'ApiControllers\ExamsApiController@isExamWorking');
@@ -236,7 +241,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::resource('/cpanel/res/{re}/group', 'GroupsController')
             ->only(['show','update']);
     });
-
 
 });
 Route::post('/users/unique-email', 'ApiControllers\ApiController@checkEmailIsUnique');

@@ -4,6 +4,11 @@ let  randomParagraphQuestions, paragraphQuestion = 0, paragraphQuestions;
 let isParagraphs =false;
 // let questionsArray = [], randomQuestions, question = 0, questions;
 window.onload = function () {
+    var id=document.getElementById('id').value;
+    var name=document.getElementById('name').value;
+    if(document.cookie.indexOf('student-'+id+'-'+name+'-reading-vocab')>-1&&document.cookie.indexOf('student-'+id+'-'+name+'-reading-paragraph')>-1){
+        window.location.replace('/exam/listening');
+    }
     setTimer();
     vocabQuestions = document.getElementsByClassName('vocab');
     var vocabNumbers = fillNumbersArray(vocabQuestions);
@@ -46,15 +51,16 @@ function nextQuestion() {
         isParagraphs=true;
     }
 
-    if(paragraph === paragraphs.length){
+    if(paragraph === paragraphs.length &&paragraphQuestion===0){
         var questions=getQuestions('vocab');
         var answers=getAnswers(questions,'vocabAnswers');
-        var id=document.getElementById('id');
-        cacheAnswers(answers,id,'vocab');
+        var id=document.getElementById('id').value;
+        var name=document.getElementById('name').value;
+        cacheAnswers(answers,id,'vocab',name);
 
          questions=getQuestions('pq');
          answers=getAnswers(questions,'paragraphAnswers');
-        cacheAnswers(answers,id,'paragraph');
+        cacheAnswers(answers,id,'paragraph',name);
 
         document.getElementById('submit').setAttribute('class', 'btn btn-primary d-block');
         document.getElementById('next').setAttribute('class', 'btn btn-primary d-none');
@@ -198,7 +204,7 @@ function setCookie(cname, cvalue, exdays) {
     var expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
-function cacheAnswers(answers,id=0,name){
+function cacheAnswers(answers,id=0,name,st_name){
     var json =JSON.stringify(answers);
-    setCookie('student-'+id+"-reading-"+name,json,7);
+    setCookie('student-'+id+"-"+st_name+"-reading-"+name,json,7);
 }

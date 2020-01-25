@@ -31,6 +31,7 @@
                  :sticky-header="true"
                  :items="certificateConfigs"
                  class="mt-2 mb-2"
+                 style="max-height: 70vh"
         >
             <template v-slot:cell(actions)="row">
                 <button class="btn btn-success" @click="showDialog(row.item)">Edit Config</button>
@@ -231,6 +232,7 @@
             showDialog(config) {
                 switch (config.id) {
                     case 1:
+                    case 8:
                         this.config = config;
                         this.currentCount = config.value;
                         this.count = config.value;
@@ -272,6 +274,7 @@
                 // Trigger submit handler
                 switch (this.config.id) {
                     case 1:
+                    case 8:
                         this.handleCountSubmit();
                         break;
                     case 2:

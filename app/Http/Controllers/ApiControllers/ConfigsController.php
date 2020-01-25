@@ -26,7 +26,7 @@ class ConfigsController extends Controller
         })->values()->all();
         $certificate = Config::all()
             ->filter(function($config){
-                if($config->id==5||$config->id==6||$config->id==7)
+                if($config->id==5||$config->id==6||$config->id==7||$config->id==8)
                     return $config;
             })
             ->map(function ($config) {

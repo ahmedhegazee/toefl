@@ -119,6 +119,7 @@
                  hover
                  :sticky-header="true"
                  :items="users"
+                 style="max-height: 70vh"
         >
 
             <template v-slot:cell(actions)="row">
@@ -331,13 +332,22 @@
                 this.dismissCountDown = this.dismissSecs
             },
             showEditInfoDialog(user) {
-                this.user = user;
-                this.$refs.infoChanger.show();
+                if(user.id!=1){
+                    this.user = user;
+                    this.$refs.infoChanger.show();
+                }else{
+                    this.showAlert("You can't edit this user")
+                }
+
             },
             showEditRolesDialog(user) {
-                this.user = user;
-                this.selected = user.selectedRoles;
-                this.$refs.rolesChanger.show();
+                if(user.id!=1) {
+                    this.user = user;
+                    this.selected = user.selectedRoles;
+                    this.$refs.rolesChanger.show();
+                }else{
+                    this.showAlert("You can't edit this user")
+                }
             },
 
             resetModal() {

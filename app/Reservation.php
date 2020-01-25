@@ -30,4 +30,6 @@ class Reservation extends Model
     {
         return $this->hasMany(Group::class);
     }
+
+
 }

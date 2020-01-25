@@ -51,6 +51,7 @@
             :filter="filter"
             :fields="fields"
             sort-by="id"
+            style="max-height: 70vh"
         >
             <template v-slot:cell(actions)="row">
                 <button v-if="" class="btn btn-danger" @click="deleteQuestion(row.item)">Remove</button>

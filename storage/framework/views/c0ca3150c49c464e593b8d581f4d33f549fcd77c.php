@@ -5,6 +5,8 @@
         <?php if(!is_null(auth()->user()->getStudent())): ?>
             <input type="hidden" class="form-control"
                    id="id" value="<?php echo e(auth()->user()->getStudent()->id); ?>">
+            <input type="hidden" class="form-control"
+                   id="name" value="<?php echo e(auth()->user()->name); ?>">
         <?php endif; ?>
         <input type="hidden" id="time" value="<?php echo e($time); ?>">
         <form action="<?php echo e($route); ?>" method="post">
@@ -197,7 +199,7 @@
             <div class="row justify-content-center">
                 <button type="button" onclick="nextQuestion();" id="next" class="btn btn-primary d-none">Next Question
                 </button>
-                <button type="submit" class="btn btn-primary d-none " id="submit">Submit Answers</button>
+                <button class="btn btn-primary d-none " id="submit">Submit Answers</button>
 
             </div>
         </form>

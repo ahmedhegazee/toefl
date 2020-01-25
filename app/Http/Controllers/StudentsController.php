@@ -31,6 +31,7 @@ class StudentsController extends Controller
 //        $students= Student::paginate(15);
 //        return view('students.index',compact('students'));
         $students = Student::all()->map(function ($student) {
+            if (!is_null($student->results->last()))
             return [
                 'id' => $student->id,
                 'Arabic Name' => $student->arabic_name,
@@ -43,6 +44,20 @@ class StudentsController extends Controller
                 'Actions' => '',
                 'failed' => $student->results->last()->success ? true : false,
             ];
+            else{
+                return [
+                    'id' => $student->id,
+                    'Arabic Name' => $student->arabic_name,
+                    'English Name' => $student->user->name,
+                    'phone' => $student->phone,
+                    'email' => $student->user->email,
+                    'verified' => $student->verified,
+                    'Studying Degree' => $student->studying,
+                    'Required Score' => $student->required_score,
+                    'Actions' => '',
+                    'failed'=>1
+                ];
+            }
         });
         return response()->json($students);
     }

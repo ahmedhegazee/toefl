@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Config;
 use App\Group;
+use App\Providers\ClosedReservation;
 use App\Reservation;
 use App\Student;
 use App\User;
@@ -62,7 +63,7 @@ class RegisterController extends Controller
             'nidimage'=>'required|image|max:5120',
             'certificateimage'=>'required|image|max:5120',
             'messageimage'=>'required|image|max:5120',
-            'required_score'=>'numbers|min:300|max:700'
+            'required_score'=>'numeric|min:300|max:700'
         ];
         $messages=[
             'personalimage.required'=>'personal image field is required',
@@ -86,17 +87,27 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
+     * @param Reservation $res
      * @return \App\User
      */
     protected function create(array $data,Reservation $res)
     {
+        if ($res->students->count()==$res->max_students-1)
+        {
+            $user= $this->createUser($data);
+            $this->createStudent($user,$data,$res);
+            event(new ClosedReservation($res));
+            return $user;
+        }
+        else{
+            $user= $this->createUser($data);
+            $this->createStudent($user,$data,$res);
+            return $user;
+        }
 
-       $user= $this->createUser($data);
 
-        $this->createStudent($user,$data,$res);
 
-       return $user;
     }
 
     public function createUser($data)
@@ -114,7 +125,7 @@ class RegisterController extends Controller
     }
     public function createStudent($user,$data,Reservation $res)
     {
-
+        $group=$res->groups()->where('group_type_id',intval($data['type']))->first();
         Student::create([
             'uid'=> $user->id,
             'phone'=>$data['phone'],
@@ -124,7 +135,7 @@ class RegisterController extends Controller
             'certificateimage'=>$data['certificateimage']->store('certificateimages','public'),
             'messageimage'=>$data['messageimage']->store('messageimages','public'),
             'res_id'=>$res->id,
-            'group_id'=>intval($data['type']),
+            'group_id'=>$group->id,
             'gender'=>intval($data['gender']),
             'studying'=>intval($data['studying']),
             'required_score'=>intval($data['required_score'])

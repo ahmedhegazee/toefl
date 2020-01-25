@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiControllers;
 
 use App\Attempt;
 use App\Config;
+use App\Exam;
 use App\Group;
 use App\GroupType;
 use App\Http\Controllers\Controller;
@@ -30,29 +31,28 @@ class ApiController extends Controller
             if (
 //                Cache::has('student-' . $student->id . '-grammar') ||
 //                Cache::has('student-' . $student->id . '-reading') ||
-                !is_null($student->attempts->last()->result)
-            ){
-                $message = "can't delete this attempt {".$student->attempts->last()->id."}.The student has solved the exam whose id ".$student->id." and name is ".$student->user->name;
+            !is_null($student->attempts->last()->result)
+            ) {
+                $message = "can't delete this attempt {" . $student->attempts->last()->id . "}.The student has solved the exam whose id " . $student->id . " and name is " . $student->user->name;
                 Logging::logAdmin(auth()->user(), $message);
                 return response()->make("you can't delete this attempt.The student has solved the exam");
 
-            }
-            else {
-                $message = " delete this attempt {".$student->attempts->last()->id."} of this student whose id ".$student->id." and name is ".$student->user->name;
+            } else {
+                $message = " delete this attempt {" . $student->attempts->last()->id . "} of this student whose id " . $student->id . " and name is " . $student->user->name;
                 Logging::logAdmin(auth()->user(), $message);
                 $student->attempts->last()->delete();
 
                 return response()->make("Successful deleting");
             }
-        } else{
-            $message = "can't delete this attempt.The student doesn't have attempt in this reservation whose id ".$student->id." and name is ".$student->user->name;
+        } else {
+            $message = "can't delete this attempt.The student doesn't have attempt in this reservation whose id " . $student->id . " and name is " . $student->user->name;
             Logging::logAdmin(auth()->user(), $message);
             return response()->make("the student doesn't have attempt in this reservation");
 
         }
     }
 
-    public function printPDF(Reservation $reservation)
+    public function printPDF(Request $request,Reservation $reservation)
     {
         $students = $reservation->students()->with('results')->get()
             ->filter(function ($student) {
@@ -62,17 +62,20 @@ class ApiController extends Controller
                     else
                         return false;
             });
-        $html = View::make('certificate', compact('students'));
-        $pdf = App::make('dompdf.wrapper');
-//   $pdf= $pdf->setOptions(['isHtml5ParserEnabled' => true]);
-        $pdf->setPaper('letter', 'landscape');
-        $pdf->loadHTML($html)->stream();
-//    return view('certificate', compact('students'));
-//    $pdf = PDF::loadView('certificate', $students);
+        $centerManager=Config::find(5)->value;
+        $FacultyDean=Config::find(6)->value;
+        $vicePresident=Config::find(7)->value;
+        $certificateNumbering=Config::find(8);
+        $count=intval($certificateNumbering->value);
+        $certificateNumbering->update([
+            'value'=>$count+$students->count()
+        ]);
+        $startDate=$request->start;
+        $endDate=$request->end;
         $message = "print certificates of reservation id " . $reservation->id . " which has start data is " . $reservation->start;
         Logging::logAdmin(auth()->user(), $message);
-
-        return $pdf->download('certificates ' . $reservation->start . '.pdf');
+        return view('certificate', compact('students','count','centerManager','FacultyDean','vicePresident','startDate','endDate'));
+//        return $pdf->download('certificates ' . $reservation->start . '.pdf');
 
     }
 
@@ -112,7 +115,12 @@ class ApiController extends Controller
                     "Actions" => ""
                 ];
             })->values()->all();
-        return response()->json($students);
+        return response()->json([
+            'students'=>$students,
+            'entered'=>Exam::isExamEntered($group),
+            'started'=>Exam::isExamStarted($group),
+            'has_exams'=>Exam::isGroupHasExams($group),
+        ]);
     }
 
     public function getFailedStudents(Reservation $reservation)
@@ -147,7 +155,7 @@ class ApiController extends Controller
 
     public function getReservations()
     {
-        return response()->json(Reservation::get(['id', 'start'])->toArray());
+        return response()->json(Reservation::where('done',1)->get(['id', 'start'])->toArray());
     }
 
     public function getGroups(Reservation $res)
@@ -236,5 +244,49 @@ class ApiController extends Controller
             'studyingDegrees' => $studyingDegrees,
         ];
         return response()->json($data);
+    }
+
+    public function editStudentResult(Request $request ,Student $student)
+    {
+       $data= json_decode($request->data);
+       $data=collect($data);
+        $checkGrammar=$data->has('grammar');
+        $checkListening=$data->has('listening');
+        $checkVocab=$data->has('vocab');
+        $checkParagraph=$data->has('paragraph');
+        $attempt=$student->attempts->last()->id;
+
+
+
+        if($checkGrammar&&$checkListening&&$checkVocab&&$checkParagraph)
+        {
+            $marks=0;
+            $grammarAnswers=collect($data->get('grammar'));
+            $marks+=Exam::getGrammarMarks($grammarAnswers);
+            $listeningAnswers=collect($data->get('listening'));
+            $marks+=Exam::getListeningMarks($listeningAnswers);
+            $vocabAnswers=collect($data->get('vocab'));
+            $paragraphAnswers=collect($data->get('paragraph'));
+            $marks+=Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
+            $student->editResult($attempt,$marks,false);
+        }
+        else{
+            if($checkGrammar){
+                $grammarAnswers=collect($data->get('grammar'));
+                $marks=Exam::getGrammarMarks($grammarAnswers);
+                $student->editResult($attempt,$marks);
+            }if($checkListening){
+                $listeningAnswers=collect($data->get('listening'));
+                $marks=Exam::getListeningMarks($listeningAnswers);
+                $student->editResult($attempt,$marks);
+            }if($checkVocab&&$checkParagraph){
+                $vocabAnswers=collect($data->get('vocab'));
+                $paragraphAnswers=collect($data->get('paragraph'));
+                $marks=Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
+                $student->editResult($attempt,$marks);
+            }
+        }
+//        dd($data->vocab);
+//        dd($data->grammar);
     }
 }

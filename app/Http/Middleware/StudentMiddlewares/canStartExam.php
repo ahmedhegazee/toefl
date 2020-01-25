@@ -2,14 +2,16 @@
 
 namespace App\Http\Middleware\StudentMiddlewares;
 
+use App\Exam;
+use App\Student;
 use Closure;
 use Illuminate\Support\Facades\Cache;
 
 class canStartExam
 {
-    public function isAbleToStartExam()
+    public function isAbleToStartExam(Student $student)
     {
-        return Cache::has('group-can-start-exam-' . auth()->user()->getStudent()->group->id);
+        return $student->CanStartExam();
     }
 
     /**
@@ -21,9 +23,12 @@ class canStartExam
      */
     public function handle($request, Closure $next)
     {
-        if ($this->isAbleToStartExam())
+        $student =auth()->user()->getStudent();
+
+         if ($this->isAbleToStartExam($student))
             return $next($request);
         else
             return redirect()->back()->with('error', 'You are not allowed to start the exam');
+
     }
 }

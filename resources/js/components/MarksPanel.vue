@@ -27,6 +27,7 @@
                  hover
                  :sticky-header="true"
                  :items="students"
+                 style="max-height: 70vh"
         >
             <template v-slot:cell(actions)="row">
                 <button class="btn btn-success" @click="showDialog(row.item)">Edit Marks</button>

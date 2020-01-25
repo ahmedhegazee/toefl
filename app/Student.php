@@ -72,16 +72,39 @@ class Student extends Model
         return $this->hasMany(Attempt::class);
     }
 
+    public function implementScoreEquation($marks)
+    {
+        return ($marks*677)/140;
+}
+
+    public function checkIfSuccess($marks)
+    {
+        return $marks > $this->required_score;
+}
     public function sumAllMarks( int $grammarMarks=0,int $readingMarks=0,int $listeningMarks=0)
     {
         $marks=$grammarMarks+$readingMarks+$listeningMarks;
+        $marks=$this->implementScoreEquation($marks);
         $this->results()->create([
             'attempt_id'=>$this->attempts->last()->id,
-            'mark'=>$marks,
-            'success'=>$marks > $this->required_score,
+            'mark'=>intval($marks),
+            'success'=>$this->checkIfSuccess($marks),
         ]);
         $message=" solved toefl exam and has {".$marks."}";
-        Logging::logStudent(auth()->user()->getStudent(), $message);
+        Logging::logStudent($this, $message);
+    }
+
+    public function editResult($attempt,$marks,$mode=true)
+    {
+        $result =$this->results()->where('attempt_id',$attempt)->get()->first();
+        $marks=$this->implementScoreEquation($marks);
+//        dd($result);
+        if($mode)
+        $marks+=$result->mark;
+        $result->update([
+            'mark'=>intval($marks),
+            'success'=>$this->checkIfSuccess($marks),
+        ]);
     }
     public function isVerified()
     {
@@ -91,6 +114,11 @@ class Student extends Model
     public function CanEnterExam()
     {
         return  Cache::has('group-can-enter-exam-'.$this->group->id);
+
+    }
+    public function CanStartExam()
+    {
+        return  Cache::has('group-can-start-exam-'.$this->group->id);
 
     }
 }

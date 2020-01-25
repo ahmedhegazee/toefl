@@ -44,13 +44,13 @@ class ReadingExamsController extends Controller
      */
     public function create()
     {
-        $reservations =Reservation::all();
-        if(empty($reservations->toArray()))
-            return redirect()->back()->with('error','No Reservation is Available');
+        $reservations = Reservation::all();
+        if (empty($reservations->toArray()))
+            return redirect()->back()->with('error', 'No Reservation is Available');
 
 //        $types=GroupType::all();
 //        return view('reading.exams.create',compact('reservations','types'));
-        return view('reading.exams.create',compact('reservations'));
+        return view('reading.exams.create', compact('reservations'));
 
 
     }
@@ -63,28 +63,25 @@ class ReadingExamsController extends Controller
      */
     public function store(Request $request)
     {
-        $res=intval($request['reservation']);
+        $res = intval($request['reservation']);
 //        $type=intval($request['type']);
 //        $count =ReadingExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
-        $count =ReadingExam::where('reservation_id',$res)->count();
+        $count = ReadingExam::where('reservation_id', $res)->count();
 
-        if($count==0){
-          $exam=  ReadingExam::create([
-                'reservation_id'=>$res,
+        if ($count == 0) {
+            $exam = ReadingExam::create([
+                'reservation_id' => $res,
 //                'group_type_id'=>$type,
             ]);
-            $message=" add new listening exam with id {".$exam->id."} for reservation with id {".$res."}";
-            Logging::logProfessor(auth()->user(),$message);
+            $message = " add new listening exam with id {" . $exam->id . "} for reservation with id {" . $res . "}";
+            Logging::logProfessor(auth()->user(), $message);
             return redirect()->to(route('reading.exam.index'));
-        }
-        else{
-            $message=" have made exam to this reservation with id {".$res."}";
-            Logging::logProfessor(auth()->user(),$message);
-            return redirect()->back()->with('error','You have made exam to this reservation');
+        } else {
+            $message = " have made exam to this reservation with id {" . $res . "}";
+            Logging::logProfessor(auth()->user(), $message);
+            return redirect()->back()->with('error', 'You have made exam to this reservation');
         }
     }
-
-
 
 
     /**
@@ -95,10 +92,10 @@ class ReadingExamsController extends Controller
      */
     public function edit(ReadingExam $exam)
     {
-        $reservations =Reservation::all();
+        $reservations = Reservation::all();
 //        $types=GroupType::all();
 //        return view('reading.exams.update',compact('exam','reservations','types'));
-        return view('reading.exams.update',compact('exam','reservations'));
+        return view('reading.exams.update', compact('exam', 'reservations'));
 
     }
 
@@ -111,23 +108,28 @@ class ReadingExamsController extends Controller
      */
     public function update(Request $request, ReadingExam $exam)
     {
-        $res=intval($request['reservation']);
+        $res = intval($request['reservation']);
 //        $type=intval($request['type']);
 //        $count =ReadingExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
-        $count =ReadingExam::where('reservation_id',$res)->count();
+        $count = ReadingExam::where('reservation_id', $res)->count();
 
-        if($count==0){
-            $message=" update reading exam with id {".$exam->id."} and old reservation is {".$exam->reservation->id."} and new reservation id is{".$res."}";
-            Logging::logProfessor(auth()->user(),$message);
-            $exam->update([
-                'reservation_id'=>intval($request['reservation']),
+        if (!Exam::checkExamIsRunning($exam)) {
+            if ($count == 0) {
+                $message = " update reading exam with id {" . $exam->id . "} and old reservation is {" . $exam->reservation->id . "} and new reservation id is{" . $res . "}";
+                Logging::logProfessor(auth()->user(), $message);
+                $exam->update([
+                    'reservation_id' => intval($request['reservation']),
 //                'group_type_id'=>intval($request['type']),
-            ]);
-            return redirect()->to(route('reading.exam.index'));        }
-        else{
-            $message=" have made exam to this reservation with id {".$res."}";
-            Logging::logProfessor(auth()->user(),$message);
-            return redirect()->back()->with('error','You have made exam to this reservation ');
+                ]);
+                return redirect()->to(route('reading.exam.index'));
+            } else {
+                $message = " have made exam to this reservation with id {" . $res . "}";
+                Logging::logProfessor(auth()->user(), $message);
+                return redirect()->back()->with('error', 'You have made exam to this reservation ');
+            }
+        } else {
+            return redirect()->back()->with('error', 'You can\'t edit this exam because it is running ');
+
         }
     }
 
@@ -139,28 +141,30 @@ class ReadingExamsController extends Controller
      */
     public function destroy(ReadingExam $exam)
     {
-        $message=" delete reading exam with id {".$exam->id."} and  reservation id is {".$exam->reservation->id."}";
-        Logging::logProfessor(auth()->user(),$message);
-        $exam->paragraphs()->detach($exam->paragraphs);
-        $exam->vocabQuestions()->detach($exam->vocabQuestions);
-        $exam->delete();
-        return redirect()->to(route('reading.exam.index'));
+        if (!Exam::checkExamIsRunning($exam)) {
+            $message = " delete reading exam with id {" . $exam->id . "} and  reservation id is {" . $exam->reservation->id . "}";
+            Logging::logProfessor(auth()->user(), $message);
+            $exam->paragraphs()->detach($exam->paragraphs);
+            $exam->vocabQuestions()->detach($exam->vocabQuestions);
+            $exam->delete();
+//            return redirect()->to(route('reading.exam.index'));
+        }
     }
 
     public function showParagraphs(ReadingExam $exam)
     {
-        $paragraphs =Paragraph::getParagraphs($exam->paragraphs()->get());
-        $paragraphs=json_encode($paragraphs);
+        $paragraphs = Paragraph::getParagraphs($exam->paragraphs()->get());
+        $paragraphs = json_encode($paragraphs);
 
-        return view('reading.exams.paragraphs',compact('paragraphs','exam'));
+        return view('reading.exams.paragraphs', compact('paragraphs', 'exam'));
     }
+
     public function showVocab(ReadingExam $exam)
     {
-        $questions=Question::getQuestions($exam->vocabQuestions()->get());
-        $questions=json_encode($questions);
-        return view('reading.exams.vocab',compact('questions','exam'));
+        $questions = Question::getQuestions($exam->vocabQuestions()->get());
+        $questions = json_encode($questions);
+        return view('reading.exams.vocab', compact('questions', 'exam'));
     }
-
 
 
 }

@@ -20,6 +20,7 @@
                  :sticky-header="true"
                  :items="groups"
                  :filter="filter"
+                 style="max-height: 70vh"
         >
             <template v-slot:cell(actions)="row">
                 <button class="btn btn-primary" @click="showStudents(row.item)">Show Students</button>

@@ -3,6 +3,8 @@
 namespace Illuminate\Foundation\Auth;
 
 use App\GroupType;
+use App\Providers\ClosedReservation;
+use App\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
@@ -18,8 +20,18 @@ trait RegistersUsers
      */
     public function showRegistrationForm()
     {
-        $groups=GroupType::all();
-        return view('auth.register',compact('groups'));
+        $reservations= Reservation::where('done','!=',1)->get();
+        $res= $reservations->first();
+        if($res->students->count()==$res->max_students)
+        {
+            event(new ClosedReservation($res));
+            return redirect('/error')->with('error','Reservation is Not Available');
+        }
+        else{
+            $groups=GroupType::all();
+            return view('auth.register',compact('groups'));
+        }
+
     }
 
     /**
@@ -30,14 +42,21 @@ trait RegistersUsers
      */
     public function register(Request $request)
     {
-        $this->validator($request->all())->validate();
+        $reservations= Reservation::where('done','!=',1)->get();
+        $res= $reservations->first();
+        if($res->students->count()==$res->max_students)
+        {
+            event(new ClosedReservation($res));
+            return redirect('/error')->with('error','Reservation is Not Available');
+        }
+            $this->validator($request->all())->validate();
+            event(new Registered($user = $this->create($request->all(),$res)));
+            $this->guard()->login($user);
 
-        event(new Registered($user = $this->create($request->all())));
+            return $this->registered($request, $user)
+                ?: redirect($this->redirectPath());
 
-        $this->guard()->login($user);
 
-        return $this->registered($request, $user)
-                        ?: redirect($this->redirectPath());
     }
 
     /**

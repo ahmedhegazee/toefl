@@ -6,6 +6,8 @@
         @if(!is_null(auth()->user()->getStudent()))
             <input type="hidden" class="form-control"
                    id="id" value="{{auth()->user()->getStudent()->id}}">
+            <input type="hidden" class="form-control"
+                   id="name" value="{{auth()->user()->name}}">
         @endif
         <input type="hidden" id="time" value="{{$time}}">
         <form action="{{$route}}" method="post">
