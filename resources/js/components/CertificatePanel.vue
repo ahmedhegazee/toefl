@@ -25,11 +25,11 @@
         <div class="form-group row mb-0 justify-content-center">
 
             <button @click="chooseDates()" class="btn btn-primary mr-2">
-                Choose Reservation Dates
-            </button>
-            <button @click="print()" class="btn btn-primary mr-2">
                Print
             </button>
+<!--            <button @click="print()" class="btn btn-primary mr-2">-->
+<!--               Print-->
+<!--            </button>-->
         </div>
         <h1>Students</h1>
         <b-table striped
@@ -149,26 +149,30 @@
                 // });
             },
             print(){
-                if (this.endState && this.startState)
+                // if (this.endState && this.startState)
                     axios.post("/students/" + this.reservation + "/print",{
                         'start':this.startDate,
                         'end':this.endDate,
                     }).then(response=>{
+
                         document.write(response.data);
                     })
                     .catch(error=>console.log(error));
-                else
-                {
-                    this.message="Please choose correct dates";
-                    this.showAlert();
-                }
+                // else
+                // {
+                //     this.message="Please choose correct dates";
+                //     this.showAlert();
+                // }
             },
             showModal() {
                 this.$refs['my-modal'].show()
             },
             hideModal() {
-                if (this.endState && this.startState)
+                if (this.endState && this.startState){
                     this.$refs['my-modal'].hide();
+                    this.print();
+                }
+
 
             },
             countDownChanged(dismissCountDown) {

@@ -4,10 +4,12 @@ let  randomParagraphQuestions, paragraphQuestion = 0, paragraphQuestions;
 let isParagraphs =false;
 // let questionsArray = [], randomQuestions, question = 0, questions;
 window.onload = function () {
-    var id=document.getElementById('id').value;
-    var name=document.getElementById('name').value;
-    if(document.cookie.indexOf('student-'+id+'-'+name+'-reading-vocab')>-1&&document.cookie.indexOf('student-'+id+'-'+name+'-reading-paragraph')>-1){
-        window.location.replace('/exam/listening');
+    if(document.location.pathname.indexOf('live')==-1) {
+        var id = document.getElementById('id').value;
+        var name = document.getElementById('name').value;
+        if (document.cookie.indexOf('student-' + id + '-' + name + '-reading-vocab') > -1 && document.cookie.indexOf('student-' + id + '-' + name + '-reading-paragraph') > -1) {
+            window.location.replace('/exam/listening');
+        }
     }
     setTimer();
     vocabQuestions = document.getElementsByClassName('vocab');
@@ -52,16 +54,17 @@ function nextQuestion() {
     }
 
     if(paragraph === paragraphs.length &&paragraphQuestion===0){
-        var questions=getQuestions('vocab');
-        var answers=getAnswers(questions,'vocabAnswers');
-        var id=document.getElementById('id').value;
-        var name=document.getElementById('name').value;
-        cacheAnswers(answers,id,'vocab',name);
+        if(document.location.pathname.indexOf('live')==-1) {
+            var questions = getQuestions('vocab');
+            var answers = getAnswers(questions, 'vocabAnswers');
+            var id = document.getElementById('id').value;
+            var name = document.getElementById('name').value;
+            cacheAnswers(answers, id, 'vocab', name);
 
-         questions=getQuestions('pq');
-         answers=getAnswers(questions,'paragraphAnswers');
-        cacheAnswers(answers,id,'paragraph',name);
-
+            questions = getQuestions('pq');
+            answers = getAnswers(questions, 'paragraphAnswers');
+            cacheAnswers(answers, id, 'paragraph', name);
+        }
         document.getElementById('submit').setAttribute('class', 'btn btn-primary d-block');
         document.getElementById('next').setAttribute('class', 'btn btn-primary d-none');
     }

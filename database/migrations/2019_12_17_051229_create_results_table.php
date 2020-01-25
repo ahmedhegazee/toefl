@@ -16,7 +16,7 @@ class CreateResultsTable extends Migration
         Schema::create('results', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('student_id');
-            $table->unsignedBigInteger('mark');
+            $table->bigInteger('mark');
             $table->unsignedBigInteger('attempt_id');
             $table->integer('success')->default(0);
             $table->foreign('student_id')->references('id')->on('students');
