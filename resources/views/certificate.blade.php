@@ -6,6 +6,40 @@
     <link href='https://fonts.googleapis.com/css?family=Pristina' rel='stylesheet'>
 
     <style>
+        @media print {
+            .btn{
+                display: none !important;
+            }
+            .container{
+                margin: 0;
+            }
+        }
+        .btn-primary {
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn {
+            margin-top: .25rem;
+            margin-bottom: .25rem;
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: .25rem;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        .btn-primary:hover {
+            color: #fff;
+            background-color: #0069d9;
+            border-color: #0062cc;
+            cursor: pointer;
+        }
         .container {
             position: relative;
             font-family: Arial;
@@ -115,6 +149,12 @@
     </style>
 </head>
 <body>
+<button class="btn btn-primary" onclick="myFunction()">Print</button>
+<script>
+    function myFunction(){
+        window.print();
+    }
+</script>
 @foreach($students as $student)
     <center>
         <div style="width: 1050px; height: 742.3px" class="container">
@@ -161,5 +201,6 @@
     @endforeach
 </body>
 </html>
+
 
 
