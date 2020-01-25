@@ -38,6 +38,7 @@ class ConfigTableSeeder extends Seeder
         \App\Config::create([
             'name'=>'vice_president',
             'value'=>'Prof. Hassan H. Younis',
+
         ]);
         \App\Config::create([
             'name'=>'certificate_id',
@@ -45,3 +46,4 @@ class ConfigTableSeeder extends Seeder
         ]);
     }
 }
+
