@@ -4,7 +4,6 @@
             :show="dismissCountDown"
             dismissible
             fade
-            :sticky-header="true"
             :variant="alert"
             @dismiss-count-down="countDownChanged"
         >
@@ -118,13 +117,15 @@
         <b-table striped
                  :fields="fields"
                  hover
+                 :sticky-header="true"
                  :items="users"
+                 style="max-height: 70vh"
         >
 
             <template v-slot:cell(actions)="row">
-                <button class="btn btn-primary" @click="showEditRolesDialog(row.item)">Edit Roles</button>
-                <button class="btn btn-primary" @click="showEditInfoDialog(row.item)">Edit Info</button>
-                <button class="btn btn-danger" @click="deleteUser(row.item)">Delete</button>
+                <button class="btn btn-primary mr-2 mb-2" @click="showEditRolesDialog(row.item)">Edit Roles</button>
+                <button class="btn btn-primary mr-2 mb-2" @click="showEditInfoDialog(row.item)">Edit Info</button>
+                <button class="btn btn-danger mr-2 mb-2" @click="deleteUser(row.item)">Delete</button>
 
             </template>
 
@@ -331,13 +332,22 @@
                 this.dismissCountDown = this.dismissSecs
             },
             showEditInfoDialog(user) {
-                this.user = user;
-                this.$refs.infoChanger.show();
+                if(user.id!=1){
+                    this.user = user;
+                    this.$refs.infoChanger.show();
+                }else{
+                    this.showAlert("You can't edit this user")
+                }
+
             },
             showEditRolesDialog(user) {
-                this.user = user;
-                this.selected = user.selectedRoles;
-                this.$refs.rolesChanger.show();
+                if(user.id!=1) {
+                    this.user = user;
+                    this.selected = user.selectedRoles;
+                    this.$refs.rolesChanger.show();
+                }else{
+                    this.showAlert("You can't edit this user")
+                }
             },
 
             resetModal() {
@@ -358,7 +368,8 @@
                 // Prevent modal from closing
                 bvModalEvt.preventDefault()
                 // Trigger submit handler
-                this.checkIsUniqueEmail();
+                if (this.emailState)
+                    this.checkIsUniqueEmail();
                 this.handleSubmit();
 
 
@@ -386,25 +397,24 @@
 
             handleSubmit() {
                 // Exit when the form isn't valid
-                if (this.name.length > 0 && !this.nameState) {
-                    return
-                }else if(!this.emailState){
-                    return
-                }
-                else if (this.email != this.confirmEmail ) {
-                    this.confirmEmailState = false;
-                    return
-                }
-                else if( !this.passwordState)
-                    return;
-                else if (
-                    this.password != this.confirmPassword
+                if (this.name.length > 0) {
+                    if (!this.nameState)
+                        return
+                } else if (this.email.length > 0)
+                    if (!this.emailState) {
+                        if (this.email != this.confirmEmail) {
+                            this.confirmEmailState = false;
+                            return;
+                            if (!this.isUniqueEmail)
+                                return;
+                        }
+                    } else if (this.password.length > 0)
+                        if (!this.passwordState)
+                            if (this.password != this.confirmPassword) {
+                                this.confirmPassState = false;
+                                return;
+                            }
 
-                ) {
-                    this.confirmPassState = false;
-                    return
-                } else if(!this.isUniqueEmail)
-                    return;
                 this.sendChange();
                 // Hide the modal manually
                 this.$nextTick(() => {
@@ -423,11 +433,11 @@
                     return
                 }
 
-                if (this.password != this.confirmPassword ) {
+                if (this.password != this.confirmPassword) {
                     this.confirmPassState = false;
                     return
                 }
-                if (this.email != this.confirmEmail ) {
+                if (this.email != this.confirmEmail) {
                     this.confirmEmailState = false;
                     return
                 }
@@ -440,7 +450,7 @@
             },
 
             sendChange() {
-                axios.patch('/users/'+this.user.id, {
+                axios.patch('/users/' + this.user.id, {
                     'name': this.name,
                     'email': this.email,
                     'password': this.password,
@@ -459,7 +469,7 @@
 
             },
             addNewUser() {
-                axios.post('/users/store', {
+                axios.post('/users', {
                     'name': this.name,
                     'email': this.email,
                     'password': this.password,
@@ -487,16 +497,16 @@
             },
             getUserRoles() {
                 var data = '';
-                for (var i=0; i<this.selected.length;i++) {
-                    var role=this.selected[i]-1;
-                    console.log('index '+role);
-                    console.log('role '+this.roles[role]['text']);
+                for (var i = 0; i < this.selected.length; i++) {
+                    var role = this.selected[i] - 1;
+                    // console.log('index ' + role);
+                    // console.log('role ' + this.roles[role]['text']);
                     data += this.roles[role]['text'] + ' ,';
                 }
                 return data;
             },
             sendRolesUpdate() {
-                axios.patch('/roles/'+this.user.id, {
+                axios.patch('/roles/' + this.user.id, {
                     'roles': this.selected,
                 }).then(response => {
                     if (response.data.success) {
@@ -525,12 +535,12 @@
                         console.log(error);
                     });
             },
-            deleteUser(user){
-                if(user.roles.indexOf('Super Admin') ==-1){
-                    this.$bvModal.msgBoxConfirm('Are you sure about deleting this user '+user.name, {
+            deleteUser(user) {
+                if (user.roles.indexOf('Super Admin') == -1) {
+                    this.$bvModal.msgBoxConfirm('Are you sure about deleting this user ' + user.name, {
                         title: 'Delete User',
-                        size: 'sm',
-                        buttonSize: 'sm',
+                        size:'sm',
+                        buttonSize:'sm',
                         okVariant: 'danger',
                         okTitle: 'YES',
                         cancelTitle: 'NO',
@@ -539,15 +549,15 @@
                         centered: true
                     })
                         .then(value => {
-                            if(value==true){
-                                axios.delete('/users/'+user.id)
-                                    .then(response=>{
+                            if (value == true) {
+                                axios.delete('/users/' + user.id)
+                                    .then(response => {
                                         var index = this.users.indexOf(user);
                                         if (index > -1) {
                                             this.users.splice(index, 1);
                                         }
-                                        this.showAlert("Successfully Deleted",'success');
-                                    }).catch(error=>{
+                                        this.showAlert("Successfully Deleted", 'success');
+                                    }).catch(error => {
                                     console.log(error);
                                 })
                             }
@@ -556,7 +566,7 @@
                             // An error occurred
                             console.log(err);
                         })
-                }else
+                } else
                     this.showAlert("You can't delete super admin");
 
             },

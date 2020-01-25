@@ -11,10 +11,10 @@
     <?php $__currentLoopData = $students; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $student): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <tr>
             <td><?php echo e($student->id); ?></td>
-            <td><?php echo e($student->user()->name); ?></td>
+            <td><?php echo e($student->user->name); ?></td>
             <td><?php echo e($student->arabic_name); ?></td>
             <td><?php echo e($student->phone); ?></td>
-            <td><?php echo e($student->user()->email); ?></td>
+            <td><?php echo e($student->user->email); ?></td>
 
             <td>
                 <a href="<?php echo e(route('student.show',['student'=>$student])); ?>" class="btn btn-primary">Show</a>

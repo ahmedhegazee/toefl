@@ -198,7 +198,7 @@
         </div>
     </center>
 
-@endforeach
+    @endforeach
 </body>
 </html>
 

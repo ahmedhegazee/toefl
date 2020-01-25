@@ -2,10 +2,6 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\isAdmin;
-use App\Http\Middleware\isAvailableReservation;
-use App\Http\Middleware\studentHasOnlyOneAttempt;
-use App\Http\Middleware\studentLastActivity;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -39,7 +35,6 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            studentLastActivity::class,
         ],
 
         'api' => [
@@ -66,12 +61,24 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        'available'=>\App\Http\Middleware\isAvailableReservation::class,
-        'check_roles'=>\App\Http\Middleware\checkRoles::class,
-        'check_student'=>\App\Http\Middleware\checkStudent::class,
-        'can_start_exam'=>\App\Http\Middleware\canStartExam::class,
-        'admin'=>\App\Http\Middleware\admin::class,
-        'has_only_one_attempt'=>studentHasOnlyOneAttempt::class,
+        'available' => \App\Http\Middleware\isAvailableReservation::class,
+        'check_roles' => \App\Http\Middleware\checkRoles::class,
+//Students Middleware
+        'student_is_online' => \App\Http\Middleware\StudentMiddlewares\studentLastActivity::class,
+        'check_student' => \App\Http\Middleware\StudentMiddlewares\checkStudent::class,
+        'can_start_exam' => \App\Http\Middleware\StudentMiddlewares\canStartExam::class,
+        'has_only_one_attempt' => \App\Http\Middleware\StudentMiddlewares\studentHasOnlyOneAttempt::class,
+//Admin Middleware
+        'admin' => \App\Http\Middleware\AdminMiddleware\admin::class,
+        'super-admin' => \App\Http\Middleware\AdminMiddleware\isSuperAdmin::class,
+        'manage-reading' => \App\Http\Middleware\AdminMiddleware\adminCanManageReadingSection::class,
+        'manage-listening' => \App\Http\Middleware\AdminMiddleware\adminCanManageListeningSection::class,
+        'manage-grammar' => \App\Http\Middleware\AdminMiddleware\adminCanManageGrammarSection::class,
+        'manage-students-panel' => \App\Http\Middleware\AdminMiddleware\adminCanManageReservationsPanel::class,
+        'manage-reservations-panel' => \App\Http\Middleware\AdminMiddleware\adminCanManageStudentsPanel::class,
+        'manage-exams-panel' => \App\Http\Middleware\AdminMiddleware\adminCanManageExamsPanel::class,
+        'edit-student-marks' => \App\Http\Middleware\AdminMiddleware\adminCanEditFailedStudentMarks::class,
+        'print-certificates' => \App\Http\Middleware\AdminMiddleware\adminCanPrintCertificates::class,
     ];
 
     /**

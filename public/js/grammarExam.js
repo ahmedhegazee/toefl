@@ -3,6 +3,11 @@ let findQuestionsArray = [], randomFindQuestions, findQuestion = 0, findQuestion
 let isFindQuestions =false;
 // let questionsArray = [], randomQuestions, question = 0, questions;
 window.onload = function () {
+    var id=document.getElementById('id').value;
+    var name=document.getElementById('name').value;
+    if(document.cookie.indexOf('student-'+id+'-'+name+'-grammar')>-1){
+        window.location.replace('/exam/reading');
+    }
     setTimer();
     fillQuestions = document.getElementsByClassName('fl');
     var fillNumbers = fillNumbersArray(fillQuestions);
@@ -47,6 +52,11 @@ function nextQuestion() {
     }
 
     if(findQuestion === findQuestions.length){
+        var questions=getQuestions();
+        var answers=getAnswers(questions);
+        var id=document.getElementById('id').value;
+        var name=document.getElementById('name').value;
+        cacheAnswers(answers,id,name);
         document.getElementById('submit').setAttribute('class', 'btn btn-primary d-block');
         document.getElementById('next').setAttribute('class', 'btn btn-primary d-none');
     }
@@ -127,4 +137,33 @@ function setTimer() {
         }
     }, 1000);
 
+}
+function getQuestions(){
+    let questions=[];
+    var q=document.getElementsByName('questions');
+    for(var i=0; i<q.length;i++){
+        questions.push(parseInt(q[i].value));
+    }
+    return questions;
+}
+function getAnswers(questions){
+    let answers=[];
+    for (var i=0;i<questions.length;i++){
+        var a=document.getElementsByName('answers['+questions[i]+']');
+        for(var j=0;j<4;j++){
+            if(a[j].checked)
+                answers.push(parseInt(a[j].value));
+        }
+    }
+    return answers;
+}
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+function cacheAnswers(answers,id=0,name=''){
+   var json =JSON.stringify(answers);
+   setCookie('student-'+id+"-"+name+"-grammar",json,7);
 }

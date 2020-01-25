@@ -20,13 +20,17 @@ trait RegistersUsers
      */
     public function showRegistrationForm()
     {
-        $res=$this->getAvailableReservation();
-        if($res!=null){
-        $groups=$res->groups;
-        return view('auth.register',compact('groups'));
-        }
-        else
+        $reservations= Reservation::where('done','!=',1)->get();
+        $res= $reservations->first();
+        if($res->students->count()==$res->max_students)
+        {
+            event(new ClosedReservation($res));
             return redirect('/error')->with('error','Reservation is Not Available');
+        }
+        else{
+            $groups=GroupType::all();
+            return view('auth.register',compact('groups'));
+        }
 
     }
 
@@ -38,61 +42,23 @@ trait RegistersUsers
      */
     public function register(Request $request)
     {
-        $res=$this->getAvailableReservation();
-        if($res!=null){
+        $reservations= Reservation::where('done','!=',1)->get();
+        $res= $reservations->first();
+        if($res->students->count()==$res->max_students)
+        {
+            event(new ClosedReservation($res));
+            return redirect('/error')->with('error','Reservation is Not Available');
+        }
             $this->validator($request->all())->validate();
             event(new Registered($user = $this->create($request->all(),$res)));
-            $studentsCount = $res->students->count();
-            $maxStudents = $res->max_students;
-//            $this->guard()->login($user);
-            if($studentsCount==$maxStudents)
-                event(new ClosedReservation($res));
-
-            return redirect(route('success'))->with('message','Come to the faculty to continue your registration with the required papers');
+            $this->guard()->login($user);
 
             return $this->registered($request, $user)
                 ?: redirect($this->redirectPath());
 
-        }
-        else
-            return redirect(route('error'))->with('No available registration');
-
-        // TODO:: solve many requsts in the same time
-        /*
-         *
-
-
-//        if(isset($res)||$studentsCount!=$maxStudents){
-//
-//
-//            $this->guard()->login($user);
-//
-//            return $this->registered($request, $user)
-//                ?: redirect($this->redirectPath());
-//        }
-//        else
-//        {
-//            event(new ClosedReservation($res));
-//        }
-//         * */
-//        if(isset($res)){
-//            event(new Registered($user = $this->create($request->all())));
-//
-//
-//        }
-//        else
-//            return redirect(route('error'))->with('No available registration');
 
     }
-    public function getAvailableReservation()
-    {
-        $reservations= Reservation::where('start','<=',now()->toDateString())
-            ->where('done','!=',1)->get();
-        $res= $reservations->first();
 
-        return $res;
-
-    }
     /**
      * Get the guard to be used during registration.
      *
@@ -112,5 +78,6 @@ trait RegistersUsers
      */
     protected function registered(Request $request, $user)
     {
+        //
     }
 }

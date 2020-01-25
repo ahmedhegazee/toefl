@@ -1,51 +1,57 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
         <h2>Grammar Questions in this Exam </h2>
-        <a href="<?php echo e(route('grammar.exam.questions.show',compact('exam'))); ?>" class="btn btn-primary">Add Questions to this Exam</a>
+        <a href="<?php echo e(route('grammar.exam.questions.index',compact('exam'))); ?>" class="btn btn-primary">Add Questions to this Exam</a>
 
-        <table border="2px solid">
-            <tr>
-                <th>ID</th>
-                <th>Question</th>
-                <th>Question Type</th>
-                <th>First Option</th>
-                <th>Second Option</th>
-                <th>Third Option</th>
-                <th>Fourth Option</th>
-                <th>Correct Answer</th>
-                <th></th>
 
-            </tr>
-            <?php $__currentLoopData = $questions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $question): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <tr>
-                    <td><?php echo e($question->id); ?></td>
-                    <td><?php echo e($question->content); ?></td>
-                    <td><?php echo e($question->type->name); ?></td>
-                    <?php $__currentLoopData = $question->options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <td><?php echo e($option->content); ?></td>
 
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    <?php $__currentLoopData = $question->options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <?php if($option->correct): ?>
-                            <td><?php echo e($option->getCorrectOption($option->id%4==0?4:$option->id%4)); ?></td>
-                        <?php endif; ?>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    <td>
-                        <a href="<?php echo e(route('grammar.question.edit',['question'=>$question])); ?>" class="btn btn-success">Edit Question</a>
-                        <form style="display: inline;" method="post"
-                              action="<?php echo e(route('grammar.exam.questions.destroy',compact('question','exam'))); ?>">
-                            <?php echo method_field('delete'); ?>
-                            <button type="submit" class="btn btn-danger">Remove Question</button>
-                            <?php echo csrf_field(); ?>
-                        </form>
-                    </td>
-                </tr>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </table>
-<div class="row">
-    <?php echo e($questions->links()); ?>
 
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <display-questions-panel
+            exams="<?php echo e($questions1); ?>"
+            route="<?php echo e(route('grammar.question.store')); ?>"
+            delete-route="<?php echo e(route('grammar.exam.questions.store',compact('exam'))); ?>"
+            is-paragraph=false
+            can-choose=false
+        ></display-questions-panel>
     </div>
 <?php $__env->stopSection(); ?>
 

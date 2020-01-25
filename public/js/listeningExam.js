@@ -62,6 +62,11 @@ function nextQuestion() {
 
     }
     if(speech === speeches.length &&speechQuestion===0){
+        var questions=getQuestions();
+        var answers=getAnswers(questions);
+        var id=document.getElementById('id').value;
+        var name=document.getElementById('name').value;
+        cacheAnswers(answers,id,name);
         document.getElementById('submit').setAttribute('class', 'btn btn-primary d-block');
         document.getElementById('next').setAttribute('class', 'btn btn-primary d-none');
     }
@@ -212,4 +217,33 @@ function setTimer() {
         }
     }, 1000);
 
+}
+function getQuestions(){
+    let questions=[];
+    var q=document.getElementsByName('questions');
+    for(var i=0; i<q.length;i++){
+        questions.push(parseInt(q[i].value));
+    }
+    return questions;
+}
+function getAnswers(questions){
+    let answers=[];
+    for (var i=0;i<questions.length;i++){
+        var a=document.getElementsByName('listeningAnswers['+questions[i]+']');
+        for(var j=0;j<4;j++){
+            if(a[j].checked)
+                answers.push(parseInt(a[j].value));
+        }
+    }
+    return answers;
+}
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+function cacheAnswers(answers,id=0,name){
+    var json =JSON.stringify(answers);
+    setCookie('student-'+id+"-"+name+"-listening",json,7);
 }

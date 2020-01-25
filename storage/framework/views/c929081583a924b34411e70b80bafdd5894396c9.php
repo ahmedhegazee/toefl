@@ -71,7 +71,5 @@ endif; ?>
 
 
 <?php echo csrf_field(); ?>
-<?php if(strpos(request()->route()->action['uses'],'edit')<0): ?>
-<input type="hidden" name="previous" value="<?php echo e(isset($question)?$previous:''); ?>">
-<?php endif; ?>
+
 <?php /**PATH /Users/ahmedhegazy/Desktop/toefl/toeflsystem/resources/views/layouts/questions.blade.php ENDPATH**/ ?>

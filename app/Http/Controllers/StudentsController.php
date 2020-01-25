@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 
+use App\Logging;
+use App\Reservation;
 use App\Student;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class StudentsController extends Controller
@@ -13,19 +16,50 @@ class StudentsController extends Controller
     public function verifiedOptions()
     {
         return [
-            1=>'Verified',
-            0=>'Not Verified',
+            1 => 'Verified',
+            0 => 'Not Verified',
         ];
     }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        $students= Student::paginate(15);
-        return view('students.index',compact('students'));
+//        $students= Student::paginate(15);
+//        return view('students.index',compact('students'));
+        $students = Student::all()->map(function ($student) {
+            if (!is_null($student->results->last()))
+            return [
+                'id' => $student->id,
+                'Arabic Name' => $student->arabic_name,
+                'English Name' => $student->user->name,
+                'phone' => $student->phone,
+                'email' => $student->user->email,
+                'verified' => $student->verified,
+                'Studying Degree' => $student->studying,
+                'Required Score' => $student->required_score,
+                'Actions' => '',
+                'failed' => $student->results->last()->success ? true : false,
+            ];
+            else{
+                return [
+                    'id' => $student->id,
+                    'Arabic Name' => $student->arabic_name,
+                    'English Name' => $student->user->name,
+                    'phone' => $student->phone,
+                    'email' => $student->user->email,
+                    'verified' => $student->verified,
+                    'Studying Degree' => $student->studying,
+                    'Required Score' => $student->required_score,
+                    'Actions' => '',
+                    'failed'=>1
+                ];
+            }
+        });
+        return response()->json($students);
     }
 
 
@@ -42,54 +76,177 @@ class StudentsController extends Controller
 //    }
 
 
-
     /**
      * Display the specified resource.
      *
-     * @param  \App\Student  $student
+     * @param \App\Student $student
      * @return \Illuminate\Http\Response
      */
     public function show(Student $student)
     {
-        return view('students.show',compact('student'));
+        return view('students.show', compact('student'));
 
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Student  $student
+     * @param \App\Student $student
      * @return \Illuminate\Http\Response
      */
     public function edit(Student $student)
     {
-        return view('students.update',compact('student'));
+        return view('students.update', compact('student'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Student  $student
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Student $student
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function update(Request $request, Student $student)
     {
-        Validator::make($request->all(),[
-            'required_score'=>'numbers|min:300'
-        ]);
+
+        $checkEmail = true;
+        $checkEnglishName = true;
+        $checkArabicName = true;
+        $checkRequiredScore = true;
+        $checkStudyingDegree = true;
+        $checkPhone = true;
+        $checkGroupType = true;
+
+        if (strlen($request->name) > 0) {
+            $message = " update student account with id is " . $student->id . " and old name is" . $student->user->name . " new name is " . $request->name;
+            Logging::logAdmin(auth()->user(), $message);
+            $checkEnglishName = $student->user->update([
+                'name' => $request->name,
+            ]);
+        }
+
+        if (strlen($request->arabic_name) > 0) {
+            $message = " update student account with id is " . $student->id . " and old name is" . $student->arabic_name . " new name is " . $request->arabic_name;
+            Logging::logAdmin(auth()->user(), $message);
+            $checkArabicName = $student->update([
+                'arabic_name' => $request->arabic_name,
+            ]);
+        }
+
+
+        if (strlen($request->email) > 0) {
+            $message = " update student account with id is " . $student->id . " and old email is" . $student->user->email . " new email is " . $request->email;
+
+            Logging::logAdmin(auth()->user(), $message);
+            $checkEmail = $student->user->update([
+                'email' => $request->email,
+            ]);
+        }
+
+        if ($request->required_score > 0) {
+            $message = " update student account with id is " . $student->id . " and old required score is" . $student->required_score . " new required score is " . $request->required_score;
+            Logging::logAdmin(auth()->user(), $message);
+
+            $checkRequiredScore = $student->update([
+                'required_score' => $request->required_score,
+            ]);
+        }
+        $studyingOption=[
+
+            1=>'Ms.c(Master)',
+            2=>'PhD(Doctor)',
+            3=>'Board certified',
+        ];
+        if ($request->studying > 0) {
+            $message = " update student account with id is " . $student->id . " and old studying degree is" . $student->studying . " new studying degree is "
+                . $studyingOption[$request->studying] ;
+            Logging::logAdmin(auth()->user(), $message);
+
+            $checkStudyingDegree = $student->update([
+                'studying' => $request->studying,
+            ]);
+        }
+
+        if ($request->group_type > 0) {
+            $type = $request->group_type;
+            $res = $student->reservation;
+            $newGroup = $res->groups()->where('group_type_id', $type)->get()->last();
+            if ($newGroup->id != $student->group->id)
+            {
+                $message = " update student account with id is " . $student->id . " and old group is" . $student->group_id . " new group is " . $newGroup->id;
+                Logging::logAdmin(auth()->user(), $message);
+
+                $checkGroupType = $student->update([
+                    'group_id' => $newGroup->id,
+                ]);
+            }
+            else
+                $checkGroupType = false;
+        }
+        if (strlen($request->phone) > 0) {
+            $checkPhone = $student->user->update([
+                'password' => Hash::make($request->phone),
+            ]);
+            $message = "update student account with id is " . $student->id . " and phone is" . $student->phone . " phone is " . $request->phone;
+            Logging::logAdmin(auth()->user(), $message);
 
             $student->update([
-                'required_score'=>intval($request['required_score']),
-                'verified'=>1
+                'phone' => $request->phone,
             ]);
-            return redirect(route('student.index'));
+        }
+
+
+        $check = $checkEmail && $checkEnglishName && $checkArabicName
+            && $checkRequiredScore && $checkStudyingDegree && $checkPhone
+            && $checkGroupType;
+
+        return response()->json(['success' => $check]);
+
+    }
+
+    public function moveStudentToNewReservation(Request $request, Student $student)
+    {
+        if ($request->has('res')) {
+            $type = intval($request->get('type'));
+            $oldGroup = $student->group;
+            $oldReservation = $student->reservation;
+            $res = intval($request->get('res'));
+            $newReservation = Reservation::findOrFail($res);
+            $newGroup = $newReservation->groups()->where('group_type_id', $type)->get()->last();
+            if (
+                $oldGroup->id != $newGroup->id
+                && $oldReservation->id != $newReservation->id
+            ) {
+                $student->update([
+                    'res_id' => $newReservation->id,
+                    'group_id' => $newGroup->id,
+                ]);
+                $message = " move student with id {" . $student->id . "} from reservation with id {" . $oldReservation . "} to reservation with id {" . $newReservation . "}";
+                Logging::logAdmin(auth()->user(), $message);
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json(['success' => false, 'message' => 'choose another resrvation and group type']);
+            }
+
+        }
+
+    }
+
+    public function verifyStudent(Student $student)
+    {
+        $message = " verify student with id {" . $student->id . "} ";
+        Logging::logAdmin(auth()->user(), $message);
+        $student->update([
+//                'required_score'=>intval($request['required_score']),
+            'verified' => 1
+        ]);
+        return view('cpanel.studentspanel');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Student  $student
+     * @param \App\Student $student
      * @return \Illuminate\Http\Response
      */
 
@@ -113,7 +270,7 @@ class StudentsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
 //    public function store(Request $request)
@@ -219,18 +376,16 @@ class StudentsController extends Controller
 //}
 
 
-
-
     public function validateData()
     {
         return \request()->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
-            'phone'=>'required|string|unique:students',
-            'personalimage'=>'sometimes|file|image|max:5120',
-            'nidimage'=>'sometimes|file|image|max:5120',
-            'certificateimage'=>'sometimes|file|image|max:5120',
-            'messageimage'=>'sometimes|file|image|max:5120',
+            'phone' => 'required|string|unique:students',
+            'personalimage' => 'sometimes|file|image|max:5120',
+            'nidimage' => 'sometimes|file|image|max:5120',
+            'certificateimage' => 'sometimes|file|image|max:5120',
+            'messageimage' => 'sometimes|file|image|max:5120',
         ]);
     }
 

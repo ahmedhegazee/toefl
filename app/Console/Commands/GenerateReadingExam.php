@@ -14,7 +14,7 @@ class GenerateReadingExam extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:readingExam {reservation}  {groupType}';
+    protected $signature = 'generate:readingExam {reservation}  ';
 
     /**
      * The console command description.
@@ -42,12 +42,13 @@ class GenerateReadingExam extends Command
     {
         $res=$this->argument('reservation');
 
-        $type=$this->argument('groupType');
-        $count =ReadingExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+//        $type=$this->argument('groupType');
+//        $count =ReadingExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
+        $count =ReadingExam::where('reservation_id',$res)->count();
         if($count==0) {
             $exam = ReadingExam::create([
                 'reservation_id' => $res,
-                'group_type_id' => $type,
+//                'group_type_id' => $type,
             ]);
             $vocabQuestions = VocabQuestion::all()->random(30)->pluck('id')->toArray();
             $paragraphs = Paragraph::all()->random(5)->pluck('id')->toArray();

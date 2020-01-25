@@ -1,6 +1,6 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
-
+<h2>Certificates Panel</h2>
         <certificate-panel></certificate-panel>
 <?php $__env->stopSection(); ?>
 

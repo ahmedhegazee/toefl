@@ -7,16 +7,31 @@
 
                     <div class="card-body">
 
-                        <div class="row justify-content-between p-2">
+                        <div class="row justify-content-between p-2 mb-2">
                             
                             
                             
 
 
-                            <a href="<?php echo e(route('questions.index')); ?>" class="btn btn-primary ">Questions</a>
-                            <a href="<?php echo e(route('student.index')); ?>" class="btn btn-primary ">Students</a>
+
+                            <a href="<?php echo e(route('cpanel.students-panel')); ?>" class="btn btn-primary ">Students</a>
                             <a href="<?php echo e(route('res.index')); ?>" class="btn btn-primary ">Reservations </a>
-                            <a href="<?php echo e(route('exams.index')); ?>" class="btn btn-primary ">Exams </a>
+
+                            <a href="<?php echo e(route('grammar.index')); ?>" class="btn btn-primary ">Grammar Section </a>
+                            <a href="<?php echo e(route('reading.index')); ?>" class="btn btn-primary ">Reading Section </a>
+                            <a href="<?php echo e(route('listening.index')); ?>" class="btn btn-primary ">Listening Section </a>
+
+                        </div>
+                        <div class="row justify-content-between p-2">
+                            <a href="<?php echo e(route('cpanel.users-panel')); ?>" class="btn btn-primary ">Users Panel </a>
+                            <a href="<?php echo e(route('cpanel.configs-panel')); ?>" class="btn btn-primary ">Configs Panel  </a>
+                            <a href="<?php echo e(route('cpanel.exams-panel')); ?>" class="btn btn-primary ">Exams Panel </a>
+                            <a href="<?php echo e(route('cpanel.certificates-panel')); ?>" class="btn btn-primary ">Certificates Panel  </a>
+                            <a href="<?php echo e(route('cpanel.marks-panel')); ?>" class="btn btn-primary ">Edit Marks Panel  </a>
+
+                        </div>
+                        <div class="row justify-content-between p-2">
+                            <a href="<?php echo e(route('cpanel.student-data')); ?>" class="btn btn-primary ">Edit Student Marks  </a>
 
                         </div>
                     </div>

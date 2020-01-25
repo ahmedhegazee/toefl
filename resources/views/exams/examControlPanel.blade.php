@@ -3,8 +3,10 @@
 @section('content')
     <div class="container ">
 
-        <control-panel></control-panel>
-{{--        @if(session()->has('details'))--}}
+        <exams-panel></exams-panel>
+    </div>
+
+    {{--        @if(session()->has('details'))--}}
 {{--            <h1>The search results</h1>--}}
 {{--            <table border="2px">--}}
 {{--                <tr>--}}
@@ -33,5 +35,4 @@
 {{--        <div class="row">--}}
 {{--            {{$students->links()}}--}}
 {{--        </div>--}}
-{{--    </div>--}}
 @endsection

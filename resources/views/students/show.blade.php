@@ -24,23 +24,21 @@
             </div>
         </div>
 
-        </div>
-
         <div class="row">
-            <form action="{{route('student.update',['student'=>$student])}}" method="post">
-                @method('put')
-                <div class="form-group row">
-                    <label for="required_score" class="col-md-4 col-form-label text-md-right">Required Score</label>
+            <form action="{{route('student.verify',['student'=>$student])}}" method="post">
+                @method('patch')
+                {{--                <div class="form-group row">--}}
+                {{--                    <label for="required_score" class="col-md-4 col-form-label text-md-right">Required Score</label>--}}
 
-                    <div class="col-md-6">
-                        <input id="required_score" type="number" class="form-control @error('required_score') is-invalid @enderror" name="required_score" value="{{ old('required_score') }}" required  autofocus>
+                {{--                    <div class="col-md-6">--}}
+                {{--                        <input id="required_score" type="number" class="form-control @error('required_score') is-invalid @enderror" name="required_score" value="{{ old('required_score') }}" required  autofocus>--}}
 
-                        @error('required_score')
-                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                        @enderror
-                    </div>
+                {{--                        @error('required_score')--}}
+                {{--                        <span class="invalid-feedback" role="alert">--}}
+                {{--                                        <strong>{{ $message }}</strong>--}}
+                {{--                                    </span>--}}
+                {{--                        @enderror--}}
+                {{--                    </div>--}}
                 <button type="submit" class="btn btn-primary">
                     Verify Student
                 </button>
@@ -48,6 +46,8 @@
             </form>
 
         </div>
-    </div>
+        </div>
+
+
 
     @endsection

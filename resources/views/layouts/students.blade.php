@@ -11,10 +11,10 @@
     @foreach($students as $student)
         <tr>
             <td>{{$student->id}}</td>
-            <td>{{$student->user()->name}}</td>
+            <td>{{$student->user->name}}</td>
             <td>{{$student->arabic_name}}</td>
             <td>{{$student->phone}}</td>
-            <td>{{$student->user()->email}}</td>
+            <td>{{$student->user->email}}</td>
 
             <td>
                 <a href="{{route('student.show',['student'=>$student])}}" class="btn btn-primary">Show</a>

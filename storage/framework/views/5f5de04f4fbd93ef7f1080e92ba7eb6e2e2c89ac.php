@@ -2,45 +2,54 @@
     <div class="container ">
         <h2>Vocab Questions </h2>
         <a href="<?php echo e(route('vocab.create')); ?>" class="btn btn-primary">Add Vocab Question</a>
-        <table border="2px solid">
-            <tr>
-                <th>ID</th>
-                <th>Question</th>
-                <th>First Option</th>
-                <th>Second Option</th>
-                <th>Third Option</th>
-                <th>Fourth Option</th>
-                <th>Correct Answer</th>
-                <th></th>
+        <a href="<?php echo e(route('vocab.multiple-questions')); ?>" class="btn btn-primary">Add Multiple Vocab Question</a>
 
-            </tr>
-            <?php $__currentLoopData = $questions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $question): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <tr>
-                    <td><?php echo e($question->id); ?></td>
-                    <td><?php echo e($question->content); ?></td>
-                    <?php $__currentLoopData = $question->options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <td><?php echo e($option->content); ?></td>
+        
 
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    <?php $__currentLoopData = $question->options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <?php if($option->correct): ?>
-                        <td><?php echo e($option->getCorrectOption($option->id%4==0?4:$option->id%4 )); ?></td>
-                    <?php endif; ?>
-<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    <td>
 
-                        <a href="<?php echo e(route('vocab.edit',['vocab'=>$question])); ?>" class="btn btn-success">Edit</a>
-                        <form style="display: inline;" method="post" action="<?php echo e(route('vocab.destroy',['vocab'=>$question])); ?>">
-                            <?php echo method_field('delete'); ?>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                            <?php echo csrf_field(); ?>
-                        </form>
-                    </td>
-                </tr>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </table>
-<?php echo e($questions->links()); ?>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <display-questions-panel
+        exams="<?php echo e($questions); ?>"
+        route="<?php echo e(route('vocab.store')); ?>"
+        delete-route="<?php echo e(route('vocab.store')); ?>"
+        is-paragraph=false
+        can-choose=false
+
+        ></display-questions-panel>
     </div>
 <?php $__env->stopSection(); ?>
 
