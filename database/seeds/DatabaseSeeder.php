@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersTableSeeder::class);
 //       $this->call(ReservationsTableSeeder::class);
         $this->call(GrammarQuestionTypesTableSeeder::class);
-        $this->call(GrammarQuestionsTableSeeder::class);
+//        $this->call(GrammarQuestionsTableSeeder::class);
         $this->call(ConfigTableSeeder::class);
-        $this->call(ParagraphsTableSeeder::class);
-        $this->call(ParagraphQuestionsTableSeeder::class);
-        $this->call(VocabQuestionsTableSeeder::class);
+//        $this->call(ParagraphsTableSeeder::class);
+//        $this->call(ParagraphQuestionsTableSeeder::class);
+//        $this->call(VocabQuestionsTableSeeder::class);
         $this->call(AudioTypesTableSeeder::class);
         $this->call(GroupTypesTableSeeder::class);
 

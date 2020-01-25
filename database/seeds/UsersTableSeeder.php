@@ -14,16 +14,43 @@ class UsersTableSeeder extends Seeder
     {
         //factory(\App\User::class,4)->create();
 
-<<<<<<< HEAD
-     $user=   User::create([
-=======
+
         $user=User::create([
->>>>>>> exams
           'name'=>'Admin',
           'email'=>'admin@admin.com',
           'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
         ]);
-        $user->roles()->attach(1);
+        $user->roles()->attach([1,3,4,5,6,7,8,9,10,11]);
+
+        //Mr.Hatem
+        $user=User::create([
+          'name'=>'Admin',
+          'email'=>'admin@admin.com',
+          'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
+        ]);
+        $user->roles()->attach([1,11,10,9,8,3]);
+
+        //Prof.Ayman
+        $user=User::create([
+          'name'=>'Admin',
+          'email'=>'admin@admin.com',
+          'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
+        ]);
+        $user->roles()->attach([1,4,7]);
+        //Prof.Khaled
+        $user=User::create([
+          'name'=>'Admin',
+          'email'=>'admin@admin.com',
+          'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
+        ]);
+        $user->roles()->attach([1,5,7]);
+        //Prof.Ahmed
+        $user=User::create([
+          'name'=>'Admin',
+          'email'=>'admin@admin.com',
+          'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
+        ]);
+        $user->roles()->attach([1,6,7]);
 
 
     }

@@ -17,14 +17,31 @@ class ConfigTableSeeder extends Seeder
         ]);
         \App\Config::create([
             'name'=>'grammar_exam_time',
-            'value'=>'45m',
+            'value'=>'0:45',
         ]);
         \App\Config::create([
             'name'=>'reading_exam_time',
-            'value'=>'1h',
-        ]);\App\Config::create([
+            'value'=>'1:0',
+        ]);
+        \App\Config::create([
             'name'=>'listening_exam_time',
-            'value'=>'1h',
+            'value'=>'1:0',
+        ]);
+        \App\Config::create([
+            'name'=>'center_manager',
+            'value'=>'Dr.Faysel A. Metwally',
+        ]);
+        \App\Config::create([
+            'name'=>'faculty_dean',
+            'value'=>'Prof. Waleed Shawky Elbehiry',
+        ]);
+        \App\Config::create([
+            'name'=>'Prof. Hassan H. Younis',
+            'value'=>'1:0',
+        ]);
+        \App\Config::create([
+            'name'=>'certificate_id',
+            'value'=>'2414',
         ]);
     }
 }
