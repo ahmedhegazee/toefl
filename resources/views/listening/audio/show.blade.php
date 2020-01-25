@@ -7,7 +7,9 @@
             <source src="/storage/{{$audio->source}}" type="audio/wav">
             Your browser does not support the audio element.
         </audio>
-        <a href="{{route('listening.question.create',['audio'=>$audio])}}" class="btn btn-primary mb-5">Add Audio Question</a>
+        <br>
+        <a href="{{route('listening.question.create',compact('audio'))}}" class="btn btn-primary mt-2 mr-4">Add Listening Question</a>
+        <a href="{{route('listening.multiple-questions',compact('audio'))}}" class="btn btn-primary mt-2">Add Multiple Listening Question</a>
 
 
 {{--        <table border="2px solid">--}}

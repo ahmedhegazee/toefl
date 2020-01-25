@@ -36,6 +36,7 @@
                  hover
                  :sticky-header="true"
                  :items="students"
+                 style="max-height: 70vh"
         ></b-table>
 
         <b-modal ref="my-modal" hide-footer title="Reservation Dates">
@@ -111,21 +112,13 @@
             }
         }, computed: {
             startState() {
-                var current = new Date();
-                var startDate = new Date(this.startDate);
-                if (this.startDate.length == 0)
-                    return null;
-                else
-                    return (startDate >= current);
+                    return this.startDate.length != 0;
             },
             endState() {
-                var current = new Date();
                 var startDate = new Date(this.startDate);
                 var endDate = new Date(this.endDate);
-                if (this.endDate.length == 0)
-                    return null;
-                else
-                    return (endDate >= current) && (startDate < endDate);
+
+                    return  (startDate < endDate) && this.endDate.length != 0;
             }
         },
         methods: {
@@ -157,7 +150,13 @@
             },
             print(){
                 if (this.endState && this.startState)
-                location.replace("/students/" + this.reservation + "/print");
+                    axios.post("/students/" + this.reservation + "/print",{
+                        'start':this.startDate,
+                        'end':this.endDate,
+                    }).then(response=>{
+                        document.write(response.data);
+                    })
+                    .catch(error=>console.log(error));
                 else
                 {
                     this.message="Please choose correct dates";

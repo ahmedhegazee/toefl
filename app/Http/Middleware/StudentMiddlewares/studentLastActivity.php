@@ -19,7 +19,7 @@ class studentLastActivity
     public function handle($request, Closure $next)
     {
         if(Auth::check()&&!is_null(Auth::user()->getStudent())) {
-            $expiresAt = Carbon::now()->addMinutes(2);
+            $expiresAt = Carbon::now()->addMinutes(30);
             Cache::put('student-is-online-' . Auth::user()->getStudent()->id, true, $expiresAt);
         }
         return $next($request);

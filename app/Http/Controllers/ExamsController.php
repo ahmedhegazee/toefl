@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Attempt;
 use App\Config;
+use App\Exam;
 use App\Grammar\GrammarExam;
 use App\Grammar\GrammarOption;
 use App\Grammar\GrammarQuestion;
 use App\Listening\ListeningExam;
 use App\Listening\ListeningOption;
+use App\Logging;
 use App\Reading\ParagraphQuestionOption;
 use App\Reading\ReadingExam;
 use App\Reading\VocabOption;
@@ -40,10 +43,19 @@ class ExamsController extends Controller
             'readingExam' => $readingExam,
             'listeningExam' => $listeningExam,
         ]);
-        $student->attempts()->create([
-            'group_id' => $student->group->id,
-            'reservation_id' => $reservation,
-        ]);
+        $count =Attempt::where('student_id',$student->id)
+            ->where('reservation_id',$student->reservation->id)
+            ->where('group_id',$student->group->id)->count();
+        if($count==0){
+            $attempt =$student->attempts()->create([
+                'group_id' => $student->group->id,
+                'reservation_id' => $reservation,
+            ]);
+            $message=" has new attempt {".$attempt->id."}";
+            Logging::logStudent(auth()->user()->getStudent(), $message);
+        }
+
+
         return view('exams.home', compact('fullName', 'student'));
     }
 
@@ -62,6 +74,8 @@ class ExamsController extends Controller
         $findQuestions = $grammarExam->getFindQuestions;
         $time = Config::find(2)->value;
         $route = route('grammar.exam.submit');
+        $message=" start solving grammar exam {".$grammarExam->id."}";
+        Logging::logStudent(auth()->user()->getStudent(), $message);
         return view('exams.grammarExam', compact('fillQuestions', 'findQuestions', 'time', 'route'));
     }
 
@@ -69,17 +83,19 @@ class ExamsController extends Controller
     {
         $student = session()->get('student');
         $answers = $request->get('answers');
-        $marks = collect($answers)->map(function ($answer) {
-            return GrammarOption::find($answer)->correct;
-        })->sum();
+        $marks = Exam::getGrammarMarks($answers);
        session(['student-' . $student->id . '-grammar'=> $marks]);
-        $expiresAt = Carbon::now()->addHours(2);
+        $expiresAt = Carbon::now()->addHours(8);
        Cache::put('student-' . $student->id . '-grammar',$marks,$expiresAt);
+        $message=" solved grammar exam and has {".$marks."}";
+        Logging::logStudent(auth()->user()->getStudent(), $message);
         return redirect()->action("ExamsController@showReadingExam");
     }
 
     public function showReadingExam()
     {
+
+
         if (!$this->checkSessionData())
             return redirect()->action('ExamsController@showStudentHome');
         $student = session()->get('student');
@@ -91,6 +107,8 @@ class ExamsController extends Controller
         $paragraphs = $readingExam->paragraphs;
         $time = Config::find(3)->value;
         $route = route('reading.exam.submit');
+        $message=" start solving reading exam {".$readingExam->id."}";
+        Logging::logStudent(auth()->user()->getStudent(), $message);
         return view('exams.readingExam', compact('vocabQuestions', 'paragraphs', 'time', 'route'));
     }
 
@@ -99,16 +117,13 @@ class ExamsController extends Controller
         $student = session()->get('student');
         $vocabAnswers = $request->get('vocabAnswers');
         $paragraphAnswers = $request->get('paragraphAnswers');
-        $vocabMarks = collect($vocabAnswers)->map(function ($answer) {
-            return VocabOption::find($answer)->correct;
-        })->sum();
-        $paragraphMarks = collect($paragraphAnswers)->map(function ($answer) {
-            return ParagraphQuestionOption::find($answer)->correct;
-        })->sum();
-        $marks = $vocabMarks + $paragraphMarks;
+
+        $marks = Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
         session(['student-' . $student->id . '-reading'=> $marks]);
-        $expiresAt = Carbon::now()->addHours(2);
+        $expiresAt = Carbon::now()->addHours(8);
         Cache::put('student-' . $student->id . '-reading',$marks,$expiresAt);
+        $message=" solved reading exam and has {".$marks."}";
+        Logging::logStudent(auth()->user()->getStudent(), $message);
         return redirect()->action("ExamsController@showListeningExam");
     }
 
@@ -122,6 +137,8 @@ class ExamsController extends Controller
         $speeches = $listeningExam->audios->where('audio_type_id', 3);
         $time = Config::find(4)->value;
         $route = route('listening.exam.submit');
+        $message=" start solving listening exam {".$listeningExam->id."}";
+        Logging::logStudent(auth()->user()->getStudent(), $message);
         return view('exams.listeningExam', compact('shortConversations', 'longConversations', 'speeches', 'time', 'route'));
     }
 
@@ -129,9 +146,9 @@ class ExamsController extends Controller
     {
         $student = session()->get('student');
         $listeningAnswers = $request->get('listeningAnswers');
-        $marks = collect($listeningAnswers)->map(function ($answer) {
-            return ListeningOption::find($answer)->correct;
-        })->sum();
+        $marks = Exam::getListeningMarks($listeningAnswers);
+        $message=" solved listening exam and has {".$marks."}";
+        Logging::logStudent(auth()->user()->getStudent(), $message);
         $student->sumAllMarks(session()->get('student-' . $student->id . '-grammar'), session()->get('student-' . $student->id . '-reading'), $marks);
         $this->logout();
         return redirect(route('success'))->with('message', 'You will know your grades soon');

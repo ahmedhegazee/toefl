@@ -69,6 +69,10 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
                 'index' => 'grammar.question.index',
                 'destroy' => 'grammar.question.destroy',
             ]);
+        Route::get('/cpanel/grammar/multiple-questions','GrammarControllers\GrammarQuestionsController@showMultipleQuestions')
+            ->name('grammar.multiple-questions');;
+        Route::post('/cpanel/grammar/multiple-questions','GrammarControllers\GrammarQuestionsController@storeMultipleQuestions')
+        ->name('grammar.multiple-questions.store');
         Route::resource('/cpanel/grammar/exam', 'GrammarControllers\GrammarExamController')
             ->names([
                 'create' => 'grammar.exam.create',
@@ -96,8 +100,16 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::view('/cpanel/reading', 'reading.index')->name('reading.index');
         Route::view('/cpanel/reading/questions', 'reading.questions')->name('reading.questions.index');
 
+        Route::get('/cpanel/reading/vocab/multiple-questions','ReadingControllers\VocabQuestionsController@showMultipleQuestions')
+            ->name('vocab.multiple-questions');;
+        Route::post('/cpanel/reading/vocab/multiple-questions','ReadingControllers\VocabQuestionsController@storeMultipleQuestions')
+            ->name('vocab.multiple-questions.store');
         Route::resource('/cpanel/reading/vocab', 'ReadingControllers\VocabQuestionsController')->except(['show']);
 
+        Route::get('/cpanel/reading/{paragraph}/multiple-questions','ReadingControllers\ParagraphQuestionsController@showMultipleQuestions')
+            ->name('paragraph.multiple-questions');
+        Route::post('/cpanel/reading/{paragraph}/multiple-questions','ReadingControllers\ParagraphQuestionsController@storeMultipleQuestions')
+            ->name('paragraph.multiple-questions.store');
         Route::resource('/cpanel/reading/paragraph', 'ReadingControllers\ParagraphsController')->middleware(['auth', 'admin']);
         Route::resource('/cpanel/reading/{paragraph}/question', 'ReadingControllers\ParagraphQuestionsController')
             ->except(['index', 'show'])
@@ -171,6 +183,10 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
                     'destroy' => 'listening.exam.audio.destroy',
                     'index' => 'listening.exam.audio.index'
                 ]);
+        Route::get('/cpanel/listening/audio/{audio}/multiple-questions','ListeningControllers\ListeningQuestionsController@showMultipleQuestions')
+            ->name('listening.multiple-questions');
+        Route::post('/cpanel/listening/audio/{audio}/multiple-questions','ListeningControllers\ListeningQuestionsController@storeMultipleQuestions')
+            ->name('listening.multiple-questions.store');
 //        Route::get('/cpanel/listening/exam/{exam}/audio', 'ListeningControllers\ListeningExamController@showAudios')->name('listening.exam.audios.show');
 //        Route::post('/cpanel/listening/exam/{exam}/audio', 'ListeningControllers\ListeningExamController@storeAudios')->name('listening.exam.audios.store');
 //        Route::delete('/cpanel/listening/exam/{exam}/audio/{audio}', 'ListeningControllers\ListeningExamController@destroyAudios')->name('listening.exam.audios.destroy');
@@ -180,7 +196,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     });
     Route::group(['middleware' => ['print-certificates']], function () {
         Route::view('/cpanel/certificates-panel', 'cpanel.certificatesControlPanel')->name('cpanel.certificates-panel');
-        Route::get('/students/{reservation}/print', 'ApiControllers\ApiController@printPDF');
+        Route::post('/students/{reservation}/print', 'ApiControllers\ApiController@printPDF');
         Route::get('/students/{reservation}/certificates', 'ApiControllers\ApiController@getStudentsForCertificates');
     });
     Route::group(['middleware' => ['edit-student-marks']], function () {
@@ -192,6 +208,10 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     });
     Route::group(['middleware' => ['manage-exams-panel']], function () {
         Route::view('/cpanel/exam-panel', 'exams.examControlPanel')->name('cpanel.exams-panel');
+
+        Route::view('/cpanel/student-data', 'students-data')->name('cpanel.student-data');
+        Route::patch('/cpanel/student/{student}/edit', 'ApiControllers\ApiController@editStudentResult');
+
         Route::post('/attempt/{student}', 'ApiControllers\ApiController@checkStudentAttempt');
         Route::get('/reservations/', 'ApiControllers\ApiController@getReservations');
         Route::get('/groups/{res}', 'ApiControllers\ApiController@getGroups');
@@ -199,6 +219,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::post('/students/{group}/enter', 'ApiControllers\ExamsApiController@studentsCanEnterExam');
         Route::post('/students/{group}/start', 'ApiControllers\ExamsApiController@studentsCanStartExam');
         Route::post('/students/{group}/stop', 'ApiControllers\ExamsApiController@endExam');
+        Route::post('/students/{group}/close', 'ApiControllers\ExamsApiController@closeExam');
         Route::get('/students/{group}/entered', 'ApiControllers\ExamsApiController@isExamEntered');
         Route::get('/students/{group}/started', 'ApiControllers\ExamsApiController@isExamStarted');
         Route::get('/students/{group}/working', 'ApiControllers\ExamsApiController@isExamWorking');
@@ -208,14 +229,10 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::view('/cpanel/users-panel', 'cpanel.userspanel')->name('cpanel.users-panel');
         Route::view('/cpanel/configs-panel', 'cpanel.configpanel')->name('cpanel.configs-panel');
 
-
-        Route::get('/users', 'ApiControllers\ApiController@getAllUsers');
-        Route::get('/configs', 'ApiControllers\ApiController@getConfigs');
-        Route::patch('/configs/update', 'ApiControllers\ApiController@updateConfig');
-        Route::patch('/users/{user}', 'ApiControllers\ApiController@updateUser');
-        Route::delete('/users/{user}', 'ApiControllers\ApiController@destroyUser');
-        Route::patch('/roles/{user}', 'ApiControllers\ApiController@updateUserRoles');
-        Route::post('/users/store', 'ApiControllers\ApiController@addNewUser');
+        Route::resource('/users','ApiControllers\UsersController')
+            ->only(['index','update','store','destroy']);
+        Route::patch('/roles/{user}', 'ApiControllers\UsersController@updateRoles');
+        Route::resource('/configs','ApiControllers\ConfigsController')->only(['index','update']);
     });
     Route::group(['middleware' => ['manage-reservations-panel']], function () {
         Route::resource('/cpanel/res', 'ReservationsController')
@@ -224,7 +241,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::resource('/cpanel/res/{re}/group', 'GroupsController')
             ->only(['show','update']);
     });
-
 
 });
 Route::post('/users/unique-email', 'ApiControllers\ApiController@checkEmailIsUnique');

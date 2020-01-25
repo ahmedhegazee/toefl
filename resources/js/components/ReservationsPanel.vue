@@ -9,7 +9,7 @@
         >
             {{message}}
         </b-alert>
-        <div class="btn btn-primary mt-2 mb-2" @click="showDialog()">Add Reservation</div>
+        <div class="btn btn-primary mt-2 mb-2" @click="showDialog(null,false)">Add Reservation</div>
         <b-form-input
             id="search-input"
             v-model="filter"
@@ -21,6 +21,7 @@
                  :sticky-header="true"
                  :items="reservations"
                  :filter="filter"
+                 style="max-height: 70vh"
         >
             <template v-slot:cell(actions)="row">
                 <button class="btn btn-primary" @click="showGroups(row.item)">Show</button>
@@ -89,7 +90,10 @@
         ],
         mounted() {
             this.reservations = JSON.parse(this.res);
-                    },
+            var today = new Date();
+            this.today = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+
+        },
         data: function () {
             return {
                 reservations: [],
@@ -99,30 +103,30 @@
                 alert: "danger",
                 reservation: null,
                 today: '',
-                date:'',
-                edit:false,
+                date: '',
+                edit: false,
                 count: 0,
-                currentDate:'',
-                currentCount:0,
-                filter:null,
+                currentDate: '',
+                currentCount: 0,
+                filter: null,
             }
         }, computed: {
 
             countState: function () {
                 if (parseInt(this.count) == 0)
                     return null;
-                else if(this.edit)
-                    return parseInt(this.count) >2&&parseInt(this.count)!=this.currentCount;
-            else
-                    return parseInt(this.count) >2
-                },
-            dateState: function () {
-                if(this.date.length==0)
-                    return null;
-                else if(this.edit)
-                    return Date.parse(this.date)>=Date.parse(this.today)&&Date.parse(this.date)!=Date.parse(this.currentDate);
+                    // else if(this.edit)
+                //     return parseInt(this.count) >2&&parseInt(this.count)!=this.currentCount;
                 else
-                    return Date.parse(this.date)>=Date.parse(this.today);
+                    return parseInt(this.count) > 2
+            },
+            dateState: function () {
+                if (this.date.length == 0)
+                    return null;
+                    // else if(this.edit)
+                //     return Date.parse(this.date)>=Date.parse(this.today)&&Date.parse(this.date)!=Date.parse(this.currentDate);
+                else
+                    return Date.parse(this.date) >= Date.parse(this.today);
             },
         },
         methods: {
@@ -140,31 +144,33 @@
                 this.dismissCountDown = this.dismissSecs
             },
             showGroups(res) {
-                window.location.replace("/cpanel/res/"+res.id);
+                window.location.replace("/cpanel/res/" + res.id);
             },
 
-            showDialog(res=null,edit=false) {
-                    this.edit=edit;
-                    this.reservation=res;
-                    if(edit){
-                        this.currentDate=res.start;
-                            this. currentCount=res['Max Students Count'];
-                            this.date=this.currentDate;
-                            this.count=this.currentCount;
-                    }else{
-                        this.date=this.today;
-                        this.count=2;
+            showDialog(res = null, edit = false) {
+                this.edit = edit;
+                this.reservation = res;
+                if (edit) {
+                    if (this.reservation['open/close'] == 'Closed') {
+                        this.showAlert('Sorry you can\'t edit closed reservations');
+                    } else {
+                        this.currentDate = res.start;
+                        this.currentCount = res['Max Students Count'];
+                        this.date = this.currentDate;
+                        this.count = this.currentCount;
+                        this.$refs.resModal.show();
                     }
 
-                this.$refs.resModal.show();
+                } else {
+                    this.date = this.today;
+                    this.count = 2;
+                    this.$refs.resModal.show();
+                }
+
 
             },
 
             resetModal() {
-                var today = new Date();
-                this.today=today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-
-
             },
             handleOk(bvModalEvt) {
                 // Prevent modal from closing
@@ -182,8 +188,8 @@
                     return
                 }
                 // Push the name to submitted names
-                if(this.edit)
-                this.sendChange();
+                if (this.edit)
+                    this.sendChange();
                 else
                     this.createReservation();
                 // Hide the modal manually
@@ -194,7 +200,7 @@
 
 
             sendChange() {
-                axios.patch('/cpanel/res/'+this.reservation.id, {
+                axios.patch('/cpanel/res/' + this.reservation.id, {
                     'start': this.date,
                     'max_students': this.count,
                 }).then(response => {
@@ -203,10 +209,10 @@
                         this.reservation.start = this.date;
                         this.showAlert("Successfully Updated", "success");
                     } else {
-                        if(response.data.message!==undefined )
+                        if (response.data.message !== undefined)
                             this.showAlert(response.data.message);
-                            else
-                        this.showAlert("Something happened when updating . Please call Support");
+                        else
+                            this.showAlert("Something happened when updating . Please call Support");
                     }
                 })
                     .catch(function (error) {
@@ -222,13 +228,13 @@
                     'max_students': this.count,
                 }).then(response => {
                     if (response.data.success) {
-                        this.reservations=response.data.res;
+                        this.reservations = JSON.parse(response.data.res);
                         this.showAlert("Successfully Added", "success");
                     } else {
-                        if(response.data.message!==undefined )
+                        if (response.data.message !== undefined)
                             this.showAlert(response.data.message);
                         else
-                        this.showAlert("Something happened when processing . Please call Support");
+                            this.showAlert("Something happened when processing . Please call Support");
                     }
                 })
                     .catch(function (error) {

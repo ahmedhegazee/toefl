@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ListeningControllers;
 use App\Http\Controllers\Controller;
 use App\Listening\Audio;
 use App\Listening\AudioType;
+use App\Logging;
 use App\Question;
 use Exception;
 use Illuminate\Http\RedirectResponse;
@@ -54,6 +55,8 @@ class AudiosController extends Controller
             'source'=>$request['source']->store('audio','public'),
             'audio_type_id'=>$request['type'],
         ]);
+        $message=" make new audio {".$audio->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         return Redirect::route('listening.question.create',compact('audio'));
     }
 
@@ -108,6 +111,8 @@ class AudiosController extends Controller
             'title'=>$request['title'],
             'audio_type_id'=>$request['type'],
         ]);
+        $message=" update audio {".$audio->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         if(session()->has('previous'))
             return \redirect()->to(session()->get('previous'));
         else
@@ -123,6 +128,8 @@ class AudiosController extends Controller
      */
     public function destroy(Audio $audio)
     {
+        $message=" delete audio {".$audio->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         $audio->questions()->delete();
         $audio->delete();
 //        return Redirect::route('audio.index');

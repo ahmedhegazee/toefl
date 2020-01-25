@@ -1,6 +1,12 @@
 <?php $__env->startSection('content'); ?>
     <div class="container">
         <div class="row justify-content-center"><p id="timer"></p></div>
+        <?php if(!is_null(auth()->user()->getStudent())): ?>
+        <input type="hidden" class="form-control"
+               id="id" value="<?php echo e(auth()->user()->getStudent()->id); ?>">
+            <input type="hidden" class="form-control"
+               id="name" value="<?php echo e(auth()->user()->name); ?>">
+        <?php endif; ?>
 
         <input type="hidden" id="time" value="<?php echo e($time); ?>">
         <form action="<?php echo e($route); ?>" method="post">
@@ -12,6 +18,8 @@
                             <div class="col-md-8">
                                 <div class="card ">
                                     <div class="card-header">
+                                        <input type="hidden" class="form-control"
+                                               name="questions" value="<?php echo e($question->id); ?>">
                                         <h2><?php echo e($question->type->name); ?></h2>
                                         <h3><?php echo e($question->content); ?></h3>
                                     </div>
@@ -46,6 +54,8 @@
                             <div class="col-md-8">
                                 <div class="card ">
                                     <div class="card-header">
+                                        <input type="hidden" class="form-control"
+                                               name="questions" value="<?php echo e($question->id); ?>">
                                         <h2><?php echo e($question->type->name); ?></h2>
 
                                         <h3><?php echo e($question->content); ?></h3>
@@ -74,7 +84,7 @@
 
             <div class="row justify-content-center">
                 <button type="button" onclick="nextQuestion();" id="next" class="btn btn-primary">Next Question</button>
-                <button type="submit" class="btn btn-primary d-none " id="submit">Submit Answers</button>
+                <button   class="btn btn-primary d-none " id="submit">Submit Answers</button>
 
             </div>
         </form>

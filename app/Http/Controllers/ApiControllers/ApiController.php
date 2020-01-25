@@ -4,9 +4,11 @@ namespace App\Http\Controllers\ApiControllers;
 
 use App\Attempt;
 use App\Config;
+use App\Exam;
 use App\Group;
 use App\GroupType;
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Reservation;
 use App\Role;
 use App\Student;
@@ -27,21 +29,30 @@ class ApiController extends Controller
         if ($count > 0) {
 
             if (
-                Cache::has('student-' . $student->id . '-grammar') ||
-                Cache::has('student-' . $student->id . '-reading') ||
-                !is_null($student->attempts->last()->result)
-            )
+//                Cache::has('student-' . $student->id . '-grammar') ||
+//                Cache::has('student-' . $student->id . '-reading') ||
+            !is_null($student->attempts->last()->result)
+            ) {
+                $message = "can't delete this attempt {" . $student->attempts->last()->id . "}.The student has solved the exam whose id " . $student->id . " and name is " . $student->user->name;
+                Logging::logAdmin(auth()->user(), $message);
                 return response()->make("you can't delete this attempt.The student has solved the exam");
-            else {
+
+            } else {
+                $message = " delete this attempt {" . $student->attempts->last()->id . "} of this student whose id " . $student->id . " and name is " . $student->user->name;
+                Logging::logAdmin(auth()->user(), $message);
                 $student->attempts->last()->delete();
 
                 return response()->make("Successful deleting");
             }
-        } else
+        } else {
+            $message = "can't delete this attempt.The student doesn't have attempt in this reservation whose id " . $student->id . " and name is " . $student->user->name;
+            Logging::logAdmin(auth()->user(), $message);
             return response()->make("the student doesn't have attempt in this reservation");
+
+        }
     }
 
-    public function printPDF(Reservation $reservation)
+    public function printPDF(Request $request,Reservation $reservation)
     {
         $students = $reservation->students()->with('results')->get()
             ->filter(function ($student) {
@@ -51,14 +62,20 @@ class ApiController extends Controller
                     else
                         return false;
             });
-        $html = View::make('certificate', compact('students'));
-        $pdf = App::make('dompdf.wrapper');
-//   $pdf= $pdf->setOptions(['isHtml5ParserEnabled' => true]);
-        $pdf->setPaper('letter', 'landscape');
-        $pdf->loadHTML($html)->stream();
-//    return view('certificate', compact('students'));
-//    $pdf = PDF::loadView('certificate', $students);
-        return $pdf->download('certificates ' . $reservation->start . '.pdf');
+        $centerManager=Config::find(5)->value;
+        $FacultyDean=Config::find(6)->value;
+        $vicePresident=Config::find(7)->value;
+        $certificateNumbering=Config::find(8);
+        $count=intval($certificateNumbering->value);
+        $certificateNumbering->update([
+            'value'=>$count+$students->count()
+        ]);
+        $startDate=$request->start;
+        $endDate=$request->end;
+        $message = "print certificates of reservation id " . $reservation->id . " which has start data is " . $reservation->start;
+        Logging::logAdmin(auth()->user(), $message);
+        return view('certificate', compact('students','count','centerManager','FacultyDean','vicePresident','startDate','endDate'));
+//        return $pdf->download('certificates ' . $reservation->start . '.pdf');
 
     }
 
@@ -98,7 +115,12 @@ class ApiController extends Controller
                     "Actions" => ""
                 ];
             })->values()->all();
-        return response()->json($students);
+        return response()->json([
+            'students'=>$students,
+            'entered'=>Exam::isExamEntered($group),
+            'started'=>Exam::isExamStarted($group),
+            'has_exams'=>Exam::isGroupHasExams($group),
+        ]);
     }
 
     public function getFailedStudents(Reservation $reservation)
@@ -133,61 +155,12 @@ class ApiController extends Controller
 
     public function getReservations()
     {
-        return response()->json(Reservation::get(['id', 'start'])->toArray());
+        return response()->json(Reservation::where('done',1)->get(['id', 'start'])->toArray());
     }
 
     public function getGroups(Reservation $res)
     {
         return response()->json($res->groups()->get(['id', 'name'])->toArray());
-    }
-
-
-
-    public function getRoles($roles)
-    {
-        $data = '';
-        foreach ($roles as $role)
-            $data .= $role['title'] . " , ";
-        return $data;
-    }
-
-    public function getAllUsers()
-    {
-        $users = User::all();
-        $users = $users->filter(function ($user) {
-            if (!$user->roles->contains(2))
-                return $user;
-        })->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $this->getRoles($user->roles->toArray()),
-                'selectedRoles' => $user->roles->pluck('id')->toArray(),
-                'Actions' => '',
-            ];
-        })->values();
-        $roles = Role::all()
-            ->map(function ($role) {
-
-                if ($role->id == 1 || $role->id == 2)
-                    return [
-                        'value' => $role->id,
-                        'text' => $role->title,
-                        'disabled' => true,
-                    ];
-                else
-                    return [
-                        'value' => $role->id,
-                        'text' => $role->title
-                    ];
-            })->values();
-        $data = [
-            'users' => $users,
-            'roles' => $roles
-        ];
-        return response()->json($data);
-
     }
 
     public function updateStudentMarks(Request $request)
@@ -197,7 +170,9 @@ class ApiController extends Controller
         $currentScore = $student->results->last()->mark;
         $requiredScore = $student->required_score;
         $score = $request->score;
+        $message = "";
         if ($score < 500 && $score > $currentScore && $score >= $requiredScore) {
+            $message = "update student mark whose name is " . $student->user->name . " and id is " . $student->id . " from " . $student->results->last()->mark . " to " . $score;
             $check = $student->results->last()->update(
                 [
                     'mark' => $request->score,
@@ -207,86 +182,13 @@ class ApiController extends Controller
 
         } else {
             $check = false;
+            $message = "failed in updating student mark whose name is " . $student->user->name . " and id is " . $student->id . " from " . $student->results->last()->mark . " to " . $score;
+
         }
+        Logging::logProfessor(auth()->user(), $message);
 
 
         return response()->json(['success' => $check]);
-    }
-
-    public function getConfigs()
-    {
-        $configs = Config::all()->map(function ($config) {
-            return [
-                'id' => $config->id,
-                'name' => $config->name,
-                'value' => $config->value,
-                'actions' => ''
-            ];
-        });
-        return response()->json($configs);
-    }
-
-    public function updateConfig(Request $request)
-    {
-        $config = Config::findOrFail($request->id);
-//        dd($request);
-        $check = $config->update([
-            'value' => $request->value,
-        ]);
-        return response()->json(['success' => $check]);
-    }
-
-    public function updateUser(Request $request, User $user)
-    {
-//        dd($request);
-        $checkEmail = true;
-        $checkName = true;
-        $checkPassword = true;
-
-
-        if (strlen($request->name) > 0)
-            $checkName = $user->update([
-                'name' => $request->name,
-            ]);
-        if (strlen($request->email) > 0)
-            $checkEmail = $user->update([
-                'email' => $request->email,
-            ]);
-        if (strlen($request->password) > 0)
-            $checkPassword = $user->update([
-                'password' => Hash::make($request->password),
-            ]);
-        $check = $checkEmail && $checkName && $checkPassword;
-        return response()->json(['success' => $check]);
-    }
-
-    public function updateUserRoles(Request $request, User $user)
-    {
-//        dd($request);
-        $user->roles()->sync($request->roles);
-        return response()->json(['success' => true]);
-    }
-
-    public function addNewUser(Request $request)
-    {
-        $user = User::create([
-            'name' => $request->name,
-            'password' => Hash::make($request->password),
-            'email' => $request->email,
-        ]);
-        $user->roles()->attach(1);
-        $data = [
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $this->getRoles($user->roles->toArray()),
-                'selectedRoles' => $user->roles->pluck('id')->toArray(),
-                'Actions' => '',
-            ],
-            'success' => true
-        ];
-        return response()->json($data);
     }
 
     public function checkEmailIsUnique(Request $request)
@@ -304,12 +206,6 @@ class ApiController extends Controller
         return response()->json(['check' => $check]);
     }
 
-    public function destroyUser(User $user)
-    {
-        $user->roles()->sync([]);
-        $user->delete();
-
-    }
 
     public function getAvailableReservations()
     {
@@ -348,5 +244,49 @@ class ApiController extends Controller
             'studyingDegrees' => $studyingDegrees,
         ];
         return response()->json($data);
+    }
+
+    public function editStudentResult(Request $request ,Student $student)
+    {
+       $data= json_decode($request->data);
+       $data=collect($data);
+        $checkGrammar=$data->has('grammar');
+        $checkListening=$data->has('listening');
+        $checkVocab=$data->has('vocab');
+        $checkParagraph=$data->has('paragraph');
+        $attempt=$student->attempts->last()->id;
+
+
+
+        if($checkGrammar&&$checkListening&&$checkVocab&&$checkParagraph)
+        {
+            $marks=0;
+            $grammarAnswers=collect($data->get('grammar'));
+            $marks+=Exam::getGrammarMarks($grammarAnswers);
+            $listeningAnswers=collect($data->get('listening'));
+            $marks+=Exam::getListeningMarks($listeningAnswers);
+            $vocabAnswers=collect($data->get('vocab'));
+            $paragraphAnswers=collect($data->get('paragraph'));
+            $marks+=Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
+            $student->editResult($attempt,$marks,false);
+        }
+        else{
+            if($checkGrammar){
+                $grammarAnswers=collect($data->get('grammar'));
+                $marks=Exam::getGrammarMarks($grammarAnswers);
+                $student->editResult($attempt,$marks);
+            }if($checkListening){
+                $listeningAnswers=collect($data->get('listening'));
+                $marks=Exam::getListeningMarks($listeningAnswers);
+                $student->editResult($attempt,$marks);
+            }if($checkVocab&&$checkParagraph){
+                $vocabAnswers=collect($data->get('vocab'));
+                $paragraphAnswers=collect($data->get('paragraph'));
+                $marks=Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
+                $student->editResult($attempt,$marks);
+            }
+        }
+//        dd($data->vocab);
+//        dd($data->grammar);
     }
 }

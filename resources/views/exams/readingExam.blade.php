@@ -3,7 +3,12 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center"><p id="timer"></p></div>
-
+        @if(!is_null(auth()->user()->getStudent()))
+            <input type="hidden" class="form-control"
+                   id="id" value="{{auth()->user()->getStudent()->id}}">
+            <input type="hidden" class="form-control"
+                   id="name" value="{{auth()->user()->name}}">
+        @endif
         <input type="hidden" id="time" value="{{$time}}">
         <form action="{{$route}}" method="post">
             @csrf
@@ -14,6 +19,8 @@
                         <div class="col-md-8">
                             <div class="card ">
                                 <div class="card-header">
+                                    <input type="hidden" class="form-control"
+                                           name="vocab" value="{{$question->id}}">
                                     <h3>{{$question->content}}</h3>
                                 </div>
                                 <div class="card-body">
@@ -50,6 +57,8 @@
                         <div class="row question  d-none mb-2 col-md-8">
                             <div class="card ">
                                 <div class="card-header">
+                                    <input type="hidden" class="form-control"
+                                           name="pq" value="{{$question->id}}">
                                     <h3>{{$question->content}}</h3>
                                 </div>
                                 <div class="card-body">

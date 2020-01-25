@@ -46,6 +46,24 @@ return [
             'level' => 'debug',
         ],
 
+        'adminSteps' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/admin-steps.log'),
+            'level' => 'info',
+        ],
+
+        'profSteps' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/prof-steps.log'),
+            'level' => 'info',
+        ],
+
+        'studentsSteps' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/students-steps.log'),
+            'level' => 'info',
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

@@ -119,6 +119,7 @@
                  hover
                  :sticky-header="true"
                  :items="users"
+                 style="max-height: 70vh"
         >
 
             <template v-slot:cell(actions)="row">
@@ -331,13 +332,22 @@
                 this.dismissCountDown = this.dismissSecs
             },
             showEditInfoDialog(user) {
-                this.user = user;
-                this.$refs.infoChanger.show();
+                if(user.id!=1){
+                    this.user = user;
+                    this.$refs.infoChanger.show();
+                }else{
+                    this.showAlert("You can't edit this user")
+                }
+
             },
             showEditRolesDialog(user) {
-                this.user = user;
-                this.selected = user.selectedRoles;
-                this.$refs.rolesChanger.show();
+                if(user.id!=1) {
+                    this.user = user;
+                    this.selected = user.selectedRoles;
+                    this.$refs.rolesChanger.show();
+                }else{
+                    this.showAlert("You can't edit this user")
+                }
             },
 
             resetModal() {
@@ -459,7 +469,7 @@
 
             },
             addNewUser() {
-                axios.post('/users/store', {
+                axios.post('/users', {
                     'name': this.name,
                     'email': this.email,
                     'password': this.password,
@@ -489,8 +499,8 @@
                 var data = '';
                 for (var i = 0; i < this.selected.length; i++) {
                     var role = this.selected[i] - 1;
-                    console.log('index ' + role);
-                    console.log('role ' + this.roles[role]['text']);
+                    // console.log('index ' + role);
+                    // console.log('role ' + this.roles[role]['text']);
                     data += this.roles[role]['text'] + ' ,';
                 }
                 return data;

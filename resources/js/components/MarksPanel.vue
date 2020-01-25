@@ -27,6 +27,7 @@
                  hover
                  :sticky-header="true"
                  :items="students"
+                 style="max-height: 70vh"
         >
             <template v-slot:cell(actions)="row">
                 <button class="btn btn-success" @click="showDialog(row.item)">Edit Marks</button>
@@ -38,7 +39,6 @@
             id="modal-prevent-closing"
             ref="modal"
             title="Submit Your Name"
-            @shown="score=0"
             @hidden="resetModal"
             @ok="handleOk"
         >
@@ -134,15 +134,16 @@
                 this.student=student;
                 this.requiredScore=student.required_score;
                 this.currentScore=student.score;
+                this.score=student.score;
                 this.st_name=student.english_name;
                 this.$refs.modal.show();
             },
 
             resetModal() {
-                this.id=0;
-                this.requiredScore=0;
-                this.currentScore=0;
-                this.st_name='';
+                // this.id=0;
+                // this.requiredScore=0;
+                // this.currentScore=0;
+                // this.st_name='';
             },
             handleOk(bvModalEvt) {
                 // Prevent modal from closing

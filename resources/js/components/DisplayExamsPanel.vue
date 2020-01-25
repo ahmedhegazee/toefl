@@ -21,7 +21,7 @@
              :items="jsonData"
              :filter="filter"
              sort-by="id"
-
+             style="max-height: 70vh"
     >
         <template v-slot:cell(actions)="row">
             <button class="btn btn-primary" @click="showLiveExam(row.item)">Live Exam</button>

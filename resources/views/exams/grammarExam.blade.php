@@ -3,6 +3,12 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center"><p id="timer"></p></div>
+        @if(!is_null(auth()->user()->getStudent()))
+        <input type="hidden" class="form-control"
+               id="id" value="{{auth()->user()->getStudent()->id}}">
+            <input type="hidden" class="form-control"
+               id="name" value="{{auth()->user()->name}}">
+        @endif
 
         <input type="hidden" id="time" value="{{$time}}">
         <form action="{{$route}}" method="post">
@@ -14,6 +20,8 @@
                             <div class="col-md-8">
                                 <div class="card ">
                                     <div class="card-header">
+                                        <input type="hidden" class="form-control"
+                                               name="questions" value="{{$question->id}}">
                                         <h2>{{$question->type->name}}</h2>
                                         <h3>{{$question->content}}</h3>
                                     </div>
@@ -47,6 +55,8 @@
                             <div class="col-md-8">
                                 <div class="card ">
                                     <div class="card-header">
+                                        <input type="hidden" class="form-control"
+                                               name="questions" value="{{$question->id}}">
                                         <h2>{{$question->type->name}}</h2>
 
                                         <h3>{{$question->content}}</h3>
@@ -74,7 +84,7 @@
 
             <div class="row justify-content-center">
                 <button type="button" onclick="nextQuestion();" id="next" class="btn btn-primary">Next Question</button>
-                <button type="submit" class="btn btn-primary d-none " id="submit">Submit Answers</button>
+                <button   class="btn btn-primary d-none " id="submit">Submit Answers</button>
 
             </div>
         </form>

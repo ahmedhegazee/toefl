@@ -136,7 +136,6 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'B' => 
         array (
             'BeyondCode\\DumpServer\\' => 22,
-            'Barryvdh\\DomPDF\\' => 16,
         ),
         'A' => 
         array (
@@ -379,10 +378,6 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         array (
             0 => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src',
         ),
-        'Barryvdh\\DomPDF\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src',
-        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
@@ -432,7 +427,9 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'App\\Group' => __DIR__ . '/../..' . '/app/Group.php',
         'App\\GroupType' => __DIR__ . '/../..' . '/app/GroupType.php',
         'App\\Http\\Controllers\\ApiControllers\\ApiController' => __DIR__ . '/../..' . '/app/Http/Controllers/ApiControllers/ApiController.php',
+        'App\\Http\\Controllers\\ApiControllers\\ConfigsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ApiControllers/ConfigsController.php',
         'App\\Http\\Controllers\\ApiControllers\\ExamsApiController' => __DIR__ . '/../..' . '/app/Http/Controllers/ApiControllers/ExamsApiController.php',
+        'App\\Http\\Controllers\\ApiControllers\\UsersController' => __DIR__ . '/../..' . '/app/Http/Controllers/ApiControllers/UsersController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
@@ -446,11 +443,13 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'App\\Http\\Controllers\\GroupsController' => __DIR__ . '/../..' . '/app/Http/Controllers/GroupsController.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\ListeningControllers\\AudiosController' => __DIR__ . '/../..' . '/app/Http/Controllers/ListeningControllers/AudiosController.php',
+        'App\\Http\\Controllers\\ListeningControllers\\ListeningExamAudiosController' => __DIR__ . '/../..' . '/app/Http/Controllers/ListeningControllers/ListeningExamAudiosController.php',
         'App\\Http\\Controllers\\ListeningControllers\\ListeningExamController' => __DIR__ . '/../..' . '/app/Http/Controllers/ListeningControllers/ListeningExamController.php',
         'App\\Http\\Controllers\\ListeningControllers\\ListeningQuestionsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ListeningControllers/ListeningQuestionsController.php',
         'App\\Http\\Controllers\\LiveExamsController' => __DIR__ . '/../..' . '/app/Http/Controllers/LiveExamsController.php',
         'App\\Http\\Controllers\\ReadingControllers\\ParagraphQuestionsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReadingControllers/ParagraphQuestionsController.php',
         'App\\Http\\Controllers\\ReadingControllers\\ParagraphsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReadingControllers/ParagraphsController.php',
+        'App\\Http\\Controllers\\ReadingControllers\\ReadingExamParagraphsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReadingControllers/ReadingExamParagraphsController.php',
         'App\\Http\\Controllers\\ReadingControllers\\ReadingExamVocabQuestionsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReadingControllers/ReadingExamVocabQuestionsController.php',
         'App\\Http\\Controllers\\ReadingControllers\\ReadingExamsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReadingControllers/ReadingExamsController.php',
         'App\\Http\\Controllers\\ReadingControllers\\VocabQuestionsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReadingControllers/VocabQuestionsController.php',
@@ -486,6 +485,7 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'App\\Listening\\ListeningOption' => __DIR__ . '/../..' . '/app/Listening/ListeningOption.php',
         'App\\Listening\\ListeningQuestion' => __DIR__ . '/../..' . '/app/Listening/ListeningQuestion.php',
         'App\\Listening\\ListeningResult' => __DIR__ . '/../..' . '/app/Listening/ListeningResult.php',
+        'App\\Logging' => __DIR__ . '/../..' . '/app/Logging.php',
         'App\\Policies\\StudentPolicy' => __DIR__ . '/../..' . '/app/Policies/StudentPolicy.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
@@ -510,9 +510,6 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'AttachmentsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/AttachmentsTableSeeder.php',
         'AudioTypesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/AudioTypesTableSeeder.php',
-        'Barryvdh\\DomPDF\\Facade' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/Facade.php',
-        'Barryvdh\\DomPDF\\PDF' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/PDF.php',
-        'Barryvdh\\DomPDF\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',
         'BeyondCode\\DumpServer\\DumpServerCommand' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/DumpServerCommand.php',
         'BeyondCode\\DumpServer\\DumpServerServiceProvider' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/DumpServerServiceProvider.php',
         'BeyondCode\\DumpServer\\Dumper' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/Dumper.php',
@@ -553,7 +550,6 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'Carbon\\Traits\\Week' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Traits/Week.php',
         'Carbon\\Translator' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Translator.php',
         'ConfigTableSeeder' => __DIR__ . '/../..' . '/database/seeds/ConfigTableSeeder.php',
-        'Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
         'Cron\\AbstractField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/AbstractField.php',
         'Cron\\CronExpression' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/CronExpression.php',
         'Cron\\DayOfMonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/DayOfMonthField.php',
@@ -602,6 +598,7 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'Dompdf\\Canvas' => __DIR__ . '/..' . '/dompdf/dompdf/src/Canvas.php',
         'Dompdf\\CanvasFactory' => __DIR__ . '/..' . '/dompdf/dompdf/src/CanvasFactory.php',
         'Dompdf\\Cellmap' => __DIR__ . '/..' . '/dompdf/dompdf/src/Cellmap.php',
+        'Dompdf\\Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
         'Dompdf\\Css\\AttributeTranslator' => __DIR__ . '/..' . '/dompdf/dompdf/src/Css/AttributeTranslator.php',
         'Dompdf\\Css\\Color' => __DIR__ . '/..' . '/dompdf/dompdf/src/Css/Color.php',
         'Dompdf\\Css\\Style' => __DIR__ . '/..' . '/dompdf/dompdf/src/Css/Style.php',

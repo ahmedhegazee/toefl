@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ReadingControllers;
 
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Reading\Paragraph;
 use App\Reading\ParagraphQuestion;
 use App\Reading\VocabQuestion;
@@ -43,7 +44,8 @@ class ParagraphQuestionsController extends Controller
         $question= $paragraph->questions()->create([
             'content'=>$request['content'],
         ]);
-
+        $message=" add new paragraph question with id {".$question->id."}";
+        Logging::logProfessor(auth()->user(),$message);
         foreach($request->options as $option){
             $question->options()->create([
                 'content'=>$option
@@ -87,7 +89,8 @@ class ParagraphQuestionsController extends Controller
     public function update(Request $request, Paragraph $paragraph, ParagraphQuestion $question)
     {
         $this->validator($request->all())->validate();
-
+        $message=" update paragraph question with id {".$question->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         $question->update(['content'=>$request['content']]);
         $question->options()->delete();
 
@@ -116,12 +119,48 @@ class ParagraphQuestionsController extends Controller
     {
         $check=false;
         if($paragraph->exam()->count()==0){
+            $message=" delete paragraph question with id {".$question->id."} ";
+            Logging::logProfessor(auth()->user(),$message);
             $question->options()->delete();
             $question->delete();
             $check=true;
         }
         return response()->json(['success'=>$check]);
 //        return redirect(route('paragraph.show',['paragraph'=>$paragraph]));
+    }
+    public function showMultipleQuestions(Paragraph $paragraph)
+    {
+        $title="Add Multiple Paragraph Questions";
+        $isGrammar=false;
+        $storeRoute=route('paragraph.multiple-questions.store',compact('paragraph'));
+        $redirectRoute=route('paragraph.show',compact('paragraph'));
+        return view('multiple-questions',compact('isGrammar','redirectRoute','storeRoute','title'));
+    }
+    public function storeMultipleQuestions(Request $request,Paragraph $paragraph)
+    {
+//        dd(collect($request->questions));
+        collect($request->questions)->map(function ($question)use($paragraph) {
+            $question1 = $paragraph->questions()->create([
+                'content' => $question['question'],
+            ]);
+            $message = " add new listening question with id {" . $question1->id . "}";
+            Logging::logProfessor(auth()->user(), $message);
+            $question1->options()->create([
+                'content' => $question['First Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Second Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Third Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Fourth Option']
+            ]);
+            $question1->options[$question['correct'] - 1]->update(['correct' => 1]);
+
+        });
+
     }
     /**
      * @param array $data

@@ -16,6 +16,7 @@ class ExamsApiController extends Controller
     public function studentsCanEnterExam(Group $group)
     {
         Exam::studentsCanEnterExam($group);
+
     }
 
     public function studentsCanStartExam(Group $group)
@@ -28,43 +29,32 @@ class ExamsApiController extends Controller
         Exam::endExam($group);
 
     }
+    public function closeExam(Group $group)
+    {
+        Exam::closeExam($group);
+
+    }
     public function isExamEntered(Group $group)
     {
-        $check = Cache::has('group-can-enter-exam-' . $group->id);
+        $check = Exam::isExamEntered($group);
         return response()->json(['success' => $check]);
     }
 
     public function isExamStarted(Group $group)
     {
-        $check = Cache::has('group-can-start-exam-' . $group->id);
+        $check = Exam::isExamStarted($group);
         return response()->json(['success' => $check]);
 
     }
 
     public function isExamWorking(Group $group)
     {
-        $check = ['success' => (Cache::has('group-can-enter-exam-' . $group->id) && Cache::has('group-can-start-exam-' . $group->id))];
+        $check = ['success' => Exam::isExamWorking($group)];
         return response()->json($check);
     }
 
     public function isGroupHasExams(Group $group)
     {
-//        dd($group);
-        $reservation = $group->reservation->id;
-//        $groupType = $group->type->id;
-//        $grammarExam = GrammarExam::where('reservation_id', $reservation)
-//                ->where('group_type_id', $groupType)->get()->count() > 0;
-//        $readingExam = ReadingExam::where('reservation_id', $reservation)
-//                ->where('group_type_id', $groupType)->get()->count() > 0;
-//        $listeningExam = ListeningExam::where('reservation_id', $reservation)
-//                ->where('group_type_id', $groupType)->get()->count() > 0;
-        $grammarExam = GrammarExam::where('reservation_id', $reservation)
-                ->get()->count() > 0;
-        $readingExam = ReadingExam::where('reservation_id', $reservation)
-                ->get()->count() > 0;
-        $listeningExam = ListeningExam::where('reservation_id', $reservation)
-                ->get()->count() > 0;
-        $check = $grammarExam && $readingExam && $listeningExam;
-        return response()->json(['success' => $check]);
+        return response()->json(['success' => Exam::isGroupHasExams($group)]);
     }
 }

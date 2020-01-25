@@ -29,7 +29,11 @@
                             <a href="{{route('cpanel.configs-panel')}}" class="btn btn-primary ">Configs Panel  </a>
                             <a href="{{route('cpanel.exams-panel')}}" class="btn btn-primary ">Exams Panel </a>
                             <a href="{{route('cpanel.certificates-panel')}}" class="btn btn-primary ">Certificates Panel  </a>
-                            <a href="{{route('cpanel.marks-panel')}}" class="btn btn-primary ">Marks Panel  </a>
+                            <a href="{{route('cpanel.marks-panel')}}" class="btn btn-primary ">Edit Marks Panel  </a>
+
+                        </div>
+                        <div class="row justify-content-between p-2">
+                            <a href="{{route('cpanel.student-data')}}" class="btn btn-primary ">Edit Student Marks  </a>
 
                         </div>
                     </div>

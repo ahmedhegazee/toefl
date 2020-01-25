@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\GrammarControllers;
 
+use App\Exam;
 use App\Grammar\GrammarExam;
 use App\Grammar\GrammarQuestion;
 use App\Group;
 use App\GroupType;
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Question;
 use App\Reservation;
 use Illuminate\Http\Request;
@@ -57,18 +59,23 @@ class GrammarExamController extends Controller
      */
     public function store(Request $request)
     {
+
         $res = intval($request['reservation']);
 //        $type=intval($request['type']);
 //        $count =GrammarExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
         $count = GrammarExam::where('reservation_id', $res)->count();
 
         if ($count == 0) {
-            GrammarExam::create([
+            $exam = GrammarExam::create([
                 'reservation_id' => $res,
 //                'group_type_id'=>$type,
             ]);
+            $message = " add new grammar exam with id {" . $exam->id . "} for reservation with id {" . $res . "}";
+            Logging::logProfessor(auth()->user(), $message);
             return redirect()->to(route('grammar.exam.index'));
         } else {
+            $message = " have made exam to this reservation with id {" . $res . "}";
+            Logging::logProfessor(auth()->user(), $message);
             return redirect()->back()->with('error', 'You have made exam to this reservation');
         }
 
@@ -88,7 +95,7 @@ class GrammarExamController extends Controller
         $questions1 = Question::getGrammarQuestions($exam->questions()->get());
         $questions1 = json_encode($questions1);
 //        return view('grammar.exams.show', compact('questions', 'exam','questions1'));
-        return view('grammar.exams.show', compact( 'exam','questions1'));
+        return view('grammar.exams.show', compact('exam', 'questions1'));
     }
 
     /**
@@ -109,7 +116,7 @@ class GrammarExamController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param GrammarExam $grammarExam
+     * @param GrammarExam $exam
      * @return void
      */
     public function update(Request $request, GrammarExam $exam)
@@ -118,16 +125,25 @@ class GrammarExamController extends Controller
 //        $type=intval($request['type']);
 //        $count =GrammarExam::where('reservation_id',$res)->where('group_type_id',$type)->count();
         $count = GrammarExam::where('reservation_id', $res)->count();
-
-        if ($count == 0) {
-            $exam->update([
-                'reservation_id' => intval($request['reservation']),
+        if (!Exam::checkExamIsRunning($exam)) {
+            if ($count == 0) {
+                $message = " update grammar exam with id {" . $exam->id . "} and old reservation is {" . $exam->reservation->id . "} and new reservation id is{" . $res . "}";
+                Logging::logProfessor(auth()->user(), $message);
+                $exam->update([
+                    'reservation_id' => intval($request['reservation']),
 //            'group_type_id'=>intval($request['type']),
-            ]);
-            return redirect()->to(route('grammar.exam.index'));
+                ]);
+                return redirect()->to(route('grammar.exam.index'));
+            } else {
+                $message = " have made exam to this reservation with id {" . $res . "}";
+                Logging::logProfessor(auth()->user(), $message);
+                return redirect()->back()->with('error', 'You have made exam to this reservation ');
+            }
         } else {
-            return redirect()->back()->with('error', 'You have made exam to this reservation ');
+            return redirect()->back()->with('error', 'You can\'t edit this exam because it is running ');
+
         }
+
     }
 
     /**
@@ -139,10 +155,14 @@ class GrammarExamController extends Controller
      */
     public function destroy(GrammarExam $exam)
     {
-
-        $exam->questions()->detach($exam->questions);
-        $exam->delete();
+        if (!Exam::checkExamIsRunning($exam)) {
+            $message = " delete grammar exam with id {" . $exam->id . "} and  reservation id is {" . $exam->reservation->id . "}";
+            Logging::logProfessor(auth()->user(), $message);
+            $exam->questions()->detach($exam->questions);
+            $exam->delete();
 //        return redirect()->action('GrammarExamController@index');
+        }
     }
+
 
 }

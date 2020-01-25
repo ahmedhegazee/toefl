@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ReadingControllers;
 
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Question;
 use App\Reading\VocabQuestion;
 use Illuminate\Http\Request;
@@ -53,7 +54,8 @@ class VocabQuestionsController extends Controller
         $question= VocabQuestion::create([
             'content'=>$request['content'],
         ]);
-
+        $message=" add new vocab question with id {".$question->id."}";
+        Logging::logProfessor(auth()->user(),$message);
         foreach($request->options as $option){
             $question->options()->create([
                 'content'=>$option
@@ -99,6 +101,8 @@ class VocabQuestionsController extends Controller
         $this->validator($request->all())->validate();
 
         $question=$vocab;
+        $message=" update vocab question with id {".$question->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         $question->update(['content'=>$request['content']]);
         $question->options()->delete();
 
@@ -127,6 +131,8 @@ class VocabQuestionsController extends Controller
         $question=$vocab;
         $check=false;
         if($question->exam()->count()==0){
+            $message=" delete vocab question with id {".$question->id."} ";
+            Logging::logProfessor(auth()->user(),$message);
             $question->options()->delete();
             $question->delete();
             $check=true;
@@ -136,6 +142,42 @@ class VocabQuestionsController extends Controller
 //        return Redirect::action('VocabQuestionsController@index');
 
     }
+
+    public function showMultipleQuestions()
+    {
+        $title="Add Multiple Vocab Questions";
+        $isGrammar='false';
+        $storeRoute=route('vocab.multiple-questions.store');
+        $redirectRoute=route('vocab.index');
+        return view('multiple-questions',compact('isGrammar','redirectRoute','storeRoute','title'));
+    }
+    public function storeMultipleQuestions(Request $request)
+    {
+//        dd(collect($request->questions));
+        collect($request->questions)->map(function ($question) {
+            $question1 = VocabQuestion::create([
+                'content' => $question['question'],
+            ]);
+            $message = " add new vocab question with id {" . $question1->id . "}";
+            Logging::logProfessor(auth()->user(), $message);
+            $question1->options()->create([
+                'content' => $question['First Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Second Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Third Option']
+            ]);
+            $question1->options()->create([
+                'content' => $question['Fourth Option']
+            ]);
+            $question1->options[$question['correct'] - 1]->update(['correct' => 1]);
+
+        });
+
+    }
+
     /**
      * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator

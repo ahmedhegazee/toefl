@@ -6,6 +6,8 @@ use App\Config;
 use App\Grammar\GrammarQuestion;
 use App\Group;
 use App\GroupType;
+use App\Logging;
+use App\Providers\ClosedReservation;
 use App\Reservation;
 use DateTime;
 use Illuminate\Http\Request;
@@ -60,11 +62,17 @@ class ReservationsController extends Controller
         if (!$this->isAvailableOpenedReservation()) {
             $res = Reservation::create($this->validateData());
             $this->generateGroups($res);
-            $reservations=$this->getAllReservations(Reservation::all());
+            $message=" create new reservation {".$res->id."} ";
+            Logging::logAdmin(auth()->user(),$message);
+            $reservations=$this->getReservations(Reservation::all());
             $reservations=json_encode($reservations);
             return response()->json(['success'=>true,'res'=>$reservations]);
-        } else
+        } else{
+            $message=" can't create another reservation.There is another one is opened";
+            Logging::logAdmin(auth()->user(),$message);
             return response()->json(['success'=>false,'message'=>'You can\'t create another reservation.There is another one is opened']);
+
+        }
     }
 
     /**
@@ -116,7 +124,11 @@ class ReservationsController extends Controller
 //        dd($request['max_students']);
 
         if ($re->done == 0) {
+            if($re->students->count()==$request->max_students)
+                event(new ClosedReservation($re));
            $check= $re->update($this->validateData());
+            $message=" update reservation {".$re->id."} ";
+            Logging::logAdmin(auth()->user(),$message);
             return response()->json(['success'=>$check]);
         } else
             return response()->json(['success'=>false,'message'=>'You can\'t change number of students after the reservation is closed']);
@@ -153,6 +165,7 @@ class ReservationsController extends Controller
 //                'group_type_id'=>1,
 //            ]);
 //               }
+
         $groups = GroupType::all()->count();
         for ($i = 0; $i < $groups; $i++) {
             $group = $re->groups()->create([

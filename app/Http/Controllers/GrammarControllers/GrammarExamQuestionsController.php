@@ -5,6 +5,7 @@ namespace App\Http\Controllers\GrammarControllers;
 use App\Grammar\GrammarExam;
 use App\Grammar\GrammarQuestion;
 use App\Http\Controllers\Controller;
+use App\Logging;
 use App\Question;
 use Illuminate\Http\Request;
 
@@ -27,13 +28,16 @@ class GrammarExamQuestionsController extends Controller
     {
 //        dd($request['questions']);
         $questions =GrammarQuestion::whereIn('id',$request['questions'])->get();
-
+        $message=" add grammar questions {".$request['questions']."} to grammar exam  with id {".$exam->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         $exam->questions()->sync($questions);
 //        dd($exam->questions);
 //        return redirect()->back();
     }
     public function destroy(GrammarExam $exam,GrammarQuestion $question)
     {
+        $message=" remove grammar question {".$question->id."} from grammar exam  with id {".$exam->id."} ";
+        Logging::logProfessor(auth()->user(),$message);
         $exam->questions()->detach($question);
         return response()->json(['success'=>true]);
 

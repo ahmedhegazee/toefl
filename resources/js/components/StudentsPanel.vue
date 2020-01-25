@@ -11,7 +11,7 @@
         </b-alert>
 
 
-        <h1>Students</h1><br>
+        <h1>Students</h1>
         <b-form-input
             id="search-input"
             v-model="filter"
@@ -25,6 +25,7 @@
                  hover
                  :items="students"
                  :filter="filter"
+                 style="max-height: 70vh"
         >
 
             <template v-slot:cell(actions)="row">
@@ -33,7 +34,7 @@
                 </button>
                 <button class="btn btn-primary mr-1 mb-1" @click="showEditInfoDialog(row.item)">Edit Info</button>
                 <button v-if="!row.item.failed" class="btn btn-primary mr-1 mb-1"
-                        @click="showReservationsDialog(row.item)">New Reservation
+                        @click="showReservationsDialog(row.item)">New Res
                 </button>
 
             </template>
@@ -209,18 +210,7 @@
                 }).catch(errors => {
 
             });
-            axios.get('/reservations/available')
-                .then(response => {
-                    this.reservations = response.data.reservations;
-                    this.reservations.unshift({value: null, text: "Select Reservation", disabled: true})
-                    this.groupTypes = response.data.groupTypes;
-                    this.groupTypes.unshift({value: null, text: "Select Group Type", disabled: true})
-                    this.studyingDegrees = response.data.studyingDegrees;
-                    this.studyingDegrees.unshift({value: null, text: "Select Studying Degree", disabled: true})
-                    // console.log(response.data);
-                }).catch(errors => {
-
-            });
+           this.getAvailableReservations();
         },
         data: function () {
 
@@ -320,9 +310,17 @@
                 this.student = student;
                 this.$refs.infoChanger.show();
             },
+
             showReservationsDialog(student) {
-                this.student = student;
-                this.$refs.resChanger.show();
+                this.getAvailableReservations();
+                setTimeout(null,3000);
+                if(this.reservations.length==1){
+                    this.showAlert('Sorry there is no available reservations')
+                }else{
+                    this.student = student;
+                    this.$refs.resChanger.show();
+                }
+
             },
             verifyStudent(student) {
                 window.location.replace('/student/' + student.id);
@@ -556,6 +554,20 @@
                         console.log(error);
                     });
             },
+            getAvailableReservations(){
+                axios.get('/reservations/available')
+                    .then(response => {
+                        this.reservations = response.data.reservations;
+                        this.reservations.unshift({value: null, text: "Select Reservation", disabled: true})
+                        this.groupTypes = response.data.groupTypes;
+                        this.groupTypes.unshift({value: null, text: "Select Group Type", disabled: true})
+                        this.studyingDegrees = response.data.studyingDegrees;
+                        this.studyingDegrees.unshift({value: null, text: "Select Studying Degree", disabled: true})
+                        // console.log(response.data);
+                    }).catch(errors => {
+
+                });
+            }
 
 
         }

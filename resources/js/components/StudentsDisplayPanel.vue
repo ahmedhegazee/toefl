@@ -11,6 +11,7 @@
                  :sticky-header="true"
                  :items="students"
                  :filter="filter"
+                 style="max-height: 70vh"
         >
 
         </b-table>
