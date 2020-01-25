@@ -62,11 +62,13 @@ function nextQuestion() {
 
     }
     if(speech === speeches.length &&speechQuestion===0){
-        var questions=getQuestions();
-        var answers=getAnswers(questions);
-        var id=document.getElementById('id').value;
-        var name=document.getElementById('name').value;
-        cacheAnswers(answers,id,name);
+        if(document.location.pathname.indexOf('live')==-1) {
+            var questions = getQuestions();
+            var answers = getAnswers(questions);
+            var id = document.getElementById('id').value;
+            var name = document.getElementById('name').value;
+            cacheAnswers(answers, id, name);
+        }
         document.getElementById('submit').setAttribute('class', 'btn btn-primary d-block');
         document.getElementById('next').setAttribute('class', 'btn btn-primary d-none');
     }

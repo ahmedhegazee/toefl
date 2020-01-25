@@ -3,11 +3,14 @@ let findQuestionsArray = [], randomFindQuestions, findQuestion = 0, findQuestion
 let isFindQuestions =false;
 // let questionsArray = [], randomQuestions, question = 0, questions;
 window.onload = function () {
-    var id=document.getElementById('id').value;
-    var name=document.getElementById('name').value;
-    if(document.cookie.indexOf('student-'+id+'-'+name+'-grammar')>-1){
-        window.location.replace('/exam/reading');
+    if(document.location.pathname.indexOf('live')==-1){
+        var id=document.getElementById('id').value;
+        var name=document.getElementById('name').value;
+        if(document.cookie.indexOf('student-'+id+'-'+name+'-grammar')>-1){
+            window.location.replace('/exam/reading');
+        }
     }
+
     setTimer();
     fillQuestions = document.getElementsByClassName('fl');
     var fillNumbers = fillNumbersArray(fillQuestions);
@@ -52,11 +55,13 @@ function nextQuestion() {
     }
 
     if(findQuestion === findQuestions.length){
-        var questions=getQuestions();
-        var answers=getAnswers(questions);
-        var id=document.getElementById('id').value;
-        var name=document.getElementById('name').value;
-        cacheAnswers(answers,id,name);
+        if(document.location.pathname.indexOf('live')==-1) {
+            var questions = getQuestions();
+            var answers = getAnswers(questions);
+            var id = document.getElementById('id').value;
+            var name = document.getElementById('name').value;
+            cacheAnswers(answers, id, name);
+        }
         document.getElementById('submit').setAttribute('class', 'btn btn-primary d-block');
         document.getElementById('next').setAttribute('class', 'btn btn-primary d-none');
     }
