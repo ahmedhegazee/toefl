@@ -154,6 +154,7 @@
                         'start':this.startDate,
                         'end':this.endDate,
                     }).then(response=>{
+
                         document.write(response.data);
                     })
                     .catch(error=>console.log(error));
