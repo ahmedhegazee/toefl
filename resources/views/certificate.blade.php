@@ -1,59 +1,206 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
+<title>Certification</title>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Certificate</title>
+    <link href='https://fonts.googleapis.com/css?family=Pristina' rel='stylesheet'>
+
     <style>
-
-        #certificate{background: linear-gradient(#c8be75 50%, rgba(255,255,255,0) 0) 0 0, radial-gradient(circle closest-side, #c8be75 50%, rgba(255,255,255,0) 0) 0 0, radial-gradient(circle closest-side, #c8be75 0%, rgba(255,255,255,0) 0) 55px 0 #FFF;background-size: 10.5in 8in;background-repeat: repeat-x;}
-        body{ margin: 0;}
-
         @media print {
-            table{background: linear-gradient(#c8be75 50%, rgba(255,255,255,0) 0) 0 0, radial-gradient(circle closest-side, #c8be75 50%, rgba(255,255,255,0) 0) 0 0, radial-gradient(circle closest-side, #c8be75 0%, rgba(255,255,255,0) 0) 55px 0 #FFF;background-size: 10.5in 8in;background-repeat: repeat-x; -webkit-print-color-adjust: exact; }
+            .btn{
+                display: none !important;
+            }
+            .container{
+                margin: 0;
+            }
+        }
+        .btn-primary {
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn {
+            margin-top: .25rem;
+            margin-bottom: .25rem;
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: .25rem;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        .btn-primary:hover {
+            color: #fff;
+            background-color: #0069d9;
+            border-color: #0062cc;
+            cursor: pointer;
+        }
+        .container {
+            position: relative;
+            font-family: Arial;
         }
 
-        @page {
-            margin-top: 0.5cm;
-            margin-bottom: 2cm;
-            margin-left: 2cm;
-            margin-right: 2cm;
+        .VicePresident {
+            position: absolute;
+            bottom: 90px;
+            right: 30px;
+            left:600px;
+            background-color: #00000000;
+            color: #ee7171;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 20px;
         }
 
+        .FacultyDean {
+            position: absolute;
+            bottom: 90px;
+            right: 370px;
+            left: 370px;
+            background-color: #00000000;
+            color: #ee7171;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 20px;
+        }
+
+        .PublicServiceCenterManager {
+            position: absolute;
+            bottom: 90px;
+            left: 94px;
+            background-color: #00000000;
+            color: #ee7171;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 20px;
+        }
+
+        .Dated {
+            position: absolute;
+            bottom: 221px;
+            left: 140px;
+            background-color: #00000000;
+            color: #ee7171;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 20px;
+        }
+
+        .Score {
+            position: absolute;
+            bottom: 274px;
+            left:725px;
+            background-color: #00000000;
+            color: #ee7171;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 25px;
+        }
+
+        .from {
+            position: absolute;
+            bottom: 334px;
+            left: 145px;
+            background-color: #00000000;
+            color: #ee7171;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 25px;
+        }
+
+        .till {
+            position: absolute;
+            bottom: 334px;
+            left: 377px;
+            background-color: #00000000;
+            color: #ee7171;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 25px;
+        }
+
+        .NumberOfCertification {
+            position: absolute;
+            bottom: 502px;
+            right: 428px;
+            background-color: #00000000;
+            color: #ee7171;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 36px;
+        }
+
+        .NameOfStudent {
+            position: absolute;
+            bottom: 440px;
+            left: 340px;
+            background-color: #00000000;
+            color: #ee7171;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 32px;
+            font-family: 'Pristina';
+        }
     </style>
 </head>
 <body>
+<button class="btn btn-primary" onclick="myFunction()">Print</button>
+<script>
+    function myFunction(){
+        window.print();
+    }
+</script>
 @foreach($students as $student)
-<div class="certificate-container" style="background:#f9f9f9;margin-top:50px;margin-bottom:70px;">
-    <table id="certificate" style="width: 900px;margin: 0 auto;text-align: center;padding: 10px;border-style: groove;border-width: 20px;outline: 5px dotted #000;height: 8.5in;outline-offset: -26px;outline-style: double;border-color: #9d8b00;">
-        <tr>
-            <td><h1 style="font-size: 0.6in; margin: 0; color: #000;">Certificate of TOEFL</h1><h3 style="margin: 0;font-size: 0.25in;color: black;text-transform: uppercase;font-family: sans-serif;">Reg. by UP Government</h3> <p style="font-size: 0.2in;text-transform: uppercase;color: #494000;">Is hereby granted to :</p></td>
-        </tr>
-        <tr>
-            <td>
-                <h2 style="color: #000; font-size: 0.4in;margin: 10px 0 0 0; font-family: sans-serif;text-transform: uppercase;">{{$student->user()->name}}</h2>
-            </td>
-        </tr>
-        <tr>
-            <td><img src=".{{$student->personalimage}}" alt="" style="max-width: 300px;max-height: 300px;margin: 0 auto;display: block;border-width: 5px;border-style: double;border-color: #333;box-shadow: 0 5px 10px rgba(0,0,0,0.3);"></td>
-        </tr>
-        <tr>
-            <td>
-                <h4 style="margin:0; font-size: 0.16in;font-family: sans-serif;color: #000;">The Covered Member</h4>
+    <center>
+        <div style="width: 1050px; height: 742.3px" class="container">
+            <img  style="width:1050px; height: auto;" src="{{asset('img/img1.jpg')}}"/>
+            <div class="VicePresident">
+                <p>{{$vicePresident}}</p>
+            </div>
 
-                <h5  style="margin: 5px 0 40px; font-size: 0.16in;font-family: sans-serif;color: #000;">{{$student->results->last()->mark}}</h5>
-            </td>
-        </tr>
+            <div class="FacultyDean">
+                <p>{{$FacultyDean}}</p>
+            </div>
 
-        <tr>
-            <td>
-                <h6 style="font-family: sans-serif;font-size: 0.12in;">Reg. by TOEFL</h6>
-                <em>Generated : {{\Illuminate\Support\Carbon::now()->toDateTimeString()}}</em>
-            </td>
-        </tr>
-    </table>
-</div>
-    @endforeach
+            <div class="PublicServiceCenterManager">
+                <p>{{$centerManager}}</p>
+            </div>
+
+            <div class="Dated">
+                <p>{{\Illuminate\Support\Carbon::now()->format('d-m-yy')}}</p>
+            </div>
+
+            <div class="Score">
+                <p>{{$student->results->last()->mark}}</p>
+            </div>
+
+            <div class="from">
+                <p>05/ Nov /2019</p>
+            </div>
+
+            <div class="till">
+                <p>07/ Nov /2019</p>
+            </div>
+
+            <div class="NumberOfCertification">
+                <p>{{$count++}}</p>
+            </div>
+
+            <div class="NameOfStudent">
+                <p>{{$student->user->name}}</p>
+            </div>
+
+        </div>
+    </center>
+
+@endforeach
 </body>
 </html>
+
+
+
