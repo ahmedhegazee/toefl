@@ -18,7 +18,7 @@ class VocabQuestion extends Model
 
     public function exam()
     {
-        return $this->belongsToMany(ReadingExam::class);
+        return $this->belongsToMany(ReadingExam::class)->withTimestamps();
 
     }
 }
