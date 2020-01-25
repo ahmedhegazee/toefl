@@ -36,8 +36,8 @@ class ConfigTableSeeder extends Seeder
             'value'=>'Prof. Waleed Shawky Elbehiry',
         ]);
         \App\Config::create([
-            'name'=>'Prof. Hassan H. Younis',
-            'value'=>'1:0',
+            'name'=>'vice_president',
+            'value'=>'Prof. Hassan H. Younis',
         ]);
         \App\Config::create([
             'name'=>'certificate_id',

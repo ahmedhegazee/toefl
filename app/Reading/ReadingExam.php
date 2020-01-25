@@ -11,7 +11,7 @@ class ReadingExam extends Model
     protected $guarded=[];
     public function vocabQuestions()
     {
-        return $this->belongsToMany(VocabQuestion::class);
+        return $this->belongsToMany(VocabQuestion::class)->withTimestamps();
 
     }
 
