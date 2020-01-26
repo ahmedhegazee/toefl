@@ -12,15 +12,13 @@
 */
 
 
-use App\Attempt;
-use Barryvdh\DomPDF\PDF;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('/');
 
 Auth::routes();
-
+Route::view('/c','cpanel');
 Route::get('/home', 'HomeController@index')->name('home')->middleware('check_roles');
 //Route::get('/res',function (){
 //    $date = now()->toDateString();
@@ -40,7 +38,7 @@ Route::get('/home', 'HomeController@index')->name('home')->middleware('check_rol
 Route::view('/error', 'error')->name('error');
 Route::view('/success', 'success')->name('success');
 Route::group(['middleware' => ['admin', 'auth']], function () {
-    Route::view('/cpanel', 'cpanel.index')->name('admin');
+    Route::view('/cpanel', 'cpanel')->name('admin');
 
     Route::group(['middleware' => ['manage-students-panel']], function () {
         Route::view('/cpanel/students-panel', 'cpanel.studentspanel')->name('cpanel.students-panel');
