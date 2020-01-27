@@ -178,7 +178,7 @@
                     </b-form-invalid-feedback>
                 </b-form-group>
                 <b-form-select v-model="studyingDegree" class="mb-2" :options="studyingDegrees"></b-form-select>
-                <b-form-select v-model="groupType" :options="groupTypes"></b-form-select>
+<!--                <b-form-select v-model="groupType" :options="groupTypes"></b-form-select>-->
 
             </form>
         </b-modal>
@@ -338,7 +338,7 @@
                 this.isUniqueEmail = null;
                 this.isUniquePhone = null;
                 this.studyingDegree = null;
-                this.groupType = null;
+                // this.groupType = null;
                 this.requiredScore=0;
             },
             resetNewModal() {
@@ -459,11 +459,11 @@
                     'arabic_name': this.arabicName,
                     'required_score': this.requiredScore,
                     'studying': this.studyingDegree,
-                    'group_type': this.groupType,
+                    // 'group_type': this.groupType,
                 }).then(response => {
                     if (response.data.success) {
                         this.successAction();
-                    } else {
+                    } else  {
                         this.showAlert("Something happened when updating . Please call Support");
                     }
                 })
@@ -533,7 +533,7 @@
 
             },
             checkIsUniqueEmail() {
-                axios.post('/students/unique-email', {
+                axios.post('/users/unique-email', {
                     'email': this.email,
                 })
                     .then(response => {

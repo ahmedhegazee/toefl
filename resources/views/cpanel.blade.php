@@ -201,7 +201,7 @@
                                                     href="{{route('logout')}}" aria-expanded="false"
                                                     onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                <i class="far fa-times-circle mr"></i><span class="hide-menu">Logout</span></a></li>
+                                <i class="far fa-times-circle mr-2"></i><span class="hide-menu">Logout</span></a></li>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>

@@ -53,17 +53,20 @@ class UsersController extends Controller
     public function getRoles($roles)
     {
         return $roles->map(function ($role) {
+            $data=[];
             if ($role->id == 1 || $role->id == 2)
-                return [
+                $data=[
                     'value' => $role->id,
                     'text' => $role->title,
                     'disabled' => true,
                 ];
+
             else
-                return [
+                $data=[
                     'value' => $role->id,
                     'text' => $role->title
                 ];
+                return $data;
         })->values();
     }
     public function store(Request $request)
@@ -91,34 +94,39 @@ class UsersController extends Controller
     }
     public function update(Request $request,User $user)
     {
-        $checkEmail = true;
-        $checkName = true;
-        $checkPassword = true;
+       $check=false;
+        $data=[];
         if (strlen($request->name) > 0){
             $message = " update user account with id is " . $user->id." and old name is".$user->name ." new name is ".$request->name;
             Logging::logAdmin(auth()->user(), $message);
-            $checkName = $user->update([
-                'name' => $request->name,
-            ]);
+            $data['name']=$request->name;
+//            $checkName = $user->update([
+//                'name' => $request->name,
+//            ]);
         }
 
         if (strlen($request->email) > 0){
             $message = " update user account with id is " . $user->id." and old email is".$user->email ." new email is ".$request->email;
             Logging::logAdmin(auth()->user(), $message);
-            $checkEmail = $user->update([
-                'email' => $request->email,
-            ]);
+            $data['email']=$request->email;
+//            $checkEmail = $user->update([
+//                'email' => $request->email,
+//            ]);
         }
 
         if (strlen($request->password) > 0){
             $message = " update user account password with id is " . $user->id;
             Logging::logAdmin(auth()->user(), $message);
-            $checkPassword = $user->update([
-                'password' => Hash::make($request->password),
-            ]);
+            $data['password']=Hash::make($request->password);
+//            $checkPassword = $user->update([
+//                'password' => Hash::make($request->password),
+//            ]);
+        }
+        if(!empty($data)){
+            $check =   $user->update($data);
         }
 
-        $check = $checkEmail && $checkName && $checkPassword;
+
         return response()->json(['success' => $check]);
     }
     public function destroy(User $user)
