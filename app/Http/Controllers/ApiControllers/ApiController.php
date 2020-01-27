@@ -209,6 +209,7 @@ class ApiController extends Controller
         $reservations = Reservation::where('start', '<=', now()->toDateString())->where('done', '!=', 1)->get();
 //            ->where('end', '>=', now()->toDateString())
 
+
         $reservations = $reservations->map(function ($reservation) {
             return [
                 'text' => $reservation->start . ' ' . $reservation->done,
