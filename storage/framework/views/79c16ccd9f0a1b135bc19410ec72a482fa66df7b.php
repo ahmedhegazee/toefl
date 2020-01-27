@@ -180,11 +180,11 @@
             </div>
 
             <div class="from">
-                <p>05/ Nov /2019</p>
+                <p><?php echo e($startDate); ?></p>
             </div>
 
             <div class="till">
-                <p>07/ Nov /2019</p>
+                <p><?php echo e($endDate); ?></p>
             </div>
 
             <div class="NumberOfCertification">
@@ -192,7 +192,7 @@
             </div>
 
             <div class="NameOfStudent">
-                <p><?php echo e($student->user->name); ?></p>
+                <p><?php echo e($student->gender==1?'Mr. ':'Miss. '); ?><?php echo e($student->user->name); ?></p>
             </div>
 
         </div>

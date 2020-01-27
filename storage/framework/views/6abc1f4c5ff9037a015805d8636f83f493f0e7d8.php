@@ -4,7 +4,7 @@
             <div class="col-md-8">
 
 
-                    <div class='alert alert-success'> <?php echo e(session()->get('message')); ?> </div>
+                    <div class='alert alert-success'> <?php echo e($message); ?> </div>
 
             </div>
         </div>

@@ -51,10 +51,12 @@ trait RegistersUsers
         }
             $this->validator($request->all())->validate();
             event(new Registered($user = $this->create($request->all(),$res)));
-            $this->guard()->login($user);
-
-            return $this->registered($request, $user)
-                ?: redirect($this->redirectPath());
+            $message='Successfully registered. Go to the center admission to pay the cost of the exam.';
+            return view('success',compact('message'));
+//            $this->guard()->login($user);
+//
+//            return $this->registered($request, $user)
+//                ?: redirect($this->redirectPath());
 
 
     }

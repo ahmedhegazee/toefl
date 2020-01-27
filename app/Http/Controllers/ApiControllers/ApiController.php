@@ -10,14 +10,11 @@ use App\GroupType;
 use App\Http\Controllers\Controller;
 use App\Logging;
 use App\Reservation;
-use App\Role;
 use App\Student;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
+
 
 class ApiController extends Controller
 {
@@ -70,8 +67,8 @@ class ApiController extends Controller
         $certificateNumbering->update([
             'value'=>$count+$students->count()
         ]);
-        $startDate=$request->start;
-        $endDate=$request->end;
+        $startDate=Carbon::parse($request->start)->format('d-m-yy');
+        $endDate=Carbon::parse($request->end)->format('d-m-yy');
         $message = "print certificates of reservation id " . $reservation->id . " which has start data is " . $reservation->start;
         Logging::logAdmin(auth()->user(), $message);
         return view('certificate', compact('students','count','centerManager','FacultyDean','vicePresident','startDate','endDate'));
@@ -211,6 +208,7 @@ class ApiController extends Controller
     {
         $reservations = Reservation::where('start', '<=', now()->toDateString())->where('done', '!=', 1)->get();
 //            ->where('end', '>=', now()->toDateString())
+
 
         $reservations = $reservations->map(function ($reservation) {
             return [
