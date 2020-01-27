@@ -4579,8 +4579,8 @@ __webpack_require__.r(__webpack_exports__);
       this.confirmEmailState = null;
       this.isUniqueEmail = null;
       this.isUniquePhone = null;
-      this.studyingDegree = null;
-      this.groupType = null;
+      this.studyingDegree = null; // this.groupType = null;
+
       this.requiredScore = 0;
     },
     resetNewModal: function resetNewModal() {
@@ -4686,8 +4686,8 @@ __webpack_require__.r(__webpack_exports__);
         'phone': this.phone,
         'arabic_name': this.arabicName,
         'required_score': this.requiredScore,
-        'studying': this.studyingDegree,
-        'group_type': this.groupType
+        'studying': this.studyingDegree // 'group_type': this.groupType,
+
       }).then(function (response) {
         if (response.data.success) {
           _this4.successAction();
@@ -4753,7 +4753,7 @@ __webpack_require__.r(__webpack_exports__);
     checkIsUniqueEmail: function checkIsUniqueEmail() {
       var _this6 = this;
 
-      axios.post('/students/unique-email', {
+      axios.post('/users/unique-email', {
         'email': this.email
       }).then(function (response) {
         _this6.isUniqueEmail = response.data.check;
@@ -74935,7 +74935,7 @@ var render = function() {
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
         },
-        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+        [_vm._v("\n            " + _vm._s(_vm.message) + "\n        ")]
       ),
       _vm._v(" "),
       _c("h1", [_vm._v("Students")]),
@@ -74978,7 +74978,7 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v("Verify\n            ")]
+                      [_vm._v("Verify\n                ")]
                     )
                   : _vm._e(),
                 _vm._v(" "),
@@ -75006,7 +75006,7 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v("New Res\n            ")]
+                      [_vm._v("New Res\n                ")]
                     )
                   : _vm._e()
               ]
@@ -75071,7 +75071,7 @@ var render = function() {
                     { attrs: { state: _vm.englishNameState } },
                     [
                       _vm._v(
-                        "\n                    The english name length must be between 5 and 200 characters.\n                "
+                        "\n                        The english name length must be between 5 and 200 characters.\n                    "
                       )
                     ]
                   )
@@ -75110,7 +75110,7 @@ var render = function() {
                     { attrs: { state: _vm.arabicNameState } },
                     [
                       _vm._v(
-                        "\n                    The arabic name length must be between 5 and 200 characters.\n                "
+                        "\n                        The arabic name length must be between 5 and 200 characters.\n                    "
                       )
                     ]
                   )
@@ -75146,7 +75146,7 @@ var render = function() {
                     { attrs: { state: _vm.emailState } },
                     [
                       _vm._v(
-                        "\n                    Write correct email please.\n                "
+                        "\n                        Write correct email please.\n                    "
                       )
                     ]
                   ),
@@ -75159,7 +75159,7 @@ var render = function() {
                         { attrs: { state: _vm.isUniqueEmail } },
                         [
                           _vm._v(
-                            "\n                        Write another email please.This email is token\n                    "
+                            "\n                            Write another email please.This email is token\n                        "
                           )
                         ]
                       )
@@ -75202,7 +75202,7 @@ var render = function() {
                     { attrs: { state: _vm.confirmEmailState } },
                     [
                       _vm._v(
-                        "\n                    Confirm your email correctly.\n                "
+                        "\n                        Confirm your email correctly.\n                    "
                       )
                     ]
                   )
@@ -75241,7 +75241,7 @@ var render = function() {
                     { attrs: { state: _vm.phoneState } },
                     [
                       _vm._v(
-                        "\n                    Write correct phone number.\n                "
+                        "\n                        Write correct phone number.\n                    "
                       )
                     ]
                   ),
@@ -75254,7 +75254,7 @@ var render = function() {
                         { attrs: { state: _vm.isUniquePhone } },
                         [
                           _vm._v(
-                            "\n                        Write another phone number please.This phone number is token\n                    "
+                            "\n                            Write another phone number please.This phone number is token\n                        "
                           )
                         ]
                       )
@@ -75296,7 +75296,7 @@ var render = function() {
                     { attrs: { state: _vm.confirmPhoneState } },
                     [
                       _vm._v(
-                        "\n                    Confirm your phone correctly.\n                "
+                        "\n                        Confirm your phone correctly.\n                    "
                       )
                     ]
                   )
@@ -75337,7 +75337,7 @@ var render = function() {
                     { attrs: { state: _vm.requiredScoreState } },
                     [
                       _vm._v(
-                        "\n                    Write correct Score.\n                "
+                        "\n                        Write correct Score.\n                    "
                       )
                     ]
                   )
@@ -75354,17 +75354,6 @@ var render = function() {
                     _vm.studyingDegree = $$v
                   },
                   expression: "studyingDegree"
-                }
-              }),
-              _vm._v(" "),
-              _c("b-form-select", {
-                attrs: { options: _vm.groupTypes },
-                model: {
-                  value: _vm.groupType,
-                  callback: function($$v) {
-                    _vm.groupType = $$v
-                  },
-                  expression: "groupType"
                 }
               })
             ],

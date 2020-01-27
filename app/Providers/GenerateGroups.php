@@ -32,7 +32,8 @@ class GenerateGroups
         $reservation = $event->reservation;
         $groups = $reservation->groups;
 //        dd($groups);
-        $groups->each(function ($group) use ($reservation) {
+        $counter=1;
+        $groups->each(function ($group) use ($counter, $reservation) {
             $studentsCount = $group->students->count();
             $computers = Config::first()->value;
             if ($studentsCount > 0) {
@@ -40,14 +41,17 @@ class GenerateGroups
                 $groupsNumber = ceil($studentsCount / $computers);
                 for ($i = 0; $i < $groupsNumber; $i++) {
                     $createdGroup = $reservation->groups()->create([
-                        'name' => 'Group ' . ($i + 1),
+                        'name' => 'Group ' . ($counter),
                         'group_type_id' => $group->type->id
                     ]);
+                    $counter++;
                     $index = $i * $computers;
                     $students = $group->students->slice($index, $computers);
-                    $students->each(function ($student) use ($createdGroup) {
-                        $student->update(['group_id' => $createdGroup->id]);
-                    });
+                    DB::table('students')->whereIn('id',$students->pluck('id')->toArray())
+                        ->update(['group_id' => $createdGroup->id]);
+//                    $students->each(function ($student) use ($createdGroup) {
+//                        $student->update(['group_id' => $createdGroup->id]);
+//                    });
 //                    DB::table('students')->whereIn('id',$students);
 
                 }

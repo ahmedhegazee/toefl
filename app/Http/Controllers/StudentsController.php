@@ -31,7 +31,9 @@ class StudentsController extends Controller
 //        $students= Student::paginate(15);
 //        return view('students.index',compact('students'));
         $students = Student::all()->map(function ($student) {
+            $failed=1;
             if (!is_null($student->results->last()))
+                $failed=$student->results->last()->success ? true : false;
             return [
                 'id' => $student->id,
                 'Arabic Name' => $student->arabic_name,
@@ -42,22 +44,10 @@ class StudentsController extends Controller
                 'Studying Degree' => $student->studying,
                 'Required Score' => $student->required_score,
                 'Actions' => '',
-                'failed' => $student->results->last()->success ? true : false,
+                'failed' => $failed,
             ];
-            else{
-                return [
-                    'id' => $student->id,
-                    'Arabic Name' => $student->arabic_name,
-                    'English Name' => $student->user->name,
-                    'phone' => $student->phone,
-                    'email' => $student->user->email,
-                    'verified' => $student->verified,
-                    'Studying Degree' => $student->studying,
-                    'Required Score' => $student->required_score,
-                    'Actions' => '',
-                    'failed'=>1
-                ];
-            }
+
+
         });
         return response()->json($students);
     }
@@ -108,29 +98,28 @@ class StudentsController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-
-        $checkEmail = true;
-        $checkEnglishName = true;
-        $checkArabicName = true;
-        $checkRequiredScore = true;
-        $checkStudyingDegree = true;
-        $checkPhone = true;
-        $checkGroupType = true;
+        $data=[];
+        $user_data=[];
+    $checkUpdate=true;
+    $checkUserUpdate=true;
+//        $checkGroupType = true;
 
         if (strlen($request->name) > 0) {
             $message = " update student account with id is " . $student->id . " and old name is" . $student->user->name . " new name is " . $request->name;
             Logging::logAdmin(auth()->user(), $message);
-            $checkEnglishName = $student->user->update([
-                'name' => $request->name,
-            ]);
+            $user_data['name']=$request->name;
+//            $checkEnglishName = $student->user->update([
+//                'name' => $request->name,
+//            ]);
         }
 
         if (strlen($request->arabic_name) > 0) {
             $message = " update student account with id is " . $student->id . " and old name is" . $student->arabic_name . " new name is " . $request->arabic_name;
             Logging::logAdmin(auth()->user(), $message);
-            $checkArabicName = $student->update([
-                'arabic_name' => $request->arabic_name,
-            ]);
+            $data['arabic_name']=$request->arabic_name;
+//            $checkArabicName = $student->update([
+//                'arabic_name' => $request->arabic_name,
+//            ]);
         }
 
 
@@ -138,18 +127,20 @@ class StudentsController extends Controller
             $message = " update student account with id is " . $student->id . " and old email is" . $student->user->email . " new email is " . $request->email;
 
             Logging::logAdmin(auth()->user(), $message);
-            $checkEmail = $student->user->update([
-                'email' => $request->email,
-            ]);
+            $user_data['email']=$request->email;
+//            $checkEmail = $student->user->update([
+//                'email' => $request->email,
+//            ]);
         }
 
         if ($request->required_score > 0) {
             $message = " update student account with id is " . $student->id . " and old required score is" . $student->required_score . " new required score is " . $request->required_score;
             Logging::logAdmin(auth()->user(), $message);
+            $data['required_score']=$request->required_score;
 
-            $checkRequiredScore = $student->update([
-                'required_score' => $request->required_score,
-            ]);
+//            $checkRequiredScore = $student->update([
+//                'required_score' => $request->required_score,
+//            ]);
         }
         $studyingOption=[
 
@@ -161,44 +152,56 @@ class StudentsController extends Controller
             $message = " update student account with id is " . $student->id . " and old studying degree is" . $student->studying . " new studying degree is "
                 . $studyingOption[$request->studying] ;
             Logging::logAdmin(auth()->user(), $message);
+            $data['studying']=$request->studying;
 
-            $checkStudyingDegree = $student->update([
-                'studying' => $request->studying,
-            ]);
+//            $checkStudyingDegree = $student->update([
+//                'studying' => $request->studying,
+//            ]);
         }
 
-        if ($request->group_type > 0) {
-            $type = $request->group_type;
-            $res = $student->reservation;
-            $newGroup = $res->groups()->where('group_type_id', $type)->get()->last();
-            if ($newGroup->id != $student->group->id)
-            {
-                $message = " update student account with id is " . $student->id . " and old group is" . $student->group_id . " new group is " . $newGroup->id;
-                Logging::logAdmin(auth()->user(), $message);
-
-                $checkGroupType = $student->update([
-                    'group_id' => $newGroup->id,
-                ]);
-            }
-            else
-                $checkGroupType = false;
-        }
+//        if ($request->group_type > 0) {
+//            $type = $request->group_type;
+//            $res = $student->reservation;
+//            $newGroup = $res->groups()->where('group_type_id', $type)->get()->last();
+//            if ($newGroup->id != $student->group->id)
+//            {
+//                $message = " update student account with id is " . $student->id . " and old group is" . $student->group_id . " new group is " . $newGroup->id;
+//                Logging::logAdmin(auth()->user(), $message);
+//                $data['group_id']=$newGroup->id;
+//
+////                $checkGroupType = $student->update([
+////                    'group_id' => $newGroup->id,
+////                ]);
+//            }
+//            else{
+//
+//                $checkGroupType = false;
+//            }
+//
+//        }
         if (strlen($request->phone) > 0) {
-            $checkPhone = $student->user->update([
-                'password' => Hash::make($request->phone),
-            ]);
+            $user_data['password']=Hash::make($request->phone);
+            $data['phone']=$request->phone;
+
+//            $checkPhone = $student->user->update([
+//                'password' => Hash::make($request->phone),
+//            ]);
             $message = "update student account with id is " . $student->id . " and phone is" . $student->phone . " phone is " . $request->phone;
             Logging::logAdmin(auth()->user(), $message);
 
-            $student->update([
-                'phone' => $request->phone,
-            ]);
+//            $student->update([
+//                'phone' => $request->phone,
+//            ]);
+        }
+        if(!empty($data)){
+            $checkUpdate =  $student->update($data);
+        }
+        if(!empty($user_data)){
+            $checkUserUpdate =  $student->user->update($user_data);
         }
 
-
-        $check = $checkEmail && $checkEnglishName && $checkArabicName
-            && $checkRequiredScore && $checkStudyingDegree && $checkPhone
-            && $checkGroupType;
+//        $check =  $checkGroupType&&$checkUpdate&&$checkUserUpdate;
+        $check =  $checkUpdate&&$checkUserUpdate;
 
         return response()->json(['success' => $check]);
 
