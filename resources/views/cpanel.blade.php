@@ -58,7 +58,7 @@
                 <!-- ============================================================== -->
                 <!-- Logo -->
                 <!-- ============================================================== -->
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="{{route('admin')}}">
 
                     <!-- Logo text -->
                     <span class="logo-text ">
@@ -159,7 +159,7 @@
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('cpanel.student-data')}}" aria-expanded="false">
                                 <i class="fas fa-user-edit mr-2">
-                                </i><span class="hide-menu">Edit Student Marks</span></a>
+                                </i><span class="hide-menu">Edit Students' Marks</span></a>
                         </li>
                     @endif
                     @if(auth()->user()->isSuperAdmin())
@@ -181,7 +181,7 @@
                         @if(auth()->user()->canManageListeningSection())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('audio.index')}}" aria-expanded="false">
-                                <i class="fas fa-music mr-2"></i><span class="hide-menu">Audios</span></a></li>
+                                <i class="fas fa-music mr-2"></i><span class="hide-menu">Audio Files</span></a></li>
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('listening.exam.index')}}" aria-expanded="false">
                                 <i class="fas fa-file-signature mr-2"></i><span class="hide-menu">Listening Exams</span></a></li>
@@ -197,6 +197,11 @@
                                                     href="{{route('reading.exam.index')}}" aria-expanded="false">
                                 <i class="fas fa-file-signature mr-2"></i><span class="hide-menu">Reading Exams</span></a></li>
                     @endif
+                        @if(auth()->user()->canEditMarks())
+                            <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                                        href="{{route('cpanel.marks-panel')}}" aria-expanded="false">
+                                    <i class="fas fa-user-edit mr-2"></i><span class="hide-menu">Edit Failed Students' Scores </span></a></li>
+                        @endif
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('logout')}}" aria-expanded="false"
                                                     onclick="event.preventDefault();
