@@ -15,7 +15,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">Full Name</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required  autofocus>
+                                <input id="name" pattern="[A-Za-z ]+" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required  autofocus>
 
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -25,10 +25,10 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="arabic_name" class="col-md-4 col-form-label text-md-right">Arabic Full Name</label>
+                            <label for="arabic_name"  class="col-md-4 col-form-label text-md-right">Arabic Full Name</label>
 
                             <div class="col-md-6">
-                                <input id="arabic_name" type="text" class="form-control @error('arabic_name') is-invalid @enderror" name="arabic_name" value="{{ old('arabic_name') }}" required  autofocus>
+                                <input id="arabic_name" pattern="[\u0621-\u064A0-9 ]+" title="اكتب اسمك باللغة العربية" type="text" class="form-control @error('arabic_name') is-invalid @enderror" name="arabic_name" value="{{ old('arabic_name') }}" required  autofocus>
 
                                 @error('arabic_name')
                                     <span class="invalid-feedback" role="alert">
@@ -55,7 +55,7 @@
                             <label for="phone" class="col-md-4 col-form-label text-md-right">{{ __('Phone Number') }}</label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="tel" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}"  required >
+                                <input id="phone" type="tel" pattern="(010|011|012|015){1}[0-9]{8}" title="please write your phone number correctly" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}"  required >
 
                                 @error('phone')
                                     <span class="invalid-feedback" role="alert">

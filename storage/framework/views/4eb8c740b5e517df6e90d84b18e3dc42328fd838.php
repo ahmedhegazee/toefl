@@ -13,7 +13,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">Full Name</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control <?php if ($errors->has('name')) :
+                                <input id="name" pattern="[A-Za-z0-9 ]+" type="text" class="form-control <?php if ($errors->has('name')) :
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('name'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }
@@ -31,10 +31,10 @@ endif; ?>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="arabic_name" class="col-md-4 col-form-label text-md-right">Arabic Full Name</label>
+                            <label for="arabic_name"  class="col-md-4 col-form-label text-md-right">Arabic Full Name</label>
 
                             <div class="col-md-6">
-                                <input id="arabic_name" type="text" class="form-control <?php if ($errors->has('arabic_name')) :
+                                <input id="arabic_name" pattern="[\u0621-\u064A0-9 ]+" title="اكتب اسمك باللغة العربية" type="text" class="form-control <?php if ($errors->has('arabic_name')) :
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('arabic_name'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }
@@ -77,7 +77,7 @@ endif; ?>
                             <label for="phone" class="col-md-4 col-form-label text-md-right"><?php echo e(__('Phone Number')); ?></label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="tel" class="form-control <?php if ($errors->has('phone')) :
+                                <input id="phone" type="tel" pattern="(010|011|012|015){1}[0-9]{8}" title="please write your phone number correctly" class="form-control <?php if ($errors->has('phone')) :
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('phone'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }

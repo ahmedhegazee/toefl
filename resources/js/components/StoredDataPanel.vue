@@ -47,15 +47,9 @@
                 style="max-height: 70vh"
             >
                 <template v-slot:cell(actions)="row">
-                    <b-form-checkbox-group id="checkbox-group-2" style="display: inline;" v-model="row.item.selected"
-                                           name="">
-                        <!--                        <b-form-checkbox value="0" >All Answers</b-form-checkbox>-->
-                        <b-form-checkbox value="1">Grammar Answers</b-form-checkbox>
-                        <b-form-checkbox value="2">Reading Answers</b-form-checkbox>
-                        <b-form-checkbox value="3">Listening Answers</b-form-checkbox>
 
-                        <button class="btn btn-primary" @click="sendStudentAnswers(row.item)">Send</button>
-                    </b-form-checkbox-group>
+
+                    <button class="btn btn-primary" @click="sendStudentAnswers(row.item)">Send</button>
                 </template>
 
             </b-table>
@@ -69,7 +63,7 @@
     export default {
         name: "StoredDataPanel",
         mounted() {
-         this.getData();
+            this.getData();
             /*    if(document.cookie.indexOf('student-'+id+'-'+name+'-reading-vocab')>-1&&document.cookie.indexOf('student-'+id+'-'+name+'-reading-paragraph')>-1){
 */
         },
@@ -161,41 +155,33 @@
             },
             sendStudentAnswers(student) {
                 let data = {};
-                for (var i = 0; i < student.selected.length; i++) {
-                    if (student.selected[i] == 1) {
-                        if (student.grammar.length>0)
-                            data.grammar = student.grammar;
-                        else
-                            this.message += "The student doesn't have grammar answers\n"
-                    }
-                    if (student.selected[i] == 2) {
-                        if (student.vocab.length>0 && student.paragraph.length>0) {
-                            data.vocab = student.vocab;
-                            data.paragraph = student.paragraph;
-                        } else
-                            this.message += "The student doesn't have reading answers\n"
-                    }
-                    if (student.selected[i] == 3) {
-                        if (student.listening.length>0)
-                            data.listening = student.listening;
-                        else
-                            this.message += "The student doesn't have listening answers\n"
-                    }
+                if (student.grammar.length > 0) {
+                    data.grammar = student.grammar;
                 }
-                if (student.selected.length == 0) {
-                    this.showAlert("Please check the required checkbox");
+                if (student.vocab.length > 0 && student.paragraph.length > 0) {
+                    data.vocab = student.vocab;
+                    data.paragraph = student.paragraph;
                 }
-                if (this.message != '')
-                    this.showAlert(this.message);
-                else {
-                    axios.patch('/cpanel/student/' + student.id + '/edit', {
-                        'data': JSON.stringify(data)
-                    })
-                        .then(response => {
-                            this.showAlert('Successfully Updated', 'success');
-                            // window.location.replace('/cpanel');
-                        }).catch(error => console.log(error));
-                }
+                if (student.listening.length > 0)
+                    data.listening = student.listening;
+
+                axios.patch('/cpanel/student/' + student.id + '/edit', {
+                    'data': JSON.stringify(data)
+                })
+                    .then(response => {
+                        var index = this.data.indexOf(student);
+                        if (index > -1) {
+                            this.data.splice(index, 1);
+                        }
+                        document.cookie = "student-" + student.id + '-' + student.student_name + "-grammar=[]; expires=Thu, 18 Dec 2013 12:00:00 UTC;path=/";
+                        document.cookie = "student-" + student.id + '-' + student.student_name + "-listening=[]; expires=Thu, 18 Dec 2013 12:00:00 UTC;path=/";
+                        document.cookie = "student-" + student.id + '-' + student.student_name + "-reading-vocab=[]; expires=Thu, 18 Dec 2013 12:00:00 UTC;path=/";
+                        document.cookie = "student-" + student.id + '-' + student.student_name + "-reading-paragraph=[]; expires=Thu, 18 Dec 2013 12:00:00 UTC;path=/";
+
+                        this.showAlert('Successfully Updated', 'success');
+                        // window.location.replace('/cpanel');
+                    }).catch(error => console.log(error));
+
                 // console.log(data);
             }
         }

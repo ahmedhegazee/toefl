@@ -74,6 +74,7 @@ class Student extends Model
 
     public function implementScoreEquation($marks)
     {
+
         return ($marks*677)/140;
 }
 
@@ -94,13 +95,11 @@ class Student extends Model
         Logging::logStudent($this, $message);
     }
 
-    public function editResult($attempt,$marks,$mode=true)
+    public function editResult($marks)
     {
-        $result =$this->results()->where('attempt_id',$attempt)->get()->first();
+        $result =$this->attempts()->last()->result;
         $marks=$this->implementScoreEquation($marks);
-//        dd($result);
-        if($mode)
-        $marks+=$result->mark;
+
         $result->update([
             'mark'=>intval($marks),
             'success'=>$this->checkIfSuccess($marks),

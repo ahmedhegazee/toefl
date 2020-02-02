@@ -6,10 +6,12 @@
         <form action="{{route('grammar.exam.update',['exam'=>$exam])}}" method="post">
             @method('put')
             @include('layouts.exams')
+            <div class="row justify-content">
 
             <button type="submit" class="btn btn-primary">
                 {{ __('Update Exam') }}
             </button>
+            </div>
         </form>
     </div>
 @endsection

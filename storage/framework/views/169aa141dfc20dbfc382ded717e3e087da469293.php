@@ -2,7 +2,7 @@
     <label for="title" class="col-md-4 col-form-label text-md-right">Title</label>
 
     <div class="col-md-6">
-        <input id="title" type="text" class="form-control <?php if ($errors->has('title')) :
+        <input id="title" type="text" pattern="[A-Za-z0-9 ]+" class="form-control <?php if ($errors->has('title')) :
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('title'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }
@@ -25,7 +25,7 @@ endif; ?>
     <label for="content" class="col-md-4 col-form-label text-md-right">content</label>
 
     <div class="col-md-6">
-        <textarea name="content" style="min-height: 300px;max-height: 300px;" id="content" class="form-control <?php if ($errors->has('content')) :
+        <textarea name="content" style="min-height: 300px;max-height: 300px;" id="content" pattern="[A-Za-z0-9 ]+" class="form-control <?php if ($errors->has('content')) :
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('content'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }

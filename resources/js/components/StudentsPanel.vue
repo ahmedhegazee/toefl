@@ -10,7 +10,6 @@
             {{message}}
         </b-alert>
 
-
         <h1>Students</h1>
         <b-form-input
             id="search-input"
@@ -33,6 +32,7 @@
                         @click="verifyStudent(row.item)">Verify
                 </button>
                 <button class="btn btn-primary mr-1 mb-1" @click="showEditInfoDialog(row.item)">Edit Info</button>
+                <button class="btn btn-primary mr-1 mb-1" @click="showEditImagesDialog(row.item)">Change Images</button>
                 <button v-if="!row.item.failed" class="btn btn-primary mr-1 mb-1"
                         @click="showReservationsDialog(row.item)">New Res
                 </button>
@@ -78,7 +78,7 @@
                         required
                     ></b-form-input>
                     <b-form-invalid-feedback :state="arabicNameState">
-                        The arabic name length must be between 5 and 200 characters.
+                        The arabic name length must be between 5 and 200 arabic characters.
                     </b-form-invalid-feedback>
                 </b-form-group>
                 <b-form-group
@@ -178,7 +178,7 @@
                     </b-form-invalid-feedback>
                 </b-form-group>
                 <b-form-select v-model="studyingDegree" class="mb-2" :options="studyingDegrees"></b-form-select>
-<!--                <b-form-select v-model="groupType" :options="groupTypes"></b-form-select>-->
+                <!--                <b-form-select v-model="groupType" :options="groupTypes"></b-form-select>-->
 
             </form>
         </b-modal>
@@ -193,6 +193,66 @@
             <form ref="form" @submit.stop.prevent="handleResSubmit" autocomplete="off">
                 <b-form-select v-model="reservation" class="mb-2" :options="reservations"></b-form-select>
                 <b-form-select v-model="groupType" :options="groupTypes"></b-form-select>
+            </form>
+        </b-modal>
+
+        <!--        Change Student's Images-->
+        <b-modal
+            id="modal-prevent-closing"
+            ref="imagesChanger"
+            title="Change Student's Images"
+            @shown="resetImagesChangerModal"
+            @ok="handleImagesChangerOk"
+        >
+            <form ref="form" @submit.stop.prevent="handleImagesSubmit" autocomplete="off" enctype="multipart/form-data">
+
+
+                <b-form-group label="Personal Image" label-for="personalImage" label-cols-sm="2" label-size="sm">
+                    <b-form-file
+                        id="personalImage"
+                        v-model="images.personalImage"
+                        placeholder="Choose a personal image or drop it here..."
+                        drop-placeholder="Drop personal image here..."
+                        class="mb-2"
+                        accept="image/*"
+                    ></b-form-file>
+                </b-form-group>
+                <b-form-group label="National ID Image" label-for="nidImage" label-cols-sm="2" label-size="sm">
+                    <b-form-file
+                        id="nidImage"
+                        v-model="images.nidImage"
+                        placeholder="Choose a national ID image or drop it here..."
+                        drop-placeholder="Drop national ID image here..."
+                        class="mb-2"
+                        accept="image/*"
+                    ></b-form-file>
+                </b-form-group>
+
+
+                <b-form-group label="Certificate Image" label-for="certificateImage" label-cols-sm="2" label-size="sm">
+                    <b-form-file
+                        id="certificateImage"
+                        v-model="images.certificateImage"
+                        placeholder="Choose a certificate image or drop it here..."
+                        drop-placeholder="Drop certificate image here..."
+                        class="mb-2"
+                        accept="image/*"
+                    ></b-form-file>
+                </b-form-group>
+
+
+                <b-form-group label="Message Image" label-for="messageImage" label-cols-sm="2" label-size="sm">
+                    <b-form-file
+                        id="messageImage"
+                        v-model="images.messageImage"
+                        placeholder="Choose a message image or drop it here..."
+                        drop-placeholder="Drop message image here..."
+                        class="mb-2"
+                        accept="image/*"
+                    ></b-form-file>
+                </b-form-group>
+
+
             </form>
         </b-modal>
     </div>
@@ -210,7 +270,8 @@
                 }).catch(errors => {
 
             });
-           this.getAvailableReservations();
+            this.getAvailableReservations();
+
         },
         data: function () {
 
@@ -239,7 +300,14 @@
                 confirmPhoneState: null,
                 isUniqueEmail: null,
                 isUniquePhone: null,
-                filter:null,
+                filter: null,
+                images:{
+                    personalImage: null,
+                    nidImage: null,
+                    certificateImage: null,
+                    messageImage: null
+                }
+
             }
         }, computed: {
             englishNameState: function () {
@@ -247,9 +315,9 @@
                     return null;
                 else {
                     if (this.student != null)
-                        return this.englishName.length >= 5 && this.englishName.length < 200 && this.englishName != this.student['English Name'];
+                        return this.englishName.length >= 5 && this.englishName.length < 200 && this.validateName(this.englishName) && this.englishName != this.student['English Name'];
                     else
-                        return this.englishName.length >= 5 && this.englishName.length < 200;
+                        return this.englishName.length >= 5 && this.englishName.length < 200 && this.validateName(this.englishName);
 
                 }
             },
@@ -258,17 +326,17 @@
                     return null;
                 else {
                     if (this.student != null)
-                        return this.arabicName.length >= 5 && this.arabicName.length < 200 && this.arabicName != this.student['Arabic Name'];
+                        return this.arabicName.length >= 5 && this.arabicName.length < 200 && this.validateArabicName(this.arabicName) && this.arabicName != this.student['Arabic Name'];
                     else
-                        return this.arabicName.length >= 5 && this.arabicName.length < 200;
+                        return this.arabicName.length >= 5 && this.arabicName.length < 200 && this.validateArabicName(this.arabicName);
                 }
             },
 
             phoneState: function () {
                 if (this.phone.length == 0)
                     return null;
-                else{
-                    return this.phone.length == 11&&this.validatePhone(this.phone);
+                else {
+                    return this.phone.length == 11 && this.validatePhone(this.phone);
                 }
 
             },
@@ -289,6 +357,14 @@
             validateEmail(email) {
                 var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 return re.test(email);
+            },
+            validateName(name) {
+                var re = /^[A-Za-z ]+$/;
+                return re.test(name);
+            },
+            validateArabicName(name) {
+                var re = /^[\u0621-\u064A0-9 ]+$/;
+                return re.test(name);
             },
             validatePhone(phone) {
                 var re = /^(010|011|012|015){1}[0-9]{8}$/;
@@ -311,12 +387,17 @@
                 this.$refs.infoChanger.show();
             },
 
+            showEditImagesDialog(student) {
+                this.student = student;
+                this.$refs.imagesChanger.show();
+            },
+
             showReservationsDialog(student) {
                 this.getAvailableReservations();
-                setTimeout(null,3000);
-                if(this.reservations.length==1){
+                setTimeout(null, 3000);
+                if (this.reservations.length == 1) {
                     this.showAlert('Sorry there is no available reservations')
-                }else{
+                } else {
                     this.student = student;
                     this.$refs.resChanger.show();
                 }
@@ -339,7 +420,7 @@
                 this.isUniquePhone = null;
                 this.studyingDegree = null;
                 // this.groupType = null;
-                this.requiredScore=0;
+                this.requiredScore = 0;
             },
             resetNewModal() {
                 this.resetModal();
@@ -348,6 +429,13 @@
             resetModalForRes() {
                 this.reservation = null;
                 this.groupType = null;
+            },
+            resetImagesChangerModal(){
+                // this.student=null;
+                this.images.certificateImage=null;
+                this.images.nidImage=null;
+                this.images.personalImage=null;
+                this.images.messageImage=null;
             },
             handleOk(bvModalEvt) {
                 // Prevent modal from closing
@@ -379,6 +467,21 @@
                     this.$refs.resChanger.hide()
                 })
             },
+            handleImagesChangerOk(bvModalEvt) {
+                // Prevent modal from closing
+                bvModalEvt.preventDefault();
+
+                this.handleImagesSubmit();
+
+            },
+            handleImagesSubmit() {
+
+                this.sendImagesUpdate();
+
+                this.$nextTick(() => {
+                    this.$refs.imagesChanger.hide()
+                })
+            },
             // handleOkForNewUserModal(bvModalEvt) {
             //     // Prevent modal from closing
             //     bvModalEvt.preventDefault()
@@ -396,8 +499,7 @@
                 if (this.arabicName.length > 0) {
                     if (!this.arabicNameState)
                         return
-                }
-                else if (this.englishName.length > 0) {
+                } else if (this.englishName.length > 0) {
                     if (!this.englishNameState)
                         return
                 } else if (this.email.length > 0)
@@ -463,7 +565,7 @@
                 }).then(response => {
                     if (response.data.success) {
                         this.successAction();
-                    } else  {
+                    } else {
                         this.showAlert("Something happened when updating . Please call Support");
                     }
                 })
@@ -485,8 +587,8 @@
                     this.student.phone = this.phone;
                 if (this.requiredScore > 0)
                     this.student['Required Score'] = this.requiredScore;
-                if(this.studyingDegree!=null){
-                    this.student['Studying Degree']=this.studyingDegrees[this.studyingDegree]['text'];
+                if (this.studyingDegree != null) {
+                    this.student['Studying Degree'] = this.studyingDegrees[this.studyingDegree]['text'];
                 }
                 this.showAlert("Successfully Updated", "success");
 
@@ -532,6 +634,55 @@
                     });
 
             },
+            sendImagesUpdate() {
+                var data = new FormData();
+                let counter=0;
+                if (this.images.personalImage != null){
+                    counter++;
+                    data.append('personalImage', this.images.personalImage);
+                }
+
+                if (this.images.nidImage != null)
+                {
+                    data.append('nidImage', this.images.nidImage);
+                    counter++;
+                }
+
+                if (this.images.certificateImage != null)
+                {
+                    data.append('certificateImage', this.images.certificateImage);
+                    counter++;
+                }
+
+                if (this.images.messageImage != null)
+                {
+                    counter++;
+                    data.append('messageImage', this.images.messageImage);
+                }
+                if(counter>0){
+                    axios.post('/student/' + this.student.id + '/images', data, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }).then(response => {
+                        if (response.data.success) {
+
+                            this.showAlert("Successfully Updated", "success");
+                        } else {
+                            this.showAlert(response.data.message);
+                        }
+                        this.student = null;
+                    })
+                        .catch(function (error) {
+                            console.log(error);
+                            this.showAlert("Something happened when updating . Please call Support");
+                            // console.log(error);
+                        });
+                }else{
+                    this.showAlert("You didn't choose images");
+                }
+
+            },
             checkIsUniqueEmail() {
                 axios.post('/users/unique-email', {
                     'email': this.email,
@@ -554,7 +705,7 @@
                         console.log(error);
                     });
             },
-            getAvailableReservations(){
+            getAvailableReservations() {
                 axios.get('/reservations/available')
                     .then(response => {
                         this.reservations = response.data.reservations;

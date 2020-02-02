@@ -3,9 +3,13 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
 
-
+                <?php if(isset($message)): ?>
                     <div class='alert alert-success'> <?php echo e($message); ?> </div>
+                <?php endif; ?>
 
+                <?php if(session()->has('message')): ?>
+                    <div class='alert alert-success'> <?php echo e(session()->get('message')); ?> </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

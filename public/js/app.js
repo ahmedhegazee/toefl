@@ -2878,31 +2878,36 @@ __webpack_require__.r(__webpack_exports__);
         })["catch"](function (errors) {});
       }
     },
-    getStudents: function getStudents() {
+    getStudentsData: function getStudentsData() {
       var _this3 = this;
 
+      axios.get('/students/' + this.group).then(function (response) {
+        _this3.students = response.data.students;
+        _this3.enter = response.data.entered;
+        _this3.started = response.data.started;
+        _this3.working = _this3.enter && _this3.started;
+        _this3.hasExams = response.data.has_exams; // console.log(response.data);
+      })["catch"](function (errors) {});
+    },
+    getStudents: function getStudents() {
       if ((this.enter || this.started) && this.currentGroup != this.group && this.group != '') {
         this.message = 'Sorry you can\'t change reservation when the exam is running';
         this.showAlert();
         this.group = this.currentGroup;
       } else {
         this.currentGroup = this.group;
-        axios.get('/students/' + this.group).then(function (response) {
-          _this3.students = response.data.students;
-          _this3.enter = response.data.entered;
-          _this3.started = response.data.started;
-          _this3.working = _this3.enter && _this3.started;
-          _this3.hasExams = response.data.has_exams; // console.log(response.data);
-        })["catch"](function (errors) {});
+        this.getStudentsData();
+        setTimeout(null, 120000);
+        this.refreshData();
       }
     },
     refreshData: function refreshData() {
       var d = this;
       setInterval(function () {
-        this.students = [];
-        setTimeout(null, 1000);
-        if (d.m.length == 0) d.getStudents();
-      }, 5000); // setTimeout(null,60000);
+        this.students = []; // setTimeout(null,1000);
+
+        if (d.m.length == 0) d.getStudentsData();
+      }, 120000); // setTimeout(null,60000);
     },
     enterExam: function enterExam() {
       var _this4 = this;
@@ -3526,6 +3531,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "MultipleQuestionsComponent",
   props: ['storeRoute', 'isGrammar', 'redirectRoute'],
@@ -4065,12 +4071,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "StoredDataPanel",
   mounted: function mounted() {
@@ -4174,37 +4174,35 @@ __webpack_require__.r(__webpack_exports__);
 
       var data = {};
 
-      for (var i = 0; i < student.selected.length; i++) {
-        if (student.selected[i] == 1) {
-          if (student.grammar.length > 0) data.grammar = student.grammar;else this.message += "The student doesn't have grammar answers\n";
-        }
-
-        if (student.selected[i] == 2) {
-          if (student.vocab.length > 0 && student.paragraph.length > 0) {
-            data.vocab = student.vocab;
-            data.paragraph = student.paragraph;
-          } else this.message += "The student doesn't have reading answers\n";
-        }
-
-        if (student.selected[i] == 3) {
-          if (student.listening.length > 0) data.listening = student.listening;else this.message += "The student doesn't have listening answers\n";
-        }
+      if (student.grammar.length > 0) {
+        data.grammar = student.grammar;
       }
 
-      if (student.selected.length == 0) {
-        this.showAlert("Please check the required checkbox");
+      if (student.vocab.length > 0 && student.paragraph.length > 0) {
+        data.vocab = student.vocab;
+        data.paragraph = student.paragraph;
       }
 
-      if (this.message != '') this.showAlert(this.message);else {
-        axios.patch('/cpanel/student/' + student.id + '/edit', {
-          'data': JSON.stringify(data)
-        }).then(function (response) {
-          _this.showAlert('Successfully Updated', 'success'); // window.location.replace('/cpanel');
+      if (student.listening.length > 0) data.listening = student.listening;
+      axios.patch('/cpanel/student/' + student.id + '/edit', {
+        'data': JSON.stringify(data)
+      }).then(function (response) {
+        var index = _this.data.indexOf(student);
 
-        })["catch"](function (error) {
-          return console.log(error);
-        });
-      } // console.log(data);
+        if (index > -1) {
+          _this.data.splice(index, 1);
+        }
+
+        document.cookie = "student-" + student.id + '-' + student.student_name + "-grammar=[]; expires=Thu, 18 Dec 2013 12:00:00 UTC;path=/";
+        document.cookie = "student-" + student.id + '-' + student.student_name + "-listening=[]; expires=Thu, 18 Dec 2013 12:00:00 UTC;path=/";
+        document.cookie = "student-" + student.id + '-' + student.student_name + "-reading-vocab=[]; expires=Thu, 18 Dec 2013 12:00:00 UTC;path=/";
+        document.cookie = "student-" + student.id + '-' + student.student_name + "-reading-paragraph=[]; expires=Thu, 18 Dec 2013 12:00:00 UTC;path=/";
+
+        _this.showAlert('Successfully Updated', 'success'); // window.location.replace('/cpanel');
+
+      })["catch"](function (error) {
+        return console.log(error);
+      }); // console.log(data);
     }
   }
 });
@@ -4466,6 +4464,66 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
@@ -4501,18 +4559,24 @@ __webpack_require__.r(__webpack_exports__);
       confirmPhoneState: null,
       isUniqueEmail: null,
       isUniquePhone: null,
-      filter: null
+      filter: null,
+      images: {
+        personalImage: null,
+        nidImage: null,
+        certificateImage: null,
+        messageImage: null
+      }
     };
   },
   computed: {
     englishNameState: function englishNameState() {
       if (this.englishName.length == 0) return null;else {
-        if (this.student != null) return this.englishName.length >= 5 && this.englishName.length < 200 && this.englishName != this.student['English Name'];else return this.englishName.length >= 5 && this.englishName.length < 200;
+        if (this.student != null) return this.englishName.length >= 5 && this.englishName.length < 200 && this.validateName(this.englishName) && this.englishName != this.student['English Name'];else return this.englishName.length >= 5 && this.englishName.length < 200 && this.validateName(this.englishName);
       }
     },
     arabicNameState: function arabicNameState() {
       if (this.arabicName.length == 0) return null;else {
-        if (this.student != null) return this.arabicName.length >= 5 && this.arabicName.length < 200 && this.arabicName != this.student['Arabic Name'];else return this.arabicName.length >= 5 && this.arabicName.length < 200;
+        if (this.student != null) return this.arabicName.length >= 5 && this.arabicName.length < 200 && this.validateArabicName(this.arabicName) && this.arabicName != this.student['Arabic Name'];else return this.arabicName.length >= 5 && this.arabicName.length < 200 && this.validateArabicName(this.arabicName);
       }
     },
     phoneState: function phoneState() {
@@ -4531,6 +4595,14 @@ __webpack_require__.r(__webpack_exports__);
     validateEmail: function validateEmail(email) {
       var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);
+    },
+    validateName: function validateName(name) {
+      var re = /^[A-Za-z ]+$/;
+      return re.test(name);
+    },
+    validateArabicName: function validateArabicName(name) {
+      var re = /^[\u0621-\u064A0-9 ]+$/;
+      return re.test(name);
     },
     validatePhone: function validatePhone(phone) {
       var re = /^(010|011|012|015){1}[0-9]{8}$/;
@@ -4553,6 +4625,10 @@ __webpack_require__.r(__webpack_exports__);
     showEditInfoDialog: function showEditInfoDialog(student) {
       this.student = student;
       this.$refs.infoChanger.show();
+    },
+    showEditImagesDialog: function showEditImagesDialog(student) {
+      this.student = student;
+      this.$refs.imagesChanger.show();
     },
     showReservationsDialog: function showReservationsDialog(student) {
       this.getAvailableReservations();
@@ -4591,6 +4667,13 @@ __webpack_require__.r(__webpack_exports__);
       this.reservation = null;
       this.groupType = null;
     },
+    resetImagesChangerModal: function resetImagesChangerModal() {
+      // this.student=null;
+      this.images.certificateImage = null;
+      this.images.nidImage = null;
+      this.images.personalImage = null;
+      this.images.messageImage = null;
+    },
     handleOk: function handleOk(bvModalEvt) {
       // Prevent modal from closing
       bvModalEvt.preventDefault(); // Trigger submit handler
@@ -4614,6 +4697,19 @@ __webpack_require__.r(__webpack_exports__);
         _this2.$refs.resChanger.hide();
       });
     },
+    handleImagesChangerOk: function handleImagesChangerOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault();
+      this.handleImagesSubmit();
+    },
+    handleImagesSubmit: function handleImagesSubmit() {
+      var _this3 = this;
+
+      this.sendImagesUpdate();
+      this.$nextTick(function () {
+        _this3.$refs.imagesChanger.hide();
+      });
+    },
     // handleOkForNewUserModal(bvModalEvt) {
     //     // Prevent modal from closing
     //     bvModalEvt.preventDefault()
@@ -4625,7 +4721,7 @@ __webpack_require__.r(__webpack_exports__);
     //
     // },
     handleSubmit: function handleSubmit() {
-      var _this3 = this;
+      var _this4 = this;
 
       // Exit when the form isn't valid
       if (this.arabicName.length > 0) {
@@ -4647,7 +4743,7 @@ __webpack_require__.r(__webpack_exports__);
       this.sendChange(); // Hide the modal manually
 
       this.$nextTick(function () {
-        _this3.$refs.infoChanger.hide();
+        _this4.$refs.infoChanger.hide();
       });
     },
     // handleNewUserSubmit() {
@@ -4678,7 +4774,7 @@ __webpack_require__.r(__webpack_exports__);
     //
     // },
     sendChange: function sendChange() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.patch('/student/' + this.student.id, {
         'name': this.englishName,
@@ -4690,9 +4786,9 @@ __webpack_require__.r(__webpack_exports__);
 
       }).then(function (response) {
         if (response.data.success) {
-          _this4.successAction();
+          _this5.successAction();
         } else {
-          _this4.showAlert("Something happened when updating . Please call Support");
+          _this5.showAlert("Something happened when updating . Please call Support");
         }
       })["catch"](function (error) {
         console.log(error);
@@ -4732,69 +4828,116 @@ __webpack_require__.r(__webpack_exports__);
     //         });
     // },
     sendResUpdate: function sendResUpdate() {
-      var _this5 = this;
+      var _this6 = this;
 
       axios.patch('/student/' + this.student.id + '/new-reservation', {
         'res': this.reservation,
         'type': this.groupType
       }).then(function (response) {
         if (response.data.success) {
-          _this5.showAlert("Successfully Updated", "success");
+          _this6.showAlert("Successfully Updated", "success");
         } else {
-          _this5.showAlert(response.data.message);
+          _this6.showAlert(response.data.message);
         }
 
-        _this5.reservation = null;
+        _this6.reservation = null;
       })["catch"](function (error) {
         console.log(error);
         this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
       });
     },
+    sendImagesUpdate: function sendImagesUpdate() {
+      var _this7 = this;
+
+      var data = new FormData();
+      var counter = 0;
+
+      if (this.images.personalImage != null) {
+        counter++;
+        data.append('personalImage', this.images.personalImage);
+      }
+
+      if (this.images.nidImage != null) {
+        data.append('nidImage', this.images.nidImage);
+        counter++;
+      }
+
+      if (this.images.certificateImage != null) {
+        data.append('certificateImage', this.images.certificateImage);
+        counter++;
+      }
+
+      if (this.images.messageImage != null) {
+        counter++;
+        data.append('messageImage', this.images.messageImage);
+      }
+
+      if (counter > 0) {
+        axios.post('/student/' + this.student.id + '/images', data, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(function (response) {
+          if (response.data.success) {
+            _this7.showAlert("Successfully Updated", "success");
+          } else {
+            _this7.showAlert(response.data.message);
+          }
+
+          _this7.student = null;
+        })["catch"](function (error) {
+          console.log(error);
+          this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
+        });
+      } else {
+        this.showAlert("You didn't choose images");
+      }
+    },
     checkIsUniqueEmail: function checkIsUniqueEmail() {
-      var _this6 = this;
+      var _this8 = this;
 
       axios.post('/users/unique-email', {
         'email': this.email
       }).then(function (response) {
-        _this6.isUniqueEmail = response.data.check;
+        _this8.isUniqueEmail = response.data.check;
       })["catch"](function (error) {
         console.log(error);
       });
     },
     checkIsUniquePhone: function checkIsUniquePhone() {
-      var _this7 = this;
+      var _this9 = this;
 
       axios.post('/students/unique-phone', {
         'phone': this.phone
       }).then(function (response) {
-        _this7.isUniquePhone = response.data.check;
+        _this9.isUniquePhone = response.data.check;
       })["catch"](function (error) {
         console.log(error);
       });
     },
     getAvailableReservations: function getAvailableReservations() {
-      var _this8 = this;
+      var _this10 = this;
 
       axios.get('/reservations/available').then(function (response) {
-        _this8.reservations = response.data.reservations;
+        _this10.reservations = response.data.reservations;
 
-        _this8.reservations.unshift({
+        _this10.reservations.unshift({
           value: null,
           text: "Select Reservation",
           disabled: true
         });
 
-        _this8.groupTypes = response.data.groupTypes;
+        _this10.groupTypes = response.data.groupTypes;
 
-        _this8.groupTypes.unshift({
+        _this10.groupTypes.unshift({
           value: null,
           text: "Select Group Type",
           disabled: true
         });
 
-        _this8.studyingDegrees = response.data.studyingDegrees;
+        _this10.studyingDegrees = response.data.studyingDegrees;
 
-        _this8.studyingDegrees.unshift({
+        _this10.studyingDegrees.unshift({
           value: null,
           text: "Select Studying Degree",
           disabled: true
@@ -5106,7 +5249,7 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     nameState: function nameState() {
       if (this.name.length == 0) return null;else {
-        if (this.user != null) return this.name.length >= 5 && this.name.length < 200 && this.name != this.user.name;else return this.name.length >= 5 && this.name.length < 200;
+        if (this.user != null) return this.name.length >= 5 && this.name.length < 200 && this.validateName(this.name) && this.name != this.user.name;else return this.name.length >= 5 && this.name.length < 200 && this.validateName(this.name);
       }
     },
     passwordState: function passwordState() {
@@ -5117,6 +5260,10 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    validateName: function validateName(name) {
+      var re = /^[A-Za-z ]+$/;
+      return re.test(name);
+    },
     validateEmail: function validateEmail(email) {
       var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);
@@ -5241,20 +5388,38 @@ __webpack_require__.r(__webpack_exports__);
     sendChange: function sendChange() {
       var _this5 = this;
 
-      axios.patch('/users/' + this.user.id, {
-        'name': this.name,
-        'email': this.email,
-        'password': this.password
-      }).then(function (response) {
-        if (response.data.success) {
-          _this5.successAction();
-        } else {
-          _this5.showAlert("Something happened when updating . Please call Support");
-        }
-      })["catch"](function (error) {
-        console.log(error);
-        this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
-      });
+      var counter = 0;
+      var data = new FormData();
+
+      if (this.name.length > 0) {
+        data.append('name', this.name);
+        counter++;
+      }
+
+      if (this.password.length > 0) {
+        data.append('password', this.password);
+        counter++;
+      }
+
+      if (this.email.length > 0) {
+        data.append('email', this.email);
+        counter++;
+      }
+
+      if (counter > 0) {
+        axios.patch('/users/' + this.user.id, data).then(function (response) {
+          if (response.data.success) {
+            _this5.successAction();
+          } else {
+            _this5.showAlert("Something happened when updating . Please call Support");
+          }
+        })["catch"](function (error) {
+          console.log(error);
+          this.showAlert("Something happened when updating . Please call Support"); // console.log(error);
+        });
+      } else {
+        this.showAlert("You didn't change anything.");
+      }
     },
     addNewUser: function addNewUser() {
       var _this6 = this;
@@ -5326,7 +5491,7 @@ __webpack_require__.r(__webpack_exports__);
     deleteUser: function deleteUser(user) {
       var _this9 = this;
 
-      if (user.roles.indexOf('Super Admin') == -1) {
+      if (user.roles.indexOf('Super Admin') == -1 && user.id != 1) {
         this.$bvModal.msgBoxConfirm('Are you sure about deleting this user ' + user.name, {
           title: 'Delete User',
           size: 'sm',
@@ -73720,7 +73885,7 @@ var render = function() {
                       : $$selectedVal[0]
                   },
                   function($event) {
-                    return _vm.refreshData()
+                    return _vm.getStudents()
                   }
                 ]
               }
@@ -74319,32 +74484,6 @@ var render = function() {
   return _c(
     "div",
     [
-      _c(
-        "b-alert",
-        {
-          attrs: {
-            show: _vm.dismissCountDown,
-            dismissible: "",
-            fade: "",
-            variant: _vm.alertVariant
-          },
-          on: { "dismiss-count-down": _vm.countDownChanged }
-        },
-        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
-      ),
-      _vm._v(" "),
-      _vm.alert.show
-        ? _c("b-alert", { attrs: { variant: _vm.alert.variant, show: "" } }, [
-            _c(
-              "ul",
-              _vm._l(_vm.alert.message, function(message) {
-                return _c("li", { domProps: { textContent: _vm._s(message) } })
-              }),
-              0
-            )
-          ])
-        : _vm._e(),
-      _vm._v(" "),
       _c("b-form-textarea", {
         attrs: {
           id: "textarea-plaintext",
@@ -74374,6 +74513,32 @@ var render = function() {
         ],
         1
       ),
+      _vm._v(" "),
+      _c(
+        "b-alert",
+        {
+          attrs: {
+            show: _vm.dismissCountDown,
+            dismissible: "",
+            fade: "",
+            variant: _vm.alertVariant
+          },
+          on: { "dismiss-count-down": _vm.countDownChanged }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+      ),
+      _vm._v(" "),
+      _vm.alert.show
+        ? _c("b-alert", { attrs: { variant: _vm.alert.variant, show: "" } }, [
+            _c(
+              "ul",
+              _vm._l(_vm.alert.message, function(message) {
+                return _c("li", { domProps: { textContent: _vm._s(message) } })
+              }),
+              0
+            )
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _c("b-form-textarea", {
         attrs: {
@@ -74791,45 +74956,16 @@ var render = function() {
                       fn: function(row) {
                         return [
                           _c(
-                            "b-form-checkbox-group",
+                            "button",
                             {
-                              staticStyle: { display: "inline" },
-                              attrs: { id: "checkbox-group-2", name: "" },
-                              model: {
-                                value: row.item.selected,
-                                callback: function($$v) {
-                                  _vm.$set(row.item, "selected", $$v)
-                                },
-                                expression: "row.item.selected"
+                              staticClass: "btn btn-primary",
+                              on: {
+                                click: function($event) {
+                                  return _vm.sendStudentAnswers(row.item)
+                                }
                               }
                             },
-                            [
-                              _c("b-form-checkbox", { attrs: { value: "1" } }, [
-                                _vm._v("Grammar Answers")
-                              ]),
-                              _vm._v(" "),
-                              _c("b-form-checkbox", { attrs: { value: "2" } }, [
-                                _vm._v("Reading Answers")
-                              ]),
-                              _vm._v(" "),
-                              _c("b-form-checkbox", { attrs: { value: "3" } }, [
-                                _vm._v("Listening Answers")
-                              ]),
-                              _vm._v(" "),
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-primary",
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.sendStudentAnswers(row.item)
-                                    }
-                                  }
-                                },
-                                [_vm._v("Send")]
-                              )
-                            ],
-                            1
+                            [_vm._v("Send")]
                           )
                         ]
                       }
@@ -74837,7 +74973,7 @@ var render = function() {
                   ],
                   null,
                   false,
-                  4028416382
+                  1424897507
                 )
               })
             ],
@@ -74935,7 +75071,7 @@ var render = function() {
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
         },
-        [_vm._v("\n            " + _vm._s(_vm.message) + "\n        ")]
+        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
       ),
       _vm._v(" "),
       _c("h1", [_vm._v("Students")]),
@@ -74978,7 +75114,7 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v("Verify\n                ")]
+                      [_vm._v("Verify\n            ")]
                     )
                   : _vm._e(),
                 _vm._v(" "),
@@ -74995,6 +75131,19 @@ var render = function() {
                   [_vm._v("Edit Info")]
                 ),
                 _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary mr-1 mb-1",
+                    on: {
+                      click: function($event) {
+                        return _vm.showEditImagesDialog(row.item)
+                      }
+                    }
+                  },
+                  [_vm._v("Change Images")]
+                ),
+                _vm._v(" "),
                 !row.item.failed
                   ? _c(
                       "button",
@@ -75006,7 +75155,7 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v("New Res\n                ")]
+                      [_vm._v("New Res\n            ")]
                     )
                   : _vm._e()
               ]
@@ -75071,7 +75220,7 @@ var render = function() {
                     { attrs: { state: _vm.englishNameState } },
                     [
                       _vm._v(
-                        "\n                        The english name length must be between 5 and 200 characters.\n                    "
+                        "\n                    The english name length must be between 5 and 200 characters.\n                "
                       )
                     ]
                   )
@@ -75110,7 +75259,7 @@ var render = function() {
                     { attrs: { state: _vm.arabicNameState } },
                     [
                       _vm._v(
-                        "\n                        The arabic name length must be between 5 and 200 characters.\n                    "
+                        "\n                    The arabic name length must be between 5 and 200 arabic characters.\n                "
                       )
                     ]
                   )
@@ -75146,7 +75295,7 @@ var render = function() {
                     { attrs: { state: _vm.emailState } },
                     [
                       _vm._v(
-                        "\n                        Write correct email please.\n                    "
+                        "\n                    Write correct email please.\n                "
                       )
                     ]
                   ),
@@ -75159,7 +75308,7 @@ var render = function() {
                         { attrs: { state: _vm.isUniqueEmail } },
                         [
                           _vm._v(
-                            "\n                            Write another email please.This email is token\n                        "
+                            "\n                        Write another email please.This email is token\n                    "
                           )
                         ]
                       )
@@ -75202,7 +75351,7 @@ var render = function() {
                     { attrs: { state: _vm.confirmEmailState } },
                     [
                       _vm._v(
-                        "\n                        Confirm your email correctly.\n                    "
+                        "\n                    Confirm your email correctly.\n                "
                       )
                     ]
                   )
@@ -75241,7 +75390,7 @@ var render = function() {
                     { attrs: { state: _vm.phoneState } },
                     [
                       _vm._v(
-                        "\n                        Write correct phone number.\n                    "
+                        "\n                    Write correct phone number.\n                "
                       )
                     ]
                   ),
@@ -75254,7 +75403,7 @@ var render = function() {
                         { attrs: { state: _vm.isUniquePhone } },
                         [
                           _vm._v(
-                            "\n                            Write another phone number please.This phone number is token\n                        "
+                            "\n                        Write another phone number please.This phone number is token\n                    "
                           )
                         ]
                       )
@@ -75296,7 +75445,7 @@ var render = function() {
                     { attrs: { state: _vm.confirmPhoneState } },
                     [
                       _vm._v(
-                        "\n                        Confirm your phone correctly.\n                    "
+                        "\n                    Confirm your phone correctly.\n                "
                       )
                     ]
                   )
@@ -75337,7 +75486,7 @@ var render = function() {
                     { attrs: { state: _vm.requiredScoreState } },
                     [
                       _vm._v(
-                        "\n                        Write correct Score.\n                    "
+                        "\n                    Write correct Score.\n                "
                       )
                     ]
                   )
@@ -75409,6 +75558,165 @@ var render = function() {
                   expression: "groupType"
                 }
               })
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "imagesChanger",
+          attrs: {
+            id: "modal-prevent-closing",
+            title: "Change Student's Images"
+          },
+          on: {
+            shown: _vm.resetImagesChangerModal,
+            ok: _vm.handleImagesChangerOk
+          }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              attrs: { autocomplete: "off", enctype: "multipart/form-data" },
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  return _vm.handleImagesSubmit($event)
+                }
+              }
+            },
+            [
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    label: "Personal Image",
+                    "label-for": "personalImage",
+                    "label-cols-sm": "2",
+                    "label-size": "sm"
+                  }
+                },
+                [
+                  _c("b-form-file", {
+                    staticClass: "mb-2",
+                    attrs: {
+                      id: "personalImage",
+                      placeholder: "Choose a personal image or drop it here...",
+                      "drop-placeholder": "Drop personal image here...",
+                      accept: "image/*"
+                    },
+                    model: {
+                      value: _vm.images.personalImage,
+                      callback: function($$v) {
+                        _vm.$set(_vm.images, "personalImage", $$v)
+                      },
+                      expression: "images.personalImage"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    label: "National ID Image",
+                    "label-for": "nidImage",
+                    "label-cols-sm": "2",
+                    "label-size": "sm"
+                  }
+                },
+                [
+                  _c("b-form-file", {
+                    staticClass: "mb-2",
+                    attrs: {
+                      id: "nidImage",
+                      placeholder:
+                        "Choose a national ID image or drop it here...",
+                      "drop-placeholder": "Drop national ID image here...",
+                      accept: "image/*"
+                    },
+                    model: {
+                      value: _vm.images.nidImage,
+                      callback: function($$v) {
+                        _vm.$set(_vm.images, "nidImage", $$v)
+                      },
+                      expression: "images.nidImage"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    label: "Certificate Image",
+                    "label-for": "certificateImage",
+                    "label-cols-sm": "2",
+                    "label-size": "sm"
+                  }
+                },
+                [
+                  _c("b-form-file", {
+                    staticClass: "mb-2",
+                    attrs: {
+                      id: "certificateImage",
+                      placeholder:
+                        "Choose a certificate image or drop it here...",
+                      "drop-placeholder": "Drop certificate image here...",
+                      accept: "image/*"
+                    },
+                    model: {
+                      value: _vm.images.certificateImage,
+                      callback: function($$v) {
+                        _vm.$set(_vm.images, "certificateImage", $$v)
+                      },
+                      expression: "images.certificateImage"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    label: "Message Image",
+                    "label-for": "messageImage",
+                    "label-cols-sm": "2",
+                    "label-size": "sm"
+                  }
+                },
+                [
+                  _c("b-form-file", {
+                    staticClass: "mb-2",
+                    attrs: {
+                      id: "messageImage",
+                      placeholder: "Choose a message image or drop it here...",
+                      "drop-placeholder": "Drop message image here...",
+                      accept: "image/*"
+                    },
+                    model: {
+                      value: _vm.images.messageImage,
+                      callback: function($$v) {
+                        _vm.$set(_vm.images, "messageImage", $$v)
+                      },
+                      expression: "images.messageImage"
+                    }
+                  })
+                ],
+                1
+              )
             ],
             1
           )

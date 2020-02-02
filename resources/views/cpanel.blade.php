@@ -137,76 +137,78 @@
                     @if(auth()->user()->canManageReservationsPanel())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('res.index')}}" aria-expanded="false">
-                                <i class="far fa-calendar-alt mr-2"></i><span class="hide-menu">Reservations</span></a>
+                                <i class="far fa-calendar-alt mr-2 ml-1 fa-1x"></i><span class="hide-menu">Reservations</span></a>
                         </li>
                     @endif
                     @if(auth()->user()->canManageStudentsPanel())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('cpanel.students-panel')}}" aria-expanded="false">
-                                <i class="fas fa-user-graduate mr-2"></i><span class="hide-menu">Students</span></a>
+                                <i class="fas fa-user-graduate mr-2 ml-1 fa-1x"></i><span class="hide-menu">Students</span></a>
                         </li>
                     @endif
+                        @if(auth()->user()->canManageExamsPanel())
                     <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                 href="{{route('cpanel.exams-panel')}}" aria-expanded="false">
-                            <i class="fas fa-stopwatch mr-2"></i><span class="hide-menu">Exams Panel</span></a></li>
+                            <i class="fas fa-stopwatch mr-2 ml-1 fa-1x"></i><span class="hide-menu">Exams Panel</span></a></li>
+                   @endif
                     @if(auth()->user()->canManageExamsPanel())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('cpanel.certificates-panel')}}" aria-expanded="false"><i
-                                    class="fas fa-medal mr-2"></i><span class="hide-menu">Certificates</span></a>
+                                    class="fas fa-medal mr-2 ml-1 fa-1x"></i><span class="hide-menu">Certificates</span></a>
                         </li>
                     @endif
                     @if(auth()->user()->canManageExamsPanel())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('cpanel.student-data')}}" aria-expanded="false">
-                                <i class="fas fa-user-edit mr-2">
+                                <i class="fas fa-user-edit mr-2 ml-1 fa-1x">
                                 </i><span class="hide-menu">Edit Students' Marks</span></a>
                         </li>
                     @endif
                     @if(auth()->user()->isSuperAdmin())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('cpanel.configs-panel')}}" aria-expanded="false">
-                                <i class="fas fa-cogs mr-2"></i><span class="hide-menu">Configs Panel</span></a></li>
+                                <i class="fas fa-cogs mr-2 ml-1 fa-1x"></i><span class="hide-menu">Configs Panel</span></a></li>
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('cpanel.users-panel')}}" aria-expanded="false">
-                                <i class="fas fa-users mr-2"></i><span class="hide-menu">Users Panel</span></a></li>
+                                <i class="fas fa-users mr-2 ml-1 fa-1x"></i><span class="hide-menu">Users Panel</span></a></li>
                     @endif
                         @if(auth()->user()->canManageGrammarSection())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('grammar.question.index')}}" aria-expanded="false">
-                                <i class="fas fa-question-circle mr-2"></i><span class="hide-menu">Grammar Questions</span></a></li>
+                                <i class="fas fa-question-circle mr-2 ml-1 fa-1x"></i><span class="hide-menu">Grammar Questions</span></a></li>
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('grammar.exam.index')}}" aria-expanded="false">
-                                <i class="fas fa-file-signature mr-2"></i><span class="hide-menu">Grammar Exams</span></a></li>
+                                <i class="fas fa-file-signature mr-2 ml-1 fa-1x"></i><span class="hide-menu">Grammar Exams</span></a></li>
                     @endif
                         @if(auth()->user()->canManageListeningSection())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('audio.index')}}" aria-expanded="false">
-                                <i class="fas fa-music mr-2"></i><span class="hide-menu">Audio Files</span></a></li>
+                                <i class="fas fa-music mr-2 ml-1 fa-1x"></i><span class="hide-menu">Audio Files</span></a></li>
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('listening.exam.index')}}" aria-expanded="false">
-                                <i class="fas fa-file-signature mr-2"></i><span class="hide-menu">Listening Exams</span></a></li>
+                                <i class="fas fa-file-signature mr-2 ml-1 fa-1x"></i><span class="hide-menu">Listening Exams</span></a></li>
                     @endif
                         @if(auth()->user()->canManageReadingSection())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('vocab.index')}}" aria-expanded="false">
-                                <i class="fas fa-question-circle mr-2"></i><span class="hide-menu">Vocab Questions</span></a></li>
+                                <i class="fas fa-question-circle mr-2 ml-1 fa-1x"></i><span class="hide-menu">Vocab Questions</span></a></li>
                             <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('paragraph.index')}}" aria-expanded="false">
-                                <i class="fas fa-align-left mr-2"></i><span class="hide-menu">Paragraphs</span></a></li>
+                                <i class="fas fa-align-left mr-2 ml-1 fa-1x"></i><span class="hide-menu">Paragraphs</span></a></li>
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('reading.exam.index')}}" aria-expanded="false">
-                                <i class="fas fa-file-signature mr-2"></i><span class="hide-menu">Reading Exams</span></a></li>
+                                <i class="fas fa-file-signature mr-2 ml-1 fa-1x"></i><span class="hide-menu">Reading Exams</span></a></li>
                     @endif
                         @if(auth()->user()->canEditMarks())
                             <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                         href="{{route('cpanel.marks-panel')}}" aria-expanded="false">
-                                    <i class="fas fa-user-edit mr-2"></i><span class="hide-menu">Edit Failed Students' Scores </span></a></li>
+                                    <i class="fas fa-user-edit mr-2 ml-1 fa-1x"></i><span class="hide-menu">Edit Failed Students' Scores </span></a></li>
                         @endif
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('logout')}}" aria-expanded="false"
                                                     onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                <i class="far fa-times-circle mr-2"></i><span class="hide-menu">Logout</span></a></li>
+                                <i class="far fa-times-circle mr-2 ml-1 fa-1x"></i><span class="hide-menu">Logout</span></a></li>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>

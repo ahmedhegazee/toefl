@@ -143,7 +143,7 @@ class AudiosController extends Controller
         ];
         $roles =[
             'title' => 'required|string|min:8',
-            'source' => 'required|file|mimetypes:audio/x-wav',
+            'source' => 'required|file|mimetypes:audio/x-wav|max:8000',
 
         ];
         return Validator::make($data,$roles,$message);
@@ -154,7 +154,7 @@ class AudiosController extends Controller
 
         $roles =[
             'title' => 'required|string|min:8',
-            'source' => 'sometimes|file|mimetypes:audio/x-wav',
+            'source' => 'sometimes|file|mimetypes:audio/x-wav|max:8000',
 
         ];
         return Validator::make($data,$roles);

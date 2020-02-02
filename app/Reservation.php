@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\Grammar\GrammarExam;
+use App\Listening\ListeningExam;
+use App\Reading\ReadingExam;
 use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
@@ -18,6 +21,16 @@ class Reservation extends Model
         return $this->doneOptions()[$option];
     }
 
+    public function grammarExam()
+    {
+        return $this->hasOne(GrammarExam::class);
+}    public function readingExam()
+    {
+        return $this->hasOne(ReadingExam::class);
+}    public function listeningExam()
+    {
+        return $this->hasOne(ListeningExam::class);
+}
     public function doneOptions()
     {
         return [

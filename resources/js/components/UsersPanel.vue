@@ -294,9 +294,9 @@
                     return null;
                 else {
                     if (this.user != null)
-                        return this.name.length >= 5 && this.name.length < 200 && this.name != this.user.name;
+                        return this.name.length >= 5 && this.name.length < 200 && this.validateName(this.name) && this.name != this.user.name;
                     else
-                        return this.name.length >= 5 && this.name.length < 200;
+                        return this.name.length >= 5 && this.name.length < 200 && this.validateName(this.name);
 
                 }
             },
@@ -315,6 +315,10 @@
             }
         },
         methods: {
+            validateName(name) {
+                let re = /^[A-Za-z ]+$/;
+                return re.test(name);
+            },
             validateEmail(email) {
                 var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 return re.test(email);
@@ -332,20 +336,20 @@
                 this.dismissCountDown = this.dismissSecs
             },
             showEditInfoDialog(user) {
-                if(user.id!=1){
+                if (user.id != 1) {
                     this.user = user;
                     this.$refs.infoChanger.show();
-                }else{
+                } else {
                     this.showAlert("You can't edit this user")
                 }
 
             },
             showEditRolesDialog(user) {
-                if(user.id!=1) {
+                if (user.id != 1) {
                     this.user = user;
                     this.selected = user.selectedRoles;
                     this.$refs.rolesChanger.show();
-                }else{
+                } else {
                     this.showAlert("You can't edit this user")
                 }
             },
@@ -450,22 +454,37 @@
             },
 
             sendChange() {
-                axios.patch('/users/' + this.user.id, {
-                    'name': this.name,
-                    'email': this.email,
-                    'password': this.password,
-                }).then(response => {
-                    if (response.data.success) {
-                        this.successAction();
-                    } else {
-                        this.showAlert("Something happened when updating . Please call Support");
-                    }
-                })
-                    .catch(function (error) {
-                        console.log(error);
-                        this.showAlert("Something happened when updating . Please call Support");
-                        // console.log(error);
-                    });
+                let counter = 0;
+                var data = new FormData();
+                if (this.name.length > 0) {
+                    data.append('name', this.name);
+                    counter++;
+                }
+                if (this.password.length > 0) {
+                    data.append('password', this.password);
+                    counter++;
+                }
+                if (this.email.length > 0) {
+                    data.append('email', this.email);
+                    counter++;
+                }
+                if (counter > 0) {
+                    axios.patch('/users/' + this.user.id, data).then(response => {
+                        if (response.data.success) {
+                            this.successAction();
+                        } else {
+                            this.showAlert("Something happened when updating . Please call Support");
+                        }
+                    })
+                        .catch(function (error) {
+                            console.log(error);
+                            this.showAlert("Something happened when updating . Please call Support");
+                            // console.log(error);
+                        });
+                }else{
+                    this.showAlert("You didn't change anything.");
+                }
+
 
             },
             addNewUser() {
@@ -536,11 +555,11 @@
                     });
             },
             deleteUser(user) {
-                if (user.roles.indexOf('Super Admin') == -1) {
+                if (user.roles.indexOf('Super Admin') == -1 && user.id != 1) {
                     this.$bvModal.msgBoxConfirm('Are you sure about deleting this user ' + user.name, {
                         title: 'Delete User',
-                        size:'sm',
-                        buttonSize:'sm',
+                        size: 'sm',
+                        buttonSize: 'sm',
                         okVariant: 'danger',
                         okTitle: 'YES',
                         cancelTitle: 'NO',
