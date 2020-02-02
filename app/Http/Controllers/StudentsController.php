@@ -10,6 +10,7 @@ use App\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class StudentsController extends Controller
 {
@@ -249,10 +250,57 @@ class StudentsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param Request $request
      * @param \App\Student $student
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
+    public function updateImages(Request $request,Student $student)
+    {
+        $data=[];
+        if($request->files->has('personalImage')){
+            $this->deleteImage($student->personalimage);
+            $data['personalimage']=$this->getImageLink($request->file('personalImage'),'personalimages');
+        }
+        if($request->files->has('nidImage')){
 
+            $this->deleteImage($student->nidimage);
+
+            $data['nidimage']=$this->getImageLink($request->file('nidImage'),'nidimages');
+        }
+        if($request->files->has('certificateImage')){
+            $this->deleteImage($student->certificateimage);
+            $data['certificateimage']=$this->getImageLink($request->file('certificateImage'),'certificateimages');
+        }
+        if($request->files->has('messageImage')){
+            $this->deleteImage($student->messageimage);
+            $data['messageimage']=$this->getImageLink($request->file('messageImage'),'messageimages');
+        }
+        if(!empty($data)){
+          $check=  $student->update($data);
+            if($check)
+                return response()->json(['success'=>$check]);
+            else
+                return response()->json(['success'=>$check,'message'=>"Cannot changing student's images.Please call support"]);
+        }
+
+}
+
+    public function deleteImage($image)
+    {
+        $imageDirectory=public_path('storage/'.$image);
+        if(file_exists($imageDirectory))
+            unlink($imageDirectory);
+}
+
+    public function getImageLink(UploadedFile $image,$imgKind)
+    {
+        $encryptedName =sha1(now()->toTimeString());
+        $dir=public_path('/storage/'.$imgKind);
+        $imageName =$encryptedName.'.'.$image->getClientOriginalExtension();
+        $image->move($dir,$imageName);
+        sleep(1);
+        return $imgKind.'/'.$imageName;
+}
     public function destroy(Student $student)
     {
         //

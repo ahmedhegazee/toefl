@@ -4,13 +4,7 @@ let  randomParagraphQuestions, paragraphQuestion = 0, paragraphQuestions;
 let isParagraphs =false;
 // let questionsArray = [], randomQuestions, question = 0, questions;
 window.onload = function () {
-    if(document.location.pathname.indexOf('live')==-1) {
-        var id = document.getElementById('id').value;
-        var name = document.getElementById('name').value;
-        if (document.cookie.indexOf('student-' + id + '-' + name + '-reading-vocab') > -1 && document.cookie.indexOf('student-' + id + '-' + name + '-reading-paragraph') > -1) {
-            window.location.replace('/exam/listening');
-        }
-    }
+
     setTimer();
     vocabQuestions = document.getElementsByClassName('vocab');
     var vocabNumbers = fillNumbersArray(vocabQuestions);
@@ -54,17 +48,7 @@ function nextQuestion() {
     }
 
     if(paragraph === paragraphs.length &&paragraphQuestion===0){
-        if(document.location.pathname.indexOf('live')==-1) {
-            var questions = getQuestions('vocab');
-            var answers = getAnswers(questions, 'vocabAnswers');
-            var id = document.getElementById('id').value;
-            var name = document.getElementById('name').value;
-            cacheAnswers(answers, id, 'vocab', name);
 
-            questions = getQuestions('pq');
-            answers = getAnswers(questions, 'paragraphAnswers');
-            cacheAnswers(answers, id, 'paragraph', name);
-        }
         document.getElementById('submit').setAttribute('class', 'btn btn-primary d-block');
         document.getElementById('next').setAttribute('class', 'btn btn-primary d-none');
     }
@@ -182,32 +166,4 @@ function setTimer() {
     }, 1000);
 
 }
-function getQuestions(name){
-    let questions=[];
-    var q=document.getElementsByName(name);
-    for(var i=0; i<q.length;i++){
-        questions.push(parseInt(q[i].value));
-    }
-    return questions;
-}
-function getAnswers(questions,name){
-    let answers=[];
-    for (var i=0;i<questions.length;i++){
-        var a=document.getElementsByName(name+'['+questions[i]+']');
-        for(var j=0;j<4;j++){
-            if(a[j].checked)
-                answers.push(parseInt(a[j].value));
-        }
-    }
-    return answers;
-}
-function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-function cacheAnswers(answers,id=0,name,st_name){
-    var json =JSON.stringify(answers);
-    setCookie('student-'+id+"-"+st_name+"-reading-"+name,json,7);
-}
+

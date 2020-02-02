@@ -7,10 +7,12 @@
             @method('put')
             @include('students.form')
 
+            <div class="row justify-content-end pr-5">
 
             <button type="submit" class="btn btn-primary">
                 {{ __('Update Student') }}
             </button>
+            </div>
         </form>
     </div>
 @endsection

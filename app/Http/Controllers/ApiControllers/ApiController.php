@@ -49,7 +49,7 @@ class ApiController extends Controller
         }
     }
 
-    public function printPDF(Request $request,Reservation $reservation)
+    public function printPDF(Request $request, Reservation $reservation)
     {
         $students = $reservation->students()->with('results')->get()
             ->filter(function ($student) {
@@ -59,19 +59,19 @@ class ApiController extends Controller
                     else
                         return false;
             });
-        $centerManager=Config::find(5)->value;
-        $FacultyDean=Config::find(6)->value;
-        $vicePresident=Config::find(7)->value;
-        $certificateNumbering=Config::find(8);
-        $count=intval($certificateNumbering->value);
+        $centerManager = Config::find(5)->value;
+        $FacultyDean = Config::find(6)->value;
+        $vicePresident = Config::find(7)->value;
+        $certificateNumbering = Config::find(8);
+        $count = intval($certificateNumbering->value);
         $certificateNumbering->update([
-            'value'=>$count+$students->count()
+            'value' => $count + $students->count()
         ]);
-        $startDate=Carbon::parse($request->start)->format('d-m-yy');
-        $endDate=Carbon::parse($request->end)->format('d-m-yy');
+        $startDate = Carbon::parse($request->start)->format('d-m-yy');
+        $endDate = Carbon::parse($request->end)->format('d-m-yy');
         $message = "print certificates of reservation id " . $reservation->id . " which has start data is " . $reservation->start;
         Logging::logAdmin(auth()->user(), $message);
-        return view('certificate', compact('students','count','centerManager','FacultyDean','vicePresident','startDate','endDate'));
+        return view('certificate', compact('students', 'count', 'centerManager', 'FacultyDean', 'vicePresident', 'startDate', 'endDate'));
 //        return $pdf->download('certificates ' . $reservation->start . '.pdf');
 
     }
@@ -113,10 +113,10 @@ class ApiController extends Controller
                 ];
             })->values()->all();
         return response()->json([
-            'students'=>$students,
-            'entered'=>Exam::isExamEntered($group),
-            'started'=>Exam::isExamStarted($group),
-            'has_exams'=>Exam::isGroupHasExams($group),
+            'students' => $students,
+            'entered' => Exam::isExamEntered($group),
+            'started' => Exam::isExamStarted($group),
+            'has_exams' => Exam::isGroupHasExams($group),
         ]);
     }
 
@@ -152,7 +152,7 @@ class ApiController extends Controller
 
     public function getReservations()
     {
-        return response()->json(Reservation::where('done',1)->get(['id', 'start'])->toArray());
+        return response()->json(Reservation::where('done', 1)->get(['id', 'start'])->toArray());
     }
 
     public function getGroups(Reservation $res)
@@ -244,46 +244,40 @@ class ApiController extends Controller
         return response()->json($data);
     }
 
-    public function editStudentResult(Request $request ,Student $student)
+    public function editStudentResult(Request $request, Student $student)
     {
-       $data= json_decode($request->data);
-       $data=collect($data);
-        $checkGrammar=$data->has('grammar');
-        $checkListening=$data->has('listening');
-        $checkVocab=$data->has('vocab');
-        $checkParagraph=$data->has('paragraph');
-        $attempt=$student->attempts->last()->id;
+//        dd($request->data);
 
+        $data = json_decode($request->data);
+        $data = collect($data);
+        $marks = 0;
+        $grammarAnswers = collect($data->get('grammar'));
+        $marks += Exam::getGrammarMarks($grammarAnswers);
 
+        $listeningAnswers = collect($data->get('listening'));
+        $marks += Exam::getListeningMarks($listeningAnswers);
 
-        if($checkGrammar&&$checkListening&&$checkVocab&&$checkParagraph)
-        {
-            $marks=0;
-            $grammarAnswers=collect($data->get('grammar'));
-            $marks+=Exam::getGrammarMarks($grammarAnswers);
-            $listeningAnswers=collect($data->get('listening'));
-            $marks+=Exam::getListeningMarks($listeningAnswers);
-            $vocabAnswers=collect($data->get('vocab'));
-            $paragraphAnswers=collect($data->get('paragraph'));
-            $marks+=Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
-            $student->editResult($attempt,$marks,false);
-        }
-        else{
-            if($checkGrammar){
-                $grammarAnswers=collect($data->get('grammar'));
-                $marks=Exam::getGrammarMarks($grammarAnswers);
-                $student->editResult($attempt,$marks);
-            }if($checkListening){
-                $listeningAnswers=collect($data->get('listening'));
-                $marks=Exam::getListeningMarks($listeningAnswers);
-                $student->editResult($attempt,$marks);
-            }if($checkVocab&&$checkParagraph){
-                $vocabAnswers=collect($data->get('vocab'));
-                $paragraphAnswers=collect($data->get('paragraph'));
-                $marks=Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
-                $student->editResult($attempt,$marks);
-            }
-        }
+        $vocabAnswers = collect($data->get('vocab'));
+        $paragraphAnswers = collect($data->get('paragraph'));
+        $marks += Exam::getReadingMarks($vocabAnswers, $paragraphAnswers);
+        $student->editResult( $marks);
+
+//        else{
+//            if($checkGrammar){
+//                $grammarAnswers=collect($data->get('grammar'));
+//                $marks=Exam::getGrammarMarks($grammarAnswers);
+//                $student->editResult($attempt,$marks);
+//            }if($checkListening){
+//                $listeningAnswers=collect($data->get('listening'));
+//                $marks=Exam::getListeningMarks($listeningAnswers);
+//                $student->editResult($attempt,$marks);
+//            }if($checkVocab&&$checkParagraph){
+//                $vocabAnswers=collect($data->get('vocab'));
+//                $paragraphAnswers=collect($data->get('paragraph'));
+//                $marks=Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
+//                $student->editResult($attempt,$marks);
+//            }
+//        }
 //        dd($data->vocab);
 //        dd($data->grammar);
     }

@@ -44,6 +44,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::view('/cpanel/students-panel', 'cpanel.studentspanel')->name('cpanel.students-panel');
         Route::resource('student', 'StudentsController')
             ->only(['index', 'show', 'update']);
+        Route::post('/student/{student}/images','StudentsController@updateImages');
         Route::patch('/student/{student}/verify', 'StudentsController@verifyStudent')->name('student.verify');
         Route::patch('/student/{student}/new-reservation', 'StudentsController@moveStudentToNewReservation');
         Route::get('/reservations/available', 'ApiControllers\ApiController@getAvailableReservations');
@@ -269,16 +270,20 @@ Route::post('/students/unique-phone', 'ApiControllers\ApiController@checkPhoneIs
 Route::group(['middleware' => ['auth','check_student','student_is_online']], function () {
     Route::get('/exam/home', 'ExamsController@showStudentHome')->name('student.home')->middleware(['has_only_one_attempt']);
     Route::group(['middleware' => 'can_start_exam'], function () {
-        Route::get('/exam/grammar', 'ExamsController@showGrammarExam')->name('grammar.exam.start');
-        Route::post('/exam/grammar', 'ExamsController@storeGrammarExamAttempt')->name('grammar.exam.submit');
-        Route::get('/exam/reading', 'ExamsController@showReadingExam')->name('reading.exam.start');
-        Route::post('/exam/reading', 'ExamsController@storeReadingExamAttempt')->name('reading.exam.submit');
-        Route::get('/exam/listening', 'ExamsController@showListeningExam')->name('listening.exam.start');
-        Route::post('/exam/listening', 'ExamsController@storeListeningExamAttempt')->name('listening.exam.submit');
+        Route::get('/exam/start','ExamsController@showExam')->name('exam.show');
+        Route::post('/exam/start','ExamsController@storeResult')->name('exam.store');
+        Route::any('/active',function() {})->middleware('student_is_online');
+//        Route::get('/exam/grammar', 'ExamsController@showGrammarExam')->name('grammar.exam.start');
+//        Route::post('/exam/grammar', 'ExamsController@storeGrammarExamAttempt')->name('grammar.exam.submit');
+//        Route::get('/exam/reading', 'ExamsController@showReadingExam')->name('reading.exam.start');
+//        Route::post('/exam/reading', 'ExamsController@storeReadingExamAttempt')->name('reading.exam.submit');
+//        Route::get('/exam/listening', 'ExamsController@showListeningExam')->name('listening.exam.start');
+//        Route::post('/exam/listening', 'ExamsController@storeListeningExamAttempt')->name('listening.exam.submit');
 
     });
 
 });
+
 
 //live exams
 

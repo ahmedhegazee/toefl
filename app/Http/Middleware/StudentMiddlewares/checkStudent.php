@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware\StudentMiddlewares;
 
+use App\Attempt;
 use App\Exam;
 use App\Student;
 use Closure;
@@ -45,22 +46,18 @@ class checkStudent
         else if(Exam::isStopped($student->group)){
 //            dd($request->path());
         if($request->method()=='POST'){
-            $path=$request->path();
-            if($path=='exam/grammar'){
-                $marks=Exam::getGrammarMarks($request->get('answers'));
-                $attempt=$student->attempts->last()->id;
-                $student->editResult($attempt,$marks);
-            }
-            else if($path=='exam/reading'){
-                $marks=Exam::getReadingMarks($request->get('vocabAnswers'),$request->get('paragraphAnswers'));
-                $attempt=$student->attempts->last()->id;
-                $student->editResult($attempt,$marks);
-            }
-            else if($path=='exam/listening'){
-                $marks=Exam::getListeningMarks($request->get('listeningAnswers'));
-                $attempt=$student->attempts->last()->id;
-                $student->editResult($attempt,$marks);
-            }
+            $answers = $request->get('answers');
+            $grammar_marks = Exam::getGrammarMarks($answers);
+
+            $vocabAnswers = $request->get('vocabAnswers');
+            $paragraphAnswers = $request->get('paragraphAnswers');
+            $reading_marks = Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
+
+            $listeningAnswers = $request->get('listeningAnswers');
+            $listening_marks = Exam::getListeningMarks($listeningAnswers);
+            $marks=$grammar_marks+$reading_marks+$listening_marks;
+            $student->editResult($marks);
+
         }
         auth()->logout();
         return redirect()->route('error')->with('error','Time is out. Don\'t worry all your answers are saved' );

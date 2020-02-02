@@ -19,12 +19,12 @@
                         <p>Group : {{$student->group->type->type}}</p>
                     </div>
                     <div class="col-9">
-                        <img src="/storage/{{$student->personalimage}}" class="w-100" alt="">
+                        <img src="/storage/{{$student->personalimage}}" class="w-100" style="max-height: 70vh" alt="">
                     </div>
                 </div>
 
 
-                <a href="{{route('grammar.exam.start')}}" class="btn btn-primary">Go to Exam</a>
+                <a href="{{route('exam.show')}}" class="btn btn-primary">Go to Exam</a>
             </div>
         </div>
 

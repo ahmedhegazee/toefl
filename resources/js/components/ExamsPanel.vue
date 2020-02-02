@@ -23,7 +23,7 @@
         <div class="form-group row">
             <label for="reservation" class="col-md-4 col-form-label text-md-right">Select Group</label>
             <div class="col-md-6">
-                <select @change="refreshData()" id="group" name="group" class="form-control" v-model="group">
+                <select @change="getStudents()" id="group" name="group" class="form-control" v-model="group">
                     <option disabled value="">Select Group</option>
                     <option v-for="group in groups" :value="group.id">{{group.name}}</option>
                 </select>
@@ -144,6 +144,20 @@
                 }
 
             },
+            getStudentsData(){
+                axios.get('/students/' + this.group)
+                    .then(response => {
+                        this.students = response.data.students;
+                        this.enter = response.data.entered;
+                        this.started = response.data.started;
+                        this.working = this.enter && this.started;
+                        this.hasExams = response.data.has_exams;
+
+                        // console.log(response.data);
+                    }).catch(errors => {
+
+                });
+            },
             getStudents() {
                 if(
                     (this.enter||this.started)
@@ -155,29 +169,19 @@
                     this.group=this.currentGroup;
                 }else {
                     this.currentGroup=this.group;
-                    axios.get('/students/' + this.group)
-                        .then(response => {
-                            this.students = response.data.students;
-                            this.enter = response.data.entered;
-                            this.started = response.data.started;
-                            this.working = this.enter && this.started;
-                            this.hasExams = response.data.has_exams;
-
-                            // console.log(response.data);
-                        }).catch(errors => {
-
-                    });
+                   this.getStudentsData();
+                    setTimeout(null,120000);
+                    this.refreshData();
                 }
             },
             refreshData(){
                 var d=this;
                 setInterval(function () {
                     this.students=[];
-                    setTimeout(null,1000);
-
+                    // setTimeout(null,1000);
                     if(d.m.length==0)
-                    d.getStudents();
-                },5000);
+                    d.getStudentsData();
+                },120000);
 
                 // setTimeout(null,60000);
             },

@@ -23,10 +23,12 @@
 {{--                </div>--}}
 
 {{--            </div>--}}
+            <div class="row justify-content-end pr-5">
 
             <button type="submit" class="btn btn-primary">
                 {{ __('Update Reservation') }}
             </button>
+            </div>
         </form>
 
     </div>

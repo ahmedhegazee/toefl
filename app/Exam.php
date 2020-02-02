@@ -106,13 +106,13 @@ class Exam{
                 //if the student came but he didn't finish in the time
                 if (is_null($attempt->first->result)) {
 
-                    if (Cache::has('student-' . $student->id . '-grammar')) {
-                        $grammar = Cache::get('student-' . $student->id . '-grammar');
-                        Cache::forget('student-' . $student->id . '-grammar');
-                    } elseif (Cache::has('student-' . $student->id . '-reading')) {
-                        $reading = Cache::get('student-' . $student->id . '-reading');
-                        Cache::forget('student-' . $student->id . '-reading');
-                    }
+//                    if (Cache::has('student-' . $student->id . '-grammar')) {
+//                        $grammar = Cache::get('student-' . $student->id . '-grammar');
+//                        Cache::forget('student-' . $student->id . '-grammar');
+//                    } elseif (Cache::has('student-' . $student->id . '-reading')) {
+//                        $reading = Cache::get('student-' . $student->id . '-reading');
+//                        Cache::forget('student-' . $student->id . '-reading');
+//                    }
 
 
                     $student->sumAllMarks($grammar, $reading, 0);

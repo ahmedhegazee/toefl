@@ -1,5 +1,17 @@
 <template>
     <div>
+
+        <b-form-textarea
+            id="textarea-plaintext"
+            plaintext
+            :value="description"
+            rows="10"
+            no-resize
+        ></b-form-textarea>
+        <div class="clearfix mb-2 mt-2">
+            <b-img center thumbnail :src="img" style="max-width: 70vw;border-width: 3px !important;"
+                   alt="Description Image"></b-img>
+        </div>
         <b-alert
             :show="dismissCountDown"
             dismissible
@@ -15,17 +27,6 @@
             </ul>
 
         </b-alert>
-        <b-form-textarea
-            id="textarea-plaintext"
-            plaintext
-            :value="description"
-            rows="10"
-            no-resize
-        ></b-form-textarea>
-        <div class="clearfix mb-2 mt-2">
-            <b-img center thumbnail :src="img" style="max-width: 70vw;border-width: 3px !important;"
-                   alt="Description Image"></b-img>
-        </div>
         <b-form-textarea
             id="textarea-questions"
             placeholder="Write multiple questions using the specific format"
