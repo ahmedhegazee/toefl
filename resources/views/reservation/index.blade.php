@@ -38,7 +38,8 @@
 {{--            @endforeach--}}
 {{--        </table>--}}
 <reservations-panel
-res="{{$reservations}}"
+    data-route="{{route('res.index')}}"
+{{--res="{{$reservations}}"--}}
 ></reservations-panel>
     </div>
 @endsection

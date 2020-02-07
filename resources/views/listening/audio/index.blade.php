@@ -37,7 +37,6 @@
 {{--    {{$audios->links()}}--}}
 {{--</div>--}}
         <display-questions-panel
-            exams="{{$audios}}"
             route="{{route('audio.store')}}"
             delete-route="{{route('audio.store')}}"
             is-paragraph=true

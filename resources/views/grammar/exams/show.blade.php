@@ -3,7 +3,7 @@
 @section('content')
     <div class="container ">
         <h2>Grammar Questions in this Exam </h2>
-        <a href="{{route('grammar.exam.questions.index',compact('exam'))}}" class="btn btn-primary">Add Questions to this Exam</a>
+        <a href="{{route('grammar.exam.questions.add',compact('exam'))}}" class="btn btn-primary">Add Questions to this Exam</a>
 
 {{--        <table border="2px solid">--}}
 {{--            <tr>--}}
@@ -48,7 +48,7 @@
 {{--    {{$questions->links()}}--}}
 {{--</div>--}}
         <display-questions-panel
-            exams="{{$questions1}}"
+{{--            exams="{{$questions1}}"--}}
             route="{{route('grammar.question.store')}}"
             delete-route="{{route('grammar.exam.questions.store',compact('exam'))}}"
             is-paragraph=false

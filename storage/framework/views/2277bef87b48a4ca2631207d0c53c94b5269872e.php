@@ -36,7 +36,8 @@
 
 
 <reservations-panel
-res="<?php echo e($reservations); ?>"
+    data-route="<?php echo e(route('res.index')); ?>"
+
 ></reservations-panel>
     </div>
 <?php $__env->stopSection(); ?>

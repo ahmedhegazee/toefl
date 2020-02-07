@@ -1,74 +1,110 @@
 <template>
-<div>
-    <b-alert
-        :show="dismissCountDown"
-        dismissible
-        fade
-        :variant="alert"
-        @dismiss-count-down="countDownChanged"
-    >
-        {{message}}
-    </b-alert>
-    <b-form-input
-        id="search-input"
-        v-model="filter"
-        class="mt-2 mb-2"
-        placeholder="type to search"
-    ></b-form-input>
-    <b-table striped
-             hover
-             :sticky-header="true"
-             :items="jsonData"
-             :filter="filter"
-             sort-by="id"
-             style="max-height: 70vh"
-    >
-        <template  v-slot:cell(actions)="row">
+    <div>
+        <b-alert
+            :show="dismissCountDown"
+            dismissible
+            fade
+            :variant="alert"
+            @dismiss-count-down="countDownChanged"
+        >
+            {{message}}
+        </b-alert>
+<!--        <b-form-input-->
+<!--            id="search-input"-->
+<!--            v-model="filter"-->
+<!--            class="mt-2 mb-2"-->
+<!--            placeholder="type to search"-->
+<!--        ></b-form-input>-->
+        <b-table striped
+                 hover
+                 :sticky-header="true"
+                 :items="questions"
+                 :filter="filter"
+                 sort-by="id"
+                 style="max-height: 70vh"
+                 :busy="questions.length==0"
+                 :per-page="perPage"
+                 :current-page="current"
+        >
+            <template v-slot:table-busy>
+                <div class="text-center text-danger my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong>Loading...</strong>
+                </div>
+            </template>
+            <template v-slot:cell(actions)="row">
 
-            <button v-if="!canChooseQuestions&&isParagraphs" class="btn btn-primary" @click="showParagraph(row.item)">Show</button>
-            <button v-if="!canChooseQuestions" class="btn btn-success" @click="showEditQuestion(row.item)">Edit</button>
-            <button v-if="!canChooseQuestions" class="btn btn-danger" @click="deleteQuestion(row.item)">Remove</button>
-            <button v-if="canChooseQuestions&&isParagraphs" class="btn btn-primary" @click="showParagraph(row.item)">Show</button>
-            <button v-if="canChooseQuestions" class="btn btn-success" @click="showEditQuestion(row.item)">Edit</button>
+                <button v-if="!canChooseQuestions&&isParagraphs" class="btn btn-primary"
+                        @click="showParagraph(row.item)">Show
+                </button>
+                <button v-if="!canChooseQuestions" class="btn btn-success" @click="showEditQuestion(row.item)">Edit
+                </button>
+                <button v-if="!canChooseQuestions" class="btn btn-danger" @click="deleteQuestion(row.item)">Remove
+                </button>
+                <button v-if="canChooseQuestions&&isParagraphs" class="btn btn-primary"
+                        @click="showParagraph(row.item)">Show
+                </button>
+                <button v-if="canChooseQuestions" class="btn btn-success" @click="showEditQuestion(row.item)">Edit
+                </button>
 
-        </template>
+            </template>
 
 
-        <template v-if="canChooseQuestions" v-slot:cell(check)="row">
-            <b-form-checkbox-group id="checkbox-group-2" v-model="selected" >
-                <b-form-checkbox :value="row.item.id"></b-form-checkbox>
-            </b-form-checkbox-group>
-        </template>
+            <template v-if="canChooseQuestions" v-slot:cell(check)="row">
+                <b-form-checkbox-group id="checkbox-group-2" v-model="selected">
+                    <b-form-checkbox :value="row.item.id"></b-form-checkbox>
+                </b-form-checkbox-group>
+            </template>
 
-    </b-table>
-    <button v-if="canChooseQuestions&&!isParagraphs&&!isAudios"
-            class="btn btn-primary"
-            @click="storeQuestions"
-    >Add Questions</button>
-    <button v-if="canChooseQuestions&&isParagraphs"
-            class="btn btn-primary"
-            @click="storeParagraphs"
-    >Add Paragraphs</button>
-    <button v-if="canChooseQuestions&&isAudios"
-            class="btn btn-primary"
-            @click="storeAudios"
-    >Add Audios</button>
-</div>
+        </b-table>
+        <div class="row justify-content-center">
+            <b-pagination
+                v-model="currentPage"
+                :total-rows="count"
+                :per-page="perPage"
+                aria-controls="my-table"
+            ></b-pagination>
+        </div>
+
+        <button v-if="canChooseQuestions&&!isParagraphs&&!isAudios"
+                class="btn btn-primary"
+                @click="storeQuestions"
+        >Add Questions
+        </button>
+        <button v-if="canChooseQuestions&&isParagraphs"
+                class="btn btn-primary"
+                @click="storeParagraphs"
+        >Add Paragraphs
+        </button>
+        <button v-if="canChooseQuestions&&isAudios"
+                class="btn btn-primary"
+                @click="storeAudios"
+        >Add Audios
+        </button>
+    </div>
 </template>
 
 <script>
     export default {
         name: "DisplayQuestionsPanel",
         mounted() {
-            // console.log(this.exams);
-            if (this.canChooseQuestions)
-                this.selected = JSON.parse(this.checked);
-            this.jsonData = JSON.parse(this.exams);
+            // console.log(this.questions);
+
+            if(window.location.pathname.indexOf('exam')>-1&&(window.location.pathname.indexOf('add')==-1))
+                this.showExam=true;
+            axios.get(this.deleteRoute+'?showExam='+this.showExam).then(response => {
+                this.questions = response.data.questions;
+                this.count = response.data.count;
+                if (this.canChooseQuestions)
+                    this.selected = response.data.checked;
+            });
+            // this.questions = JSON.parse(this.questions);
         },
         props: [
-            'exams', 'route', 'deleteRoute',
+            'route', 'deleteRoute',
             'isParagraph', 'canChoose', 'checked',
-            'storeRoute', 'isAudio','redirectRoute'
+            'storeRoute', 'isAudio', 'redirectRoute',
+            // 'questions'
         ],
         data: function () {
             return {
@@ -76,12 +112,33 @@
                 dismissCountDown: 0,
                 message: "",
                 alert: "danger",
-                jsonData: null,
+                questions: [],
                 selected: [],
                 filter: null,
-
+                perPage: 50,
+                currentPage: 1,
+                current: 1,
+                count: 0,
+                showExam:false,
             }
-        }, computed: {
+        },
+        watch: {
+            currentPage(newPage, oldPage) {
+                this.questions = [];
+                var self = this;
+                axios.get(this.deleteRoute +'?showExam='+this.showExam+ '&&page=' + newPage,{'showExam':this.showExam})
+                    .then(function (response) {
+                        self.questions = response.data.questions;
+                        // self.questions = ;
+                        self.count = response.data.count;
+                        // if (self.canChooseQuestions)
+                        //     self.selected = response.data.checked;
+                    });
+
+                this.$emit('input', newPage);
+            }
+        },
+        computed: {
             canChooseQuestions: function () {
                 return this.canChoose == 'true';
             },
@@ -90,10 +147,10 @@
             },
             isAudios: function () {
                 return this.isAudio == 'true';
-            }
+            },
+
         },
         methods: {
-
 
             showEditQuestion(question) {
                 window.location.replace(this.route + '/' + question.id + '/edit');
@@ -117,9 +174,9 @@
                         if (value == true) {
                             axios.delete(this.deleteRoute + '/' + question.id).then(response => {
                                 if (response.data.success) {
-                                    var index = this.jsonData.indexOf(question);
+                                    var index = this.questions.indexOf(question);
                                     if (index > -1) {
-                                        this.jsonData.splice(index, 1);
+                                        this.questions.splice(index, 1);
                                     }
 
                                     this.showAlert('Successfully removed', 'success');
@@ -154,7 +211,7 @@
                 axios.post(this.storeRoute, {'questions': this.selected})
                     .then(response => {
                         this.showAlert('Successfully Added to the exam', 'success');
-                        let r=this.redirectRoute;
+                        let r = this.redirectRoute;
                         setTimeout(function () {
                             // window.history.back();
                             window.location.replace(r);
@@ -169,7 +226,7 @@
                 axios.post(this.storeRoute, {'paragraphs': this.selected})
                     .then(response => {
                         this.showAlert('Successfully Added to the exam', 'success');
-                        let r=this.redirectRoute;
+                        let r = this.redirectRoute;
                         setTimeout(function () {
                             // window.history.back();
                             window.location.replace(r);
@@ -183,7 +240,7 @@
                 axios.post(this.storeRoute, {'audios': this.selected})
                     .then(response => {
                         this.showAlert('Successfully Added to the exam', 'success');
-                        let r=this.redirectRoute;
+                        let r = this.redirectRoute;
                         setTimeout(function () {
                             // window.history.back();
                             window.location.replace(r);
@@ -194,7 +251,6 @@
                     this.showAlert('Something happened. Please call support');
                 })
             },
-
 
 
         }

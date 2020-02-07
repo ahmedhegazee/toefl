@@ -3,7 +3,7 @@
 @section('content')
     <div class="container ">
         <h2>Audios in this Exam</h2>
-        <a href="{{route('listening.exam.audio.index',compact('exam'))}}" class="btn btn-primary">Add Audios to this Exam</a>
+        <a href="{{route('listening.exam.audios.add',compact('exam'))}}" class="btn btn-primary">Add Audios to this Exam</a>
 {{--        <table border="2px solid">--}}
 {{--            <tr>--}}
 {{--                <th>ID</th>--}}
@@ -37,7 +37,7 @@
 {{--            {{$audios->links()}}--}}
 {{--        </div>--}}
         <display-questions-panel
-            exams="{{$audios}}"
+{{--            exams="{{$audios}}"--}}
             route="{{route('audio.store')}}"
             delete-route="{{route('listening.exam.audio.store',compact('exam'))}}"
             is-paragraph=true

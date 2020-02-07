@@ -9,20 +9,40 @@
         >
             {{message}}
         </b-alert>
-        <div class="btn btn-primary mt-2 mb-2" @click="showDialog(null,false)">Add Reservation</div>
-        <b-form-input
-            id="search-input"
-            v-model="filter"
-            class="mt-2 mb-2"
-            placeholder="type to search"
-        ></b-form-input>
+        <div class="row mt-2 mb-2 ">
+            <button class="btn btn-primary" @click="showDialog(null,false)">Add Reservation</button>
+        </div>
+
+        <!--        <b-form-input-->
+        <!--            id="search-input"-->
+        <!--            v-model="filter"-->
+        <!--            class="mt-2 mb-2"-->
+        <!--            placeholder="type to search"-->
+        <!--        ></b-form-input>-->
+        <div class="form-group row mt-2 mb-2">
+            <label for="reservation" class="col-md-4 col-form-label left">Filter reservations based on
+                start date</label>
+            <div class="col-md-6">
+                <input id="reservation" v-model="startDataFilter" @change="search()" type="date" class="form-control ">
+            </div>
+
+        </div>
         <b-table striped
                  hover
                  :sticky-header="true"
                  :items="reservations"
                  :filter="filter"
                  style="max-height: 70vh"
+                 :busy="reservations.length==0"
+                 :per-page="perPage"
+                 :current-page="current"
         >
+            <template v-slot:table-busy>
+                <div class="text-center text-danger my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong>Loading...</strong>
+                </div>
+            </template>
             <template v-slot:cell(actions)="row">
                 <button class="btn btn-primary" @click="showGroups(row.item)">Show</button>
                 <button class="btn btn-success" @click="showDialog(row.item,true)">Edit</button>
@@ -30,7 +50,14 @@
             </template>
 
         </b-table>
-
+        <div class="row justify-content-center">
+            <b-pagination
+                v-model="currentPage"
+                :total-rows="countOfReservations"
+                :per-page="perPage"
+                aria-controls="my-table"
+            ></b-pagination>
+        </div>
         <b-modal
             id="modal-prevent-closing"
             ref="resModal"
@@ -86,10 +113,11 @@
     export default {
         name: "ReservationsPanel",
         props: [
-            'res'
+            'dataRoute'
         ],
         mounted() {
-            this.reservations = JSON.parse(this.res);
+            // this.reservations = JSON.parse(this.res);
+            this.getReservations();
             var today = new Date();
             this.today = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
 
@@ -109,6 +137,31 @@
                 currentDate: '',
                 currentCount: 0,
                 filter: null,
+                perPage: 10,
+                currentPage: 1,
+                current: 1,
+                countOfReservations: 0,
+                startDataFilter: '',
+            }
+        },
+        watch: {
+            currentPage(newPage, oldPage) {
+                this.reservations = [];
+                var self = this;
+                var route=this.dataRoute+'?page='+newPage;
+
+                // if(this.phoneFilter.length>0)
+                // data.append('phone',this.phoneFilter);
+                if(this.startDataFilter.length>0)
+                    route+='&&filter='+this.startDataFilter;
+                axios.get(route)
+                    .then(function (response) {
+                        self.reservations = response.data.reservations;
+                        // self.questions = ;
+                        self.countOfReservations = response.data.count;
+                    });
+
+                this.$emit('input', newPage);
             }
         }, computed: {
 
@@ -130,7 +183,17 @@
             },
         },
         methods: {
+            getReservations() {
+                axios.get(this.dataRoute)
+                    .then(response => {
+                        this.reservations = response.data.reservations;
+                        this.countOfReservations = response.data.count;
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
 
+            },
             countDownChanged(dismissCountDown) {
                 this.dismissCountDown = dismissCountDown;
                 if (this.dismissCountDown === 0) {
@@ -242,6 +305,27 @@
                         this.showAlert("Something happened when processing . Please call Support");
                         // console.log(error);
                     });
+
+            },
+            search() {
+                this.reservations = [];
+                if(this.startDataFilter.length>0){
+                    axios.get(this.dataRoute+'?filter=' + this.startDataFilter).then(response => {
+                        if (response.data.reservations.length == 0) {
+                            this.showAlert('Sorry there is no reservations with this date');
+                            setTimeout(null, 2000);
+                            this.getReservations();
+                        } else {
+                            this.reservations = response.data.reservations;
+                            this.count = response.data.count;
+                        }
+                    }).catch(error => {
+                        console.log(error)
+                    });
+                }else{
+                    this.currentPage=1;
+                    this.getReservations();
+                }
 
             },
         }

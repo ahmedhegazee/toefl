@@ -12,6 +12,10 @@ class Attempt extends Model
     {
         return $this->belongsTo(Student::class);
     }
+    public function reservation()
+    {
+        return $this->belongsTo(Reservation::class);
+    }
 
     public function result()
     {

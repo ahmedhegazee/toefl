@@ -35,7 +35,6 @@
 
 
         <display-questions-panel
-            exams="<?php echo e($audios); ?>"
             route="<?php echo e(route('audio.store')); ?>"
             delete-route="<?php echo e(route('audio.store')); ?>"
             is-paragraph=true

@@ -54,12 +54,13 @@
 
 {{--</div>--}}
         <display-questions-panel
-            exams="{{$questions1}}"
+{{--            exams="{{$questions1}}"--}}
             route="{{route('grammar.question.store')}}"
             store-route="{{route('grammar.exam.questions.store',compact('exam'))}}"
+            delete-route="{{route('grammar.exam.questions.store',compact('exam'))}}"
             is-paragraph="false"
             can-choose="true"
-            checked="{{$checked}}"
+{{--            checked="{{$checked}}"--}}
             redirect-route="{{route('grammar.exam.show',compact('exam'))}}"
 
         ></display-questions-panel>

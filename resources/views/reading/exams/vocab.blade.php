@@ -3,7 +3,7 @@
 @section('content')
     <div class="container ">
         <h2>Vocab Questions in this Exam</h2>
-        <a href="{{route('reading.exam.vocab.index',compact('exam'))}}" class="btn btn-primary">Add Vocab Questions to this Exam</a>
+        <a href="{{route('reading.exam.vocab.add',compact('exam'))}}" class="btn btn-primary">Add Vocab Questions to this Exam</a>
 {{--        <table border="2px solid">--}}
 {{--            <tr>--}}
 {{--                <th>ID</th>--}}
@@ -41,7 +41,7 @@
 {{--        </table>--}}
 {{--        {{$questions->links()}}--}}
         <display-questions-panel
-            exams="{{$questions}}"
+{{--            exams="{{$questions}}"--}}
             route="{{route('vocab.store')}}"
             delete-route="{{route('reading.exam.vocab.store',compact('exam'))}}"
             is-paragraph=false

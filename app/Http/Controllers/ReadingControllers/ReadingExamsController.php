@@ -18,13 +18,13 @@ class ReadingExamsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
 //        $exams = ReadingExam::paginate(15);
-        $exams = ReadingExam::all();
-        $jsonExams = $exams->map(function ($exam) {
+        $exams = ReadingExam::paginate(50)
+            ->map(function ($exam) {
             return [
                 'id' => $exam->id,
                 'Reservation Date' => $exam->reservation->start,
@@ -33,8 +33,8 @@ class ReadingExamsController extends Controller
                 'actions' => '',
             ];
         })->values()->toArray();
-        $jsonExams = json_encode($jsonExams);
-        return view('reading.exams.index', compact('jsonExams'));
+        $count=ReadingExam::all()->count();
+        return response()->json(['exams'=>$exams,'count'=>$count]);
     }
 
     /**
@@ -44,9 +44,13 @@ class ReadingExamsController extends Controller
      */
     public function create()
     {
-        $reservations = Reservation::all();
+        $reservations = Reservation::closed(1)->get();;
+        $reservations=$reservations->filter(function($res){
+            if(is_null($res->readingExam))
+                return $res;
+        });
         if (empty($reservations->toArray()))
-            return redirect()->back()->with('error', 'No Reservation is Available');
+            return redirect()->back()->with('error', 'No Reservation is Available and closed');
 
 //        $types=GroupType::all();
 //        return view('reading.exams.create',compact('reservations','types'));
@@ -92,7 +96,14 @@ class ReadingExamsController extends Controller
      */
     public function edit(ReadingExam $exam)
     {
-        $reservations = Reservation::all();
+        $reservations = Reservation::closed(1)->get();;
+        $reservations=$reservations->filter(function($res){
+            if(is_null($res->readingExam))
+                return $res;
+        });
+        if (empty($reservations->toArray()))
+            return redirect()->back()->with('error', 'No Reservation is Available and closed');
+
 //        $types=GroupType::all();
 //        return view('reading.exams.update',compact('exam','reservations','types'));
         return view('reading.exams.update', compact('exam', 'reservations'));
@@ -153,17 +164,13 @@ class ReadingExamsController extends Controller
 
     public function showParagraphs(ReadingExam $exam)
     {
-        $paragraphs = Paragraph::getParagraphs($exam->paragraphs()->get());
-        $paragraphs = json_encode($paragraphs);
 
-        return view('reading.exams.paragraphs', compact('paragraphs', 'exam'));
+        return view('reading.exams.paragraphs', compact( 'exam'));
     }
 
     public function showVocab(ReadingExam $exam)
     {
-        $questions = Question::getQuestions($exam->vocabQuestions()->get());
-        $questions = json_encode($questions);
-        return view('reading.exams.vocab', compact('questions', 'exam'));
+        return view('reading.exams.vocab', compact( 'exam'));
     }
 
 

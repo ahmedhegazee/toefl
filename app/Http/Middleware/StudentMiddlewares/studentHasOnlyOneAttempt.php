@@ -15,7 +15,7 @@ class studentHasOnlyOneAttempt
         ->where('group_id',$student->group->id)->get()->first();
 //      dd($attempt);
             if(!is_null($attempt)) {
-                if (!is_null($attempt->result))
+//                if (!is_null($attempt->result))
                     return true;
             }
             else
@@ -30,7 +30,11 @@ class studentHasOnlyOneAttempt
      */
     public function handle($request, Closure $next)
     {
-        if($this->hasAttempt()){
+//        dd($request->path());
+//        dd($request->session()->has('student'));
+        if($request->method()=='POST'||$request->path()=='exam/start')
+            return $next($request);
+        else if($this->hasAttempt()){
             auth()->logout();
             return redirect()->route('error')->with('error','you have only one attempt to take the exam');
         }

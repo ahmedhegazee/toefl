@@ -9,20 +9,29 @@
     >
         {{message}}
     </b-alert>
-    <b-form-input
-        id="search-input"
-        v-model="filter"
-        class="mt-2 mb-2"
-        placeholder="type to search"
-    ></b-form-input>
+<!--    <b-form-input-->
+<!--        id="search-input"-->
+<!--        v-model="filter"-->
+<!--        class="mt-2 mb-2"-->
+<!--        placeholder="type to search"-->
+<!--    ></b-form-input>-->
     <b-table striped
              hover
              :sticky-header="true"
-             :items="jsonData"
+             :items="exams"
              :filter="filter"
              sort-by="id"
+             :busy="exams.length==0"
+             :per-page="perPage"
+             :current-page="current"
              style="max-height: 70vh"
     >
+        <template v-slot:table-busy>
+            <div class="text-center text-danger my-2">
+                <b-spinner class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+            </div>
+        </template>
         <template v-slot:cell(actions)="row">
             <button class="btn btn-primary" @click="showLiveExam(row.item)">Live Exam</button>
             <button v-if="!isReadingExam" class="btn btn-primary" @click="showExam(row.item)">Show</button>
@@ -34,6 +43,14 @@
         </template>
 
     </b-table>
+    <div class="row justify-content-center">
+        <b-pagination
+            v-model="currentPage"
+            :total-rows="count"
+            :per-page="perPage"
+            aria-controls="my-table"
+        ></b-pagination>
+    </div>
 </div>
 </template>
 
@@ -42,20 +59,41 @@
         name: "DisplayExamsPanel",
         mounted() {
             // console.log(this.exams);
-
-            this.jsonData=JSON.parse(this.exams);
+            axios.get(this.route).then(response => {
+                this.exams = response.data.exams;
+                this.count = response.data.count;
+            });
         },
-        props:['exams','liveRoute','route','isReading'],
+        props:['liveRoute','route','isReading'],
         data:function(){
             return {
                 dismissSecs: 3,
                 dismissCountDown: 0,
                 message: "",
                 alert: "danger",
-                jsonData:null,
+                exams:[],
                 filter:null,
+                perPage: 50,
+                currentPage: 1,
+                current: 1,
+                count: 0,
             }
-        },computed:{
+        },
+        watch: {
+            currentPage(newPage, oldPage) {
+                this.exams = [];
+                var self = this;
+                axios.get(this.route + '?page=' + newPage)
+                    .then(function (response) {
+                        self.exams = response.data.exams;
+                        // self.questions = ;
+                        self.count = response.data.count;
+                    });
+
+                this.$emit('input', newPage);
+            }
+        },
+        computed:{
             isReadingExam:function () {
                 return this.isReading=='true';
             }
@@ -92,9 +130,9 @@
                         .then(value => {
                             if (value == true) {
                                 axios.delete(this.route+'/'+exam.id).then(response=>{
-                                    var index = this.jsonData.indexOf(exam);
+                                    var index = this.exams.indexOf(exam);
                                     if (index > -1) {
-                                        this.jsonData.splice(index, 1);
+                                        this.exams.splice(index, 1);
                                     }
 
                                     this.showAlert('Successfully deleted','success');

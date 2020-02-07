@@ -18,8 +18,10 @@ class CreateGroupsTable extends Migration
             $table->string('name');
             $table->unsignedBigInteger('reservation_id');
             $table->unsignedBigInteger('group_type_id');
+            $table->integer('is_examined')->default(0);
             $table->foreign('reservation_id')->references('id')->on('reservations');
             $table->foreign('group_type_id')->references('id')->on('group_types');
+
             $table->timestamps();
         });
     }

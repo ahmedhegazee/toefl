@@ -39,7 +39,7 @@
 {{--            @endforeach--}}
 {{--        </table>--}}
             <display-exams-panel
-                exams="{{$exams}}"
+{{--                exams="{{$exams}}"--}}
                 live-route="{{route('listening.live.exam.submit')}}"
                 route="{{route('listening.exam.store')}}"
             ></display-exams-panel>

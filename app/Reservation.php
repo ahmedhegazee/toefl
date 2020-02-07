@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
 {
-    protected $guarded=[];
+    protected $guarded = [];
 
     public function students()
     {
-        return $this->hasMany(Student::class,'res_id');
+        return $this->hasMany(Student::class, 'res_id');
     }
 
     public function getDoneAttribute($option)
@@ -24,24 +24,43 @@ class Reservation extends Model
     public function grammarExam()
     {
         return $this->hasOne(GrammarExam::class);
-}    public function readingExam()
+    }
+
+    public function readingExam()
     {
         return $this->hasOne(ReadingExam::class);
-}    public function listeningExam()
+    }
+
+    public function listeningExam()
     {
         return $this->hasOne(ListeningExam::class);
-}
+    }
+
     public function doneOptions()
     {
         return [
-            0=>'Open',
-            1=>'Closed',
-            ];
+            0 => 'Open',
+            1 => 'Closed',
+        ];
     }
 
     public function groups()
     {
         return $this->hasMany(Group::class);
+    }
+
+    public function isAllGroupsExamined()
+    {
+        return $this->groups()->where('is_examined', 0)->count() == 0;
+    }
+
+    public function scopeExamined($query,$examined)
+    {
+        return $query->where('is_examined', $examined);
+    }
+    public function scopeClosed($query,$done)
+    {
+        return $query->where('done', $done);
     }
 
 

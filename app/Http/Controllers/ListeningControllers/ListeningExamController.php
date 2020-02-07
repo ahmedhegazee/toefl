@@ -15,7 +15,7 @@ class ListeningExamController extends Controller
 {
     public function index()
     {
-        $exams = ListeningExam::all()->map(function ($exam) {
+        $exams = ListeningExam::paginate(50)->map(function ($exam) {
             return [
                 'id' => $exam->id,
                 'Reservation Date' => $exam->reservation->start,
@@ -23,8 +23,10 @@ class ListeningExamController extends Controller
                 'actions' => '',
             ];
         });
-        $exams = json_encode($exams);
-        return view('listening.exams.index', compact('exams'));
+//        $exams = json_encode($exams);
+//        return view('listening.exams.index', compact('exams'));
+        $count=ListeningExam::all()->count();
+        return response()->json(['exams'=>$exams,'count'=>$count]);
     }
 
     /**
@@ -34,9 +36,14 @@ class ListeningExamController extends Controller
      */
     public function create()
     {
-        $reservations = Reservation::all();
+        $reservations = Reservation::closed(1)->get();;
+
+         $reservations=$reservations->filter(function($res){
+            if(is_null($res->listeningExam))
+                return $res;
+        });
         if (empty($reservations->toArray()))
-            return redirect()->back()->with('error', 'No Reservation is Available');
+            return redirect()->back()->with('error', 'No Reservation is Available and closed');
 
 //        $types=GroupType::all();
 //        return view('listening.exams.create',compact('reservations','types'));
@@ -78,15 +85,14 @@ class ListeningExamController extends Controller
      * Display the specified resource.
      *
      * @param ListeningExam $exam
-     * @return void
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show(ListeningExam $exam)
     {
 
         $audios = Audio::getAudios($exam->audios()->get());
-        $audios = json_encode($audios);
 
-        return view('listening.exams.show', compact('audios', 'exam'));
+        return view('listening.exams.show', compact( 'exam'));
     }
 
     /**
@@ -97,7 +103,14 @@ class ListeningExamController extends Controller
      */
     public function edit(ListeningExam $exam)
     {
-        $reservations = Reservation::all();
+        $reservations = Reservation::closed(1)->get();;
+         $reservations=$reservations->filter(function($res){
+            if(is_null($res->listeningExam))
+                return $res;
+        });
+        if (empty($reservations->toArray()))
+            return redirect()->back()->with('error', 'No Reservation is Available and closed');
+
 //        $types=GroupType::all();
 //        return view('listening.exams.update',compact('exam','reservations','types'));
         return view('listening.exams.update', compact('exam', 'reservations'));

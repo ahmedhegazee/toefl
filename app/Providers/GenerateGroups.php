@@ -41,7 +41,7 @@ class GenerateGroups
                 $groupsNumber = ceil($studentsCount / $computers);
                 for ($i = 0; $i < $groupsNumber; $i++) {
                     $createdGroup = $reservation->groups()->create([
-                        'name' => 'Group ' . ($counter),
+                        'name' => 'Group ' . ($counter).'( '.$group->type->type.' )',
                         'group_type_id' => $group->type->id
                     ]);
                     $counter++;

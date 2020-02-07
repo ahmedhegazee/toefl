@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ReadingControllers;
 
 use App\Http\Controllers\Controller;
 use App\Logging;
+use App\Question;
 use App\Reading\Paragraph;
 use App\Reading\ParagraphQuestion;
 use App\Reading\VocabQuestion;
@@ -13,7 +14,13 @@ use Illuminate\Support\Facades\Validator;
 class ParagraphQuestionsController extends Controller
 {
 
+    public function index(Paragraph $paragraph)
+    {
+        $questions = Question::getQuestions( $paragraph->questions()->paginate(50));
 
+        $count = $paragraph->questions()->count();
+        return response()->json(['questions' => $questions, 'count' => $count]);
+    }
     /**
      * Show the form for creating a new resource.
      *

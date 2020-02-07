@@ -35,7 +35,7 @@
 {{--    {{$paragraphs->links()}}--}}
 {{--</div>--}}
        <display-questions-panel
-        exams="{{$paragraphs}}"
+{{--        exams="{{$paragraphs}}"--}}
         route="{{route('paragraph.store')}}"
         delete-route="{{route('paragraph.store')}}"
         is-paragraph=true

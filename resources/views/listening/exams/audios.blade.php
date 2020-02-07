@@ -43,12 +43,13 @@
 
 {{--</div>--}}
         <display-questions-panel
-            exams="{{$audios}}"
+{{--            exams="{{$audios}}"--}}
             route="{{route('audio.store')}}"
             store-route="{{route('listening.exam.audio.store',compact('exam'))}}"
+            delete-route="{{route('listening.exam.audio.store',compact('exam'))}}"
             is-Audio="true"
             can-choose=true
-            checked="{{$checked}}"
+{{--            checked="{{$checked}}"--}}
             redirect-route="{{route('listening.exam.show',compact('exam'))}}"
         ></display-questions-panel>
     </div>

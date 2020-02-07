@@ -41,7 +41,7 @@
 
 
             <display-exams-panel
-                exams="<?php echo e($jsonExams); ?>"
+
                 live-route="<?php echo e(route('grammar.live.exam.submit')); ?>"
                 route="<?php echo e(route('grammar.exam.store')); ?>"
             ></display-exams-panel>

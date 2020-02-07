@@ -15,14 +15,15 @@ class VocabQuestionsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
 //      $questions=  VocabQuestion::paginate(15);
-        $questions = Question::getQuestions( VocabQuestion::all());
-        $questions = json_encode($questions);
-      return view('reading.vocab.index',compact('questions'));
+        $questions = Question::getQuestions( VocabQuestion::paginate(50));
+        $count=VocabQuestion::all()->count();
+        return response()->json(['questions'=>$questions,'count'=>$count]);
+//      return view('reading.vocab.index',compact('questions'));
     }
 
     /**

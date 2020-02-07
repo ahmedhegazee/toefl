@@ -50,9 +50,8 @@
 {{--        </div>--}}
 
         <display-questions-panel
-            exams="{{$questions1}}"
+{{--            questions="{{$questions1}}"--}}
             route="{{route('grammar.question.store')}}"
-
             delete-route="{{route('grammar.question.store')}}"
             is-paragraph=false
             can-choose=false

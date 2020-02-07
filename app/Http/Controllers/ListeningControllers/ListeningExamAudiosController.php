@@ -10,31 +10,38 @@ use Illuminate\Http\Request;
 
 class ListeningExamAudiosController extends Controller
 {
-    public function index(ListeningExam $exam)
+    public function index(Request $request, ListeningExam $exam)
     {
-//        dd('hello');
-//        $questions = $grammarExam->questions()->orderBy('id', 'asc')->paginate(15);;
-        $audios = Audio::getAudiosForChoose(Audio::all());
-        $checked=$exam->audios()->pluck('audio_id');
-        $checked = json_encode($checked);
-        $audios = json_encode($audios);
-        return view('listening.exams.audios',compact('audios','exam','checked'));
+        if ($request->get('showExam') == 'true') {
+            $audios = Audio::getAudiosForChoose($exam->audios()->paginate(50));
+            $count = $exam->audios()->count();
+            return response()->json(['questions' => $audios, 'count' => $count]);
+        } else {
+            $audios = Audio::getAudiosForChoose(Audio::paginate(50));
+            $checked = $exam->audios()->pluck('audio_id');
+            $count = Audio::all()->count();
+            return response()->json(['questions' => $audios, 'count' => $count, 'checked' => $checked]);
+        }
+
+//        return view('listening.exams.audios', compact('audios', 'exam', 'checked'));
     }
-    public function store(Request $request,ListeningExam $exam)
+
+    public function store(Request $request, ListeningExam $exam)
     {
 //        dd($request['questions']);
-        $audios =Audio::whereIn('id',$request['audios'])->get();
-        $message=" add  audios {".$request['audios']."} to listening exam  with id {".$exam->id."} ";
-        Logging::logProfessor(auth()->user(),$message);
+        $audios = Audio::whereIn('id', $request['audios'])->get();
+        $message = " add  audios {" . $request['audios'] . "} to listening exam  with id {" . $exam->id . "} ";
+        Logging::logProfessor(auth()->user(), $message);
         $exam->audios()->sync($audios);
 //        dd($exam->questions);
 //        return redirect()->back();
     }
-    public function destroy(ListeningExam $exam,Audio $audio)
+
+    public function destroy(ListeningExam $exam, Audio $audio)
     {
-        $message=" remove audio {".$audio->id."} from listening exam  with id {".$exam->id."} ";
-        Logging::logProfessor(auth()->user(),$message);
+        $message = " remove audio {" . $audio->id . "} from listening exam  with id {" . $exam->id . "} ";
+        Logging::logProfessor(auth()->user(), $message);
         $exam->audios()->detach($audio);
-        return response()->json(['success'=>true]);
+        return response()->json(['success' => true]);
     }
 }

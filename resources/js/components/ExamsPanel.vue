@@ -83,7 +83,7 @@
 
     export default {
         mounted() {
-            axios.get('/reservations/')
+            axios.get('/reservations/exams')
                 .then(response => {
                     this.reservations = response.data;
                     if(this.reservations.length==0){
@@ -120,6 +120,8 @@
                 started: false,
                 working: false,
                 hasExams: false,
+                reservationExamined:false,
+                groupExamined:false,
             }
         }, methods: {
             getGroups() {
@@ -181,7 +183,7 @@
                     // setTimeout(null,1000);
                     if(d.m.length==0)
                     d.getStudentsData();
-                },120000);
+                },60000);
 
                 // setTimeout(null,60000);
             },
@@ -193,27 +195,36 @@
 
                 }
                 else{
-                    if (this.hasExams) {
-                        this.checkIfExamEntered();
-                        if (!this.enter) {
-                            axios.post('/students/' + this.group + "/enter")
-                                .then(response => {
-                                    this.message = "The students can login now";
-                                    this.alert = "success";
-                                    this.showAlert();
-                                    this.enter = true;
-                                    this.working=this.enter&&this.started;
-                                }).catch(errors => {
+                    this.checkIsGroupExamined();
+                    this.checkIfGroupHasExams();
+                    setTimeout(null,3000);
+                  if(!this.groupExamined){
+                      if (this.hasExams) {
+                          this.checkIfExamEntered();
+                          setTimeout(null,3000);
+                          if (!this.enter) {
+                              axios.post('/students/' + this.group + "/enter")
+                                  .then(response => {
+                                      this.message = "The students can login now";
+                                      this.alert = "success";
+                                      this.showAlert();
+                                      this.enter = true;
+                                      this.working=this.enter&&this.started;
+                                  }).catch(errors => {
 
-                            });
-                        } else {
-                            this.message = "The exam is already opened,so students can login ";
-                            this.showAlert();
-                        }
-                    } else {
-                        this.message = "Sorry this group doesn't have exams";
-                        this.showAlert();
-                    }
+                              });
+                          } else {
+                              this.message = "The exam is already opened,so students can login ";
+                              this.showAlert();
+                          }
+                      } else {
+                          this.message = "Sorry this group doesn't have exams";
+                          this.showAlert();
+                      }
+                  }else{
+                      this.message = "Sorry this group had been examined";
+                      this.showAlert();
+                  }
                 }
 
 
@@ -356,13 +367,27 @@
                     }).catch(errors => {
                 });
             },
-            // checkIfGroupHasExams(){
-            //     axios.get('/group/' + this.group + "/hasExams")
-            //         .then(response => {
-            //            this.hasExams=response.data.success;
-            //         }).catch(errors => {
-            //     });
-            // },
+            checkIsReservationExamined() {
+                axios.get('/reservation/' + this.reservation + "/examined")
+                    .then(response => {
+                        this.reservationExamined = response.data.success;
+                    }).catch(errors => {
+                });
+            },
+            checkIsGroupExamined() {
+                axios.post('/group/' + this.group + "/examined")
+                    .then(response => {
+                        this.groupExamined = response.data.success;
+                    }).catch(errors => {
+                });
+            },
+            checkIfGroupHasExams(){
+                axios.get('/group/' + this.group + "/hasExams")
+                    .then(response => {
+                       this.hasExams=response.data.success;
+                    }).catch(errors => {
+                });
+            },
             countDownChanged(dismissCountDown) {
                 this.dismissCountDown = dismissCountDown;
                 if (this.dismissCountDown === 0) {

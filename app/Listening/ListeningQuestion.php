@@ -21,4 +21,6 @@ class ListeningQuestion extends Model
         return $this->belongsTo(Audio::class);
 
     }
+
+
 }

@@ -35,12 +35,13 @@
 {{--    {{$paragraphs->links()}}--}}
 {{--</div>--}}
         <display-questions-panel
-            exams="{{$paragraphs}}"
+{{--            exams="{{$paragraphs}}"--}}
             route="{{route('paragraph.store')}}"
             store-route="{{route('reading.exam.paragraph.store',compact('exam'))}}"
+            delete-route="{{route('reading.exam.paragraph.store',compact('exam'))}}"
             is-paragraph=true
             can-choose=true
-            checked="{{$checked}}"
+{{--            checked="{{$checked}}"--}}
             redirect-route="{{route('reading.exam.show.paragraphs',compact('exam'))}}"
         ></display-questions-panel>
     </div>

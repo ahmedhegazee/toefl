@@ -45,7 +45,7 @@
 {{--        </table>--}}
 {{--{{$questions->links()}}--}}
         <display-questions-panel
-        exams="{{$questions}}"
+{{--        exams="{{$questions}}"--}}
         route="{{route('vocab.store')}}"
         delete-route="{{route('vocab.store')}}"
         is-paragraph=false

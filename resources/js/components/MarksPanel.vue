@@ -9,7 +9,12 @@
         >
             {{message}}
         </b-alert>
-
+        <b-alert
+            :show="students.length==0&&reservation!=''"
+            variant="danger"
+        >
+            Sorry there is no students in this reservation
+        </b-alert>
         <div class="form-group row">
             <label for="reservation" class="col-md-4 col-form-label text-md-right">Select Reservation</label>
             <div class="col-md-6">
@@ -22,12 +27,14 @@
         </div>
 
 
-        <h1>Students</h1>
+        <h1>Students' Scores</h1>
         <b-table striped
                  hover
                  :sticky-header="true"
                  :items="students"
                  style="max-height: 70vh"
+                 :per-page="perPage"
+                 :current-page="currentPage"
         >
             <template v-slot:cell(actions)="row">
                 <button class="btn btn-success" @click="showDialog(row.item)">Edit Marks</button>
@@ -35,6 +42,14 @@
             </template>
 
         </b-table>
+        <div class="row justify-content-center" v-if="students.length!=0">
+            <b-pagination
+                v-model="currentPage"
+                :total-rows="rows"
+                :per-page="perPage"
+                aria-controls="my-table"
+            ></b-pagination>
+        </div>
         <b-modal
             id="modal-prevent-closing"
             ref="modal"
@@ -100,8 +115,13 @@
                 requiredScore:0,
                 st_name:'',
                 student:null,
+                perPage: 20,
+                currentPage: 1,
             }
         }, computed:{
+            rows() {
+                return this.students.length
+            },
             scoreState:function(){
                 if(this.score==0)
                     return null;

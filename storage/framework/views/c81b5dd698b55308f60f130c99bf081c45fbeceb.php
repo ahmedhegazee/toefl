@@ -1,7 +1,7 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
         <h2>Audios in this Exam</h2>
-        <a href="<?php echo e(route('listening.exam.audio.index',compact('exam'))); ?>" class="btn btn-primary">Add Audios to this Exam</a>
+        <a href="<?php echo e(route('listening.exam.audios.add',compact('exam'))); ?>" class="btn btn-primary">Add Audios to this Exam</a>
 
 
 
@@ -35,7 +35,7 @@
 
 
         <display-questions-panel
-            exams="<?php echo e($audios); ?>"
+
             route="<?php echo e(route('audio.store')); ?>"
             delete-route="<?php echo e(route('listening.exam.audio.store',compact('exam'))); ?>"
             is-paragraph=true

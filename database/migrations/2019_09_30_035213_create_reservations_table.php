@@ -18,6 +18,7 @@ class CreateReservationsTable extends Migration
             $table->date('start');
             $table->unsignedBigInteger('max_students');
             $table->integer('done')->default(0);
+            $table->integer('is_examined')->default(0);
             $table->timestamps();
         });
     }

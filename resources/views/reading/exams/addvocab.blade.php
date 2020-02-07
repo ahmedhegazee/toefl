@@ -44,12 +44,13 @@
 {{--        </form>--}}
 {{--        {{$questions->links()}}--}}
         <display-questions-panel
-            exams="{{$questions1}}"
+{{--            exams="{{$questions1}}"--}}
             route="{{route('vocab.store')}}"
             store-route="{{route('reading.exam.vocab.store',compact('exam'))}}"
+            delete-route="{{route('reading.exam.vocab.store',compact('exam'))}}"
             is-paragraph="false"
             can-choose="true"
-            checked="{{$checked}}"
+{{--            checked="{{$checked}}"--}}
             redirect-route="{{route('reading.exam.show.vocab',compact('exam'))}}"
         ></display-questions-panel>
     </div>

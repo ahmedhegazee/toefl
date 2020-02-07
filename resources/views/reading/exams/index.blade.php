@@ -2,6 +2,11 @@
 
 @section('content')
     <div class="container ">
+        @if(session()->has('error'))
+            <div class="alert alert-danger">
+                {{session()->get('error')}}
+            </div>
+        @endif
         <h2>Reading Exams </h2>
         <a href="{{route('reading.exam.create')}}" class="btn btn-primary">Add Exam</a>
         {{--        <table border="2px solid">--}}
@@ -40,7 +45,7 @@
         {{--        </table>--}}
         {{--<div class="row">{{$exams->links()}}</div>--}}
         <display-exams-panel
-            exams="{{$jsonExams}}"
+{{--            exams="{{$jsonExams}}"--}}
             live-route="{{route('reading.live.exam.submit')}}"
             route="{{route('reading.exam.store')}}"
             is-reading="true"

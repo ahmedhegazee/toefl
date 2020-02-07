@@ -16,7 +16,7 @@ class GrammarQuestionsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -35,11 +35,15 @@ class GrammarQuestionsController extends Controller
 //                    'actions' => '',
 //                ];
 //            })->values()->toArray();
-        $questions1 = Question::getGrammarQuestions(GrammarQuestion::all());
-        $questions1 = json_encode($questions1);
+        $questions1 = Question::getGrammarQuestions(GrammarQuestion::paginate(50));
+//        $questions1 = json_encode($questions1);
+//        dd($questions1);
 //        return view('grammar.questions.index',compact('questions','questions1'));
-        return view('grammar.questions.index', compact('questions1'));
+//        return view('grammar.questions.index', compact('questions1'));
+        $count=GrammarQuestion::all()->count();
+    return response()->json(['questions'=>$questions1,'count'=>$count]);
     }
+
 
     /**
      * Show the form for creating a new resource.

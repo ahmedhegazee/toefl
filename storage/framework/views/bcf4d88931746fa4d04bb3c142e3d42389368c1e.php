@@ -33,7 +33,7 @@
 
 
        <display-questions-panel
-        exams="<?php echo e($paragraphs); ?>"
+
         route="<?php echo e(route('paragraph.store')); ?>"
         delete-route="<?php echo e(route('paragraph.store')); ?>"
         is-paragraph=true

@@ -12,9 +12,19 @@
                  :items="students"
                  :filter="filter"
                  style="max-height: 70vh"
+                 :per-page="perPage"
+                 :current-page="currentPage"
         >
 
         </b-table>
+        <div class="row justify-content-center">
+            <b-pagination
+                v-model="currentPage"
+                :total-rows="rows"
+                :per-page="perPage"
+                aria-controls="my-table"
+            ></b-pagination>
+        </div>
     </div>
 </template>
 
@@ -28,7 +38,14 @@
         data:function () {
             return {
                 filter:null,
-                students:[]
+                students:[],
+                perPage: 20,
+                currentPage: 1,
+            }
+        },
+        computed: {
+            rows() {
+                return this.students.length
             }
         }
     }
