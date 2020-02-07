@@ -12,7 +12,7 @@ class GrammarQuestionsTableSeeder extends Seeder
     public function run()
     {
         $arr=[1,2];
-        for($i=0;$i<100;$i++){
+        for($i=0;$i<5000;$i++){
             $correct= array_rand([1,2,3,4]);
 
             $rand =array_rand($arr);

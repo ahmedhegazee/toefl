@@ -42,7 +42,7 @@
 {{--            @endforeach--}}
 {{--        </table>--}}
             <display-exams-panel
-                exams="{{$jsonExams}}"
+{{--                exams="{{$jsonExams}}"--}}
                 live-route="{{route('grammar.live.exam.submit')}}"
                 route="{{route('grammar.exam.store')}}"
             ></display-exams-panel>

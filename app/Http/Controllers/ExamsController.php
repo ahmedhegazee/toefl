@@ -216,8 +216,7 @@ class ExamsController extends Controller
 
     public function logout()
     {
-        $student = session()->get('student');
-        Cache::forget('student-is-online-' . $student->id);
+//        $student = session()->get('student');
 //        Cache::forget('student-' . $student->id . '-grammar');
 //        Cache::forget('student-' . $student->id . '-reading');
 //        session()->forget([ 'student-' . $student->id . '-grammar','student-' . $student->id . '-reading']);

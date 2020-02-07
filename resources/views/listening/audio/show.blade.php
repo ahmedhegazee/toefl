@@ -51,7 +51,7 @@
 {{--        </table>--}}
 {{--{{$questions->links()}}--}}
         <display-questions-panel
-            exams="{{$questions}}"
+{{--            exams="{{$questions}}"--}}
             route="{{route('listening.question.store',compact('audio'))}}"
             delete-route="{{route('listening.question.store',compact('audio'))}}"
             is-paragraph=false

@@ -45,6 +45,8 @@
                 :fields="fields"
                 :filter="filter"
                 style="max-height: 70vh"
+                :per-page="perPage"
+                :current-page="currentPage"
             >
                 <template v-slot:cell(actions)="row">
 
@@ -53,6 +55,14 @@
                 </template>
 
             </b-table>
+            <div class="row justify-content-center" v-if="students.length!=0">
+                <b-pagination
+                    v-model="currentPage"
+                    :total-rows="rows"
+                    :per-page="perPage"
+                    aria-controls="my-table"
+                ></b-pagination>
+            </div>
         </div>
 
 
@@ -78,8 +88,16 @@
                 dismissCountDown: 0,
                 message: "",
                 alertVariant: "danger",
+                perPage: 20,
+                currentPage: 1,
             }
-        }, methods: {
+        },
+        computed:{
+            rows() {
+                return this.data.length
+            },
+        },
+        methods: {
             getData() {
                 var arr = document.cookie.split(';');
                 let id = [];

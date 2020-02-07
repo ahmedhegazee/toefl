@@ -32,7 +32,7 @@ class checkRoles
             return redirect()->route('admin');
         else if($this->isStudent())
         {
-            $expiresAt = Carbon::now()->addMinutes(2);
+            $expiresAt = Carbon::now()->addMinutes(5);
             Cache::put('student-is-online-' . Auth::user()->getStudent()->id, true, $expiresAt);
 
             return redirect()->route('student.home');

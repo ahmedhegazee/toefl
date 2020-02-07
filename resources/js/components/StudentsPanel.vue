@@ -11,22 +11,41 @@
         </b-alert>
 
         <h1>Students</h1>
-        <b-form-input
-            id="search-input"
-            v-model="filter"
-            class="mt-2 mb-2"
-            placeholder="type to search"
-        ></b-form-input>
-        <!--Add New User Modal-->
+        <div class="form-group row mt-2 mb-2">
+            <label for="reservation" class="col-md-4 col-form-label left">Filter students based on
+                Reservation</label>
+            <div class="col-md-6">
+                <input id="reservation" v-model="reservationFilter" @change="search()" type="date" class="form-control ">
+            </div>
+
+        </div>
+        <div class="form-group row mt-2 mb-2">
+            <div class="col-md-10">
+                <input id="search"  v-model="phoneFilter" type="search" class="form-control "
+                       placeholder="write student phone number ">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary" @click="searchByPhone()">Search</button>
+            </div>
+        </div>
+
+
         <b-table striped
                  :sticky-header="true"
                  :fields="fields"
                  hover
                  :items="students"
-                 :filter="filter"
                  style="max-height: 70vh"
+                 :busy="students.length==0"
+                 :per-page="perPage"
+                 :current-page="current"
         >
-
+            <template v-slot:table-busy>
+                <div class="text-center text-danger my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong>Loading...</strong>
+                </div>
+            </template>
             <template v-slot:cell(actions)="row">
                 <button v-if="row.item.verified!='Verified'" class="btn btn-primary mr-1 mb-1"
                         @click="verifyStudent(row.item)">Verify
@@ -40,6 +59,14 @@
             </template>
 
         </b-table>
+        <div class="row justify-content-center">
+            <b-pagination
+                v-model="currentPage"
+                :total-rows="count"
+                :per-page="perPage"
+                aria-controls="my-table"
+            ></b-pagination>
+        </div>
         <!--Edit Info Modal-->
         <b-modal
             id="modal-prevent-closing"
@@ -263,20 +290,15 @@
 
     export default {
         mounted() {
-            axios.get('/student')
-                .then(response => {
-                    this.students = response.data;
-                    // console.log(response.data);
-                }).catch(errors => {
-
-            });
+            this.getStudents();
             this.getAvailableReservations();
 
         },
+        props: ['dataRoute'],
         data: function () {
 
             return {
-                fields: ["id", "Arabic Name", "English Name", "phone", "email", "Studying Degree", "Required Score", "verified", "actions"],
+                fields: ["id", "Arabic Name", "English Name", "Reservation", "phone", "email", "Studying Degree", "Required Score", "verified", "actions"],
                 reservation: null,
                 groupType: null,
                 groupTypes: [],
@@ -300,16 +322,41 @@
                 confirmPhoneState: null,
                 isUniqueEmail: null,
                 isUniquePhone: null,
-                filter: null,
-                images:{
+                images: {
                     personalImage: null,
                     nidImage: null,
                     certificateImage: null,
                     messageImage: null
-                }
-
+                },
+                perPage: 50,
+                currentPage: 1,
+                current: 1,
+                count: 0,
+                reservationFilter: '',
+                phoneFilter: '',
             }
-        }, computed: {
+        },
+        watch: {
+            currentPage(newPage, oldPage) {
+                this.students = [];
+                var self = this;
+                var route=this.dataRoute+'?page='+newPage;
+
+                // if(this.phoneFilter.length>0)
+                // data.append('phone',this.phoneFilter);
+                if(this.reservationFilter.length>0)
+                    route+='&&filter='+this.reservationFilter;
+                axios.get(route)
+                    .then(function (response) {
+                        self.students = response.data.students;
+                        // self.questions = ;
+                        self.count = response.data.count;
+                    });
+
+                this.$emit('input', newPage);
+            }
+        },
+        computed: {
             englishNameState: function () {
                 if (this.englishName.length == 0)
                     return null;
@@ -354,6 +401,17 @@
             },
         },
         methods: {
+            getStudents() {
+                axios.get('/student')
+                    .then(response => {
+                        this.students = response.data.students;
+                        // self.questions = ;
+                        this.count = response.data.count;
+                        // console.log(response.data);
+                    }).catch(errors => {
+
+                });
+            },
             validateEmail(email) {
                 var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 return re.test(email);
@@ -430,12 +488,12 @@
                 this.reservation = null;
                 this.groupType = null;
             },
-            resetImagesChangerModal(){
+            resetImagesChangerModal() {
                 // this.student=null;
-                this.images.certificateImage=null;
-                this.images.nidImage=null;
-                this.images.personalImage=null;
-                this.images.messageImage=null;
+                this.images.certificateImage = null;
+                this.images.nidImage = null;
+                this.images.personalImage = null;
+                this.images.messageImage = null;
             },
             handleOk(bvModalEvt) {
                 // Prevent modal from closing
@@ -620,7 +678,7 @@
                     'type': this.groupType,
                 }).then(response => {
                     if (response.data.success) {
-
+                        this.student.failed = true;
                         this.showAlert("Successfully Updated", "success");
                     } else {
                         this.showAlert(response.data.message);
@@ -636,30 +694,27 @@
             },
             sendImagesUpdate() {
                 var data = new FormData();
-                let counter=0;
-                if (this.images.personalImage != null){
+                let counter = 0;
+                if (this.images.personalImage != null) {
                     counter++;
                     data.append('personalImage', this.images.personalImage);
                 }
 
-                if (this.images.nidImage != null)
-                {
+                if (this.images.nidImage != null) {
                     data.append('nidImage', this.images.nidImage);
                     counter++;
                 }
 
-                if (this.images.certificateImage != null)
-                {
+                if (this.images.certificateImage != null) {
                     data.append('certificateImage', this.images.certificateImage);
                     counter++;
                 }
 
-                if (this.images.messageImage != null)
-                {
+                if (this.images.messageImage != null) {
                     counter++;
                     data.append('messageImage', this.images.messageImage);
                 }
-                if(counter>0){
+                if (counter > 0) {
                     axios.post('/student/' + this.student.id + '/images', data, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
@@ -678,7 +733,7 @@
                             this.showAlert("Something happened when updating . Please call Support");
                             // console.log(error);
                         });
-                }else{
+                } else {
                     this.showAlert("You didn't choose images");
                 }
 
@@ -718,7 +773,54 @@
                     }).catch(errors => {
 
                 });
-            }
+            },
+
+            search() {
+                this.students = [];
+                if(this.reservationFilter.length>0){
+                    axios.get('/student?filter=' + this.reservationFilter).then(response => {
+                        if (response.data.students.length == 0) {
+                            this.showAlert('Sorry there is no students with this reservation date');
+                            setTimeout(null, 2000);
+                            this.getStudents();
+                        } else {
+                            this.students = response.data.students;
+                            this.count = response.data.count;
+                        }
+                    }).catch(error => {
+                        console.log(error)
+                    });
+                }else{
+                    this.currentPage=1;
+                    this.getStudents();
+                }
+
+            },
+            searchByPhone() {
+                if(this.phoneFilter=='')
+                    this.getStudents();
+
+                else if (this.validatePhone(this.phoneFilter)) {
+                    this.students = [];
+                    axios.get('/student?phone=' + this.phoneFilter).then(response => {
+
+                        if (response.data.students.length == 0) {
+                            this.showAlert('Sorry there is no student with this phone number');
+                            setTimeout(null, 2000);
+                            this.getStudents();
+                        } else {
+                            this.students = response.data.students;
+                            this.count = response.data.count;
+                        }
+                    }).catch(error => {
+                        console.log(error)
+                    });
+
+                } else {
+                    this.showAlert('Write correct phone number');
+                }
+
+            },
 
 
         }

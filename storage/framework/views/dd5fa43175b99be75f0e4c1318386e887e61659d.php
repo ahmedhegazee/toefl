@@ -1,5 +1,11 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
+        <?php if(session()->has('error')): ?>
+            <div class="alert alert-danger">
+                <?php echo e(session()->get('error')); ?>
+
+            </div>
+        <?php endif; ?>
         <h2>Reading Exams </h2>
         <a href="<?php echo e(route('reading.exam.create')); ?>" class="btn btn-primary">Add Exam</a>
         
@@ -38,7 +44,7 @@
         
         
         <display-exams-panel
-            exams="<?php echo e($jsonExams); ?>"
+
             live-route="<?php echo e(route('reading.live.exam.submit')); ?>"
             route="<?php echo e(route('reading.exam.store')); ?>"
             is-reading="true"

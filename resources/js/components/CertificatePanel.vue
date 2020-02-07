@@ -9,6 +9,12 @@
         >
             {{message}}
         </b-alert>
+        <b-alert
+            :show="students.length==0&&reservation!=''"
+            variant="danger"
+        >
+            Sorry there is no succeeded students in this reservation
+        </b-alert>
         <div class="form-group row">
             <label for="reservation" class="col-md-4 col-form-label text-md-right">Select Reservation</label>
             <div class="col-md-6">
@@ -37,7 +43,18 @@
                  :sticky-header="true"
                  :items="students"
                  style="max-height: 70vh"
+                 :per-page="perPage"
+                 :current-page="currentPage"
+
         ></b-table>
+        <div class="row justify-content-center" v-if="students.length!=0">
+            <b-pagination
+                v-model="currentPage"
+                :total-rows="rows"
+                :per-page="perPage"
+                aria-controls="my-table"
+            ></b-pagination>
+        </div>
 
         <b-modal ref="my-modal" hide-footer title="Reservation Dates">
             <div class="d-block text-center">
@@ -109,8 +126,13 @@
                 alert: "danger",
                 startDate: '',
                 endDate: '',
-            }
+                perPage: 20,
+                currentPage: 1,
+        }
         }, computed: {
+            rows() {
+                return this.students.length
+            },
             startState() {
                     return this.startDate.length != 0;
             },

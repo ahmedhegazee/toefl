@@ -81,7 +81,7 @@
                             <label for="personalimage" class="col-md-4 col-form-label text-md-right">{{ __('Personal Image') }}</label>
 
                             <div class="col-md-6">
-                                <input id="personalimage" type="file" class="form-control @error('personalimage') is-invalid @enderror" name="personalimage"   >
+                                <input id="personalimage" type="file"  accept="image/*" class="form-control @error('personalimage') is-invalid @enderror" name="personalimage"   >
 
                                 @error('personalimage')
                                 <span class="invalid-feedback" role="alert">
@@ -94,7 +94,7 @@
                             <label for="nidimage" class="col-md-4 col-form-label text-md-right">{{ __('National ID Image') }}</label>
 
                             <div class="col-md-6">
-                                <input id="nidimage" type="file" class="form-control @error('nidimage') is-invalid @enderror" name="nidimage"   >
+                                <input id="nidimage" type="file"  accept="image/*" class="form-control @error('nidimage') is-invalid @enderror" name="nidimage"   >
 
                                 @error('nidimage')
                                 <span class="invalid-feedback" role="alert">
@@ -107,7 +107,7 @@
                             <label for="certificateimage" class="col-md-4 col-form-label text-md-right">{{ __('Certificate Image') }}</label>
 
                             <div class="col-md-6">
-                                <input id="certificateimage" type="file" class="form-control @error('certificateimage') is-invalid @enderror" name="certificateimage"   >
+                                <input id="certificateimage"  accept="image/*" type="file" class="form-control @error('certificateimage') is-invalid @enderror" name="certificateimage"   >
 
                                 @error('certificateimage')
                                 <span class="invalid-feedback" role="alert">
@@ -120,7 +120,7 @@
                             <label for="messageimage" class="col-md-4 col-form-label text-md-right">{{ __('Message Image') }}</label>
 
                             <div class="col-md-6">
-                                <input id="messageimage" type="file" class="form-control @error('messageimage') is-invalid @enderror" name="messageimage"   >
+                                <input id="messageimage"  accept="image/*" type="file" class="form-control @error('messageimage') is-invalid @enderror" name="messageimage"   >
 
                                 @error('messageimage')
                                 <span class="invalid-feedback" role="alert">

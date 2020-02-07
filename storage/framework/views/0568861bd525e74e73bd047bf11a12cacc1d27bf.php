@@ -38,7 +38,7 @@
 
 
             <display-exams-panel
-                exams="<?php echo e($exams); ?>"
+
                 live-route="<?php echo e(route('listening.live.exam.submit')); ?>"
                 route="<?php echo e(route('listening.exam.store')); ?>"
             ></display-exams-panel>

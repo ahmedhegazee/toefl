@@ -129,7 +129,7 @@ class ApiController extends Controller
                 if (!is_null($student->results->last()))
                     if (
                         !$student->results->last()->success
-                        && $student->results->last()->mark != 0
+//                        && $student->results->last()->mark > 0
                     ) {
 //                        dump($student);
                         return $student;
@@ -152,7 +152,13 @@ class ApiController extends Controller
 
     public function getReservations()
     {
-        return response()->json(Reservation::where('done', 1)->get(['id', 'start'])->toArray());
+//        return response()->json(Reservation::where('is_examined', 1)->get(['id', 'start'])->toArray());
+        return response()->json(Reservation::examined(1)->get(['id', 'start'])->toArray());
+    }
+    public function getReservationsForExams()
+    {
+//        return response()->json(Reservation::where('is_examined', 0)->get(['id', 'start'])->toArray());
+        return response()->json(Reservation::examined(0)->closed(1)->get(['id', 'start'])->toArray());
     }
 
     public function getGroups(Reservation $res)
@@ -206,7 +212,9 @@ class ApiController extends Controller
 
     public function getAvailableReservations()
     {
-        $reservations = Reservation::where('start', '<=', now()->toDateString())->where('done', '!=', 1)->get();
+        $reservations = Reservation::closed(0)->get();
+//        $reservations = Reservation::where('start', '<=', now()->toDateString())->closed(0)->get();
+
 //            ->where('end', '>=', now()->toDateString())
 
 

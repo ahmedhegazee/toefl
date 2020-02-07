@@ -136,7 +136,7 @@
                 <ul id="sidebarnav" class="p-t-30">
                     @if(auth()->user()->canManageReservationsPanel())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                    href="{{route('res.index')}}" aria-expanded="false">
+                                                    href="{{route('reservations-panel')}}" aria-expanded="false">
                                 <i class="far fa-calendar-alt mr-2 ml-1 fa-1x"></i><span class="hide-menu">Reservations</span></a>
                         </li>
                     @endif
@@ -174,29 +174,29 @@
                     @endif
                         @if(auth()->user()->canManageGrammarSection())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                    href="{{route('grammar.question.index')}}" aria-expanded="false">
+                                                    href="{{route('grammar.questions-panel')}}" aria-expanded="false">
                                 <i class="fas fa-question-circle mr-2 ml-1 fa-1x"></i><span class="hide-menu">Grammar Questions</span></a></li>
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                    href="{{route('grammar.exam.index')}}" aria-expanded="false">
+                                                    href="{{route('grammar.exam-panel')}}" aria-expanded="false">
                                 <i class="fas fa-file-signature mr-2 ml-1 fa-1x"></i><span class="hide-menu">Grammar Exams</span></a></li>
                     @endif
                         @if(auth()->user()->canManageListeningSection())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                    href="{{route('audio.index')}}" aria-expanded="false">
+                                                    href="{{route('audio-panel')}}" aria-expanded="false">
                                 <i class="fas fa-music mr-2 ml-1 fa-1x"></i><span class="hide-menu">Audio Files</span></a></li>
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                    href="{{route('listening.exam.index')}}" aria-expanded="false">
+                                                    href="{{route('listening.exam-panel')}}" aria-expanded="false">
                                 <i class="fas fa-file-signature mr-2 ml-1 fa-1x"></i><span class="hide-menu">Listening Exams</span></a></li>
                     @endif
                         @if(auth()->user()->canManageReadingSection())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                    href="{{route('vocab.index')}}" aria-expanded="false">
+                                                    href="{{route('vocab-panel')}}" aria-expanded="false">
                                 <i class="fas fa-question-circle mr-2 ml-1 fa-1x"></i><span class="hide-menu">Vocab Questions</span></a></li>
                             <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                    href="{{route('paragraph.index')}}" aria-expanded="false">
+                                                    href="{{route('paragraph-panel')}}" aria-expanded="false">
                                 <i class="fas fa-align-left mr-2 ml-1 fa-1x"></i><span class="hide-menu">Paragraphs</span></a></li>
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                    href="{{route('reading.exam.index')}}" aria-expanded="false">
+                                                    href="{{route('reading.exam-panel')}}" aria-expanded="false">
                                 <i class="fas fa-file-signature mr-2 ml-1 fa-1x"></i><span class="hide-menu">Reading Exams</span></a></li>
                     @endif
                         @if(auth()->user()->canEditMarks())

@@ -25,18 +25,18 @@
         <div class="row justify-content-end pr-5">
             <form action="<?php echo e(route('student.verify',['student'=>$student])); ?>" method="post">
                 <?php echo method_field('patch'); ?>
+                
+                
 
+                
+                
 
-
-
-
-
-
-
-
-
-
-
+                
+                
+                
+                
+                
+                
                 <button type="submit" class="btn btn-primary">
                     Verify Student
                 </button>

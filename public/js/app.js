@@ -1924,6 +1924,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CertificatePanel",
   mounted: function mounted() {
@@ -1944,10 +1961,15 @@ __webpack_require__.r(__webpack_exports__);
       message: "",
       alert: "danger",
       startDate: '',
-      endDate: ''
+      endDate: '',
+      perPage: 20,
+      currentPage: 1
     };
   },
   computed: {
+    rows: function rows() {
+      return this.students.length;
+    },
     startState: function startState() {
       return this.startDate.length != 0;
     },
@@ -2421,22 +2443,60 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "DisplayExamsPanel",
   mounted: function mounted() {
+    var _this = this;
+
     // console.log(this.exams);
-    this.jsonData = JSON.parse(this.exams);
+    axios.get(this.route).then(function (response) {
+      _this.exams = response.data.exams;
+      _this.count = response.data.count;
+    });
   },
-  props: ['exams', 'liveRoute', 'route', 'isReading'],
+  props: ['liveRoute', 'route', 'isReading'],
   data: function data() {
     return {
       dismissSecs: 3,
       dismissCountDown: 0,
       message: "",
       alert: "danger",
-      jsonData: null,
-      filter: null
+      exams: [],
+      filter: null,
+      perPage: 50,
+      currentPage: 1,
+      current: 1,
+      count: 0
     };
+  },
+  watch: {
+    currentPage: function currentPage(newPage, oldPage) {
+      this.exams = [];
+      var self = this;
+      axios.get(this.route + '?page=' + newPage).then(function (response) {
+        self.exams = response.data.exams; // self.questions = ;
+
+        self.count = response.data.count;
+      });
+      this.$emit('input', newPage);
+    }
   },
   computed: {
     isReadingExam: function isReadingExam() {
@@ -2460,7 +2520,7 @@ __webpack_require__.r(__webpack_exports__);
       window.location.replace(this.route + '/' + exam.id + '/edit');
     },
     deleteExam: function deleteExam(exam) {
-      var _this = this;
+      var _this2 = this;
 
       this.$bvModal.msgBoxConfirm('Are you sure about deleting this exam ', {
         title: 'Delete Exam',
@@ -2474,14 +2534,14 @@ __webpack_require__.r(__webpack_exports__);
         centered: true
       }).then(function (value) {
         if (value == true) {
-          axios["delete"](_this.route + '/' + exam.id).then(function (response) {
-            var index = _this.jsonData.indexOf(exam);
+          axios["delete"](_this2.route + '/' + exam.id).then(function (response) {
+            var index = _this2.exams.indexOf(exam);
 
             if (index > -1) {
-              _this.jsonData.splice(index, 1);
+              _this2.exams.splice(index, 1);
             }
 
-            _this.showAlert('Successfully deleted', 'success');
+            _this2.showAlert('Successfully deleted', 'success');
           })["catch"](function (error) {
             return console.log(error);
           });
@@ -2577,24 +2637,79 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "DisplayQuestionsPanel",
   mounted: function mounted() {
-    // console.log(this.exams);
-    if (this.canChooseQuestions) this.selected = JSON.parse(this.checked);
-    this.jsonData = JSON.parse(this.exams);
+    var _this = this;
+
+    // console.log(this.questions);
+    if (window.location.pathname.indexOf('exam') > -1 && window.location.pathname.indexOf('add') == -1) this.showExam = true;
+    axios.get(this.deleteRoute + '?showExam=' + this.showExam).then(function (response) {
+      _this.questions = response.data.questions;
+      _this.count = response.data.count;
+      if (_this.canChooseQuestions) _this.selected = response.data.checked;
+    }); // this.questions = JSON.parse(this.questions);
   },
-  props: ['exams', 'route', 'deleteRoute', 'isParagraph', 'canChoose', 'checked', 'storeRoute', 'isAudio', 'redirectRoute'],
+  props: ['route', 'deleteRoute', 'isParagraph', 'canChoose', 'checked', 'storeRoute', 'isAudio', 'redirectRoute' // 'questions'
+  ],
   data: function data() {
     return {
       dismissSecs: 3,
       dismissCountDown: 0,
       message: "",
       alert: "danger",
-      jsonData: null,
+      questions: [],
       selected: [],
-      filter: null
+      filter: null,
+      perPage: 50,
+      currentPage: 1,
+      current: 1,
+      count: 0,
+      showExam: false
     };
+  },
+  watch: {
+    currentPage: function currentPage(newPage, oldPage) {
+      this.questions = [];
+      var self = this;
+      axios.get(this.deleteRoute + '?showExam=' + this.showExam + '&&page=' + newPage, {
+        'showExam': this.showExam
+      }).then(function (response) {
+        self.questions = response.data.questions; // self.questions = ;
+
+        self.count = response.data.count; // if (self.canChooseQuestions)
+        //     self.selected = response.data.checked;
+      });
+      this.$emit('input', newPage);
+    }
   },
   computed: {
     canChooseQuestions: function canChooseQuestions() {
@@ -2615,7 +2730,7 @@ __webpack_require__.r(__webpack_exports__);
       window.location.replace(this.route + '/' + paragraph.id);
     },
     deleteQuestion: function deleteQuestion(question) {
-      var _this = this;
+      var _this2 = this;
 
       this.$bvModal.msgBoxConfirm('Are you sure about removing this question ', {
         title: 'Remove Question',
@@ -2629,20 +2744,20 @@ __webpack_require__.r(__webpack_exports__);
         centered: true
       }).then(function (value) {
         if (value == true) {
-          axios["delete"](_this.deleteRoute + '/' + question.id).then(function (response) {
+          axios["delete"](_this2.deleteRoute + '/' + question.id).then(function (response) {
             if (response.data.success) {
-              var index = _this.jsonData.indexOf(question);
+              var index = _this2.questions.indexOf(question);
 
               if (index > -1) {
-                _this.jsonData.splice(index, 1);
+                _this2.questions.splice(index, 1);
               }
 
-              _this.showAlert('Successfully removed', 'success');
-            } else _this.showAlert("You can't remove this question ");
+              _this2.showAlert('Successfully removed', 'success');
+            } else _this2.showAlert("You can't remove this question ");
           })["catch"](function (error) {
             console.log(error);
 
-            _this.showAlert('Something happened. Please call support');
+            _this2.showAlert('Something happened. Please call support');
           });
         }
       })["catch"](function (err) {
@@ -2665,31 +2780,10 @@ __webpack_require__.r(__webpack_exports__);
       this.dismissCountDown = this.dismissSecs;
     },
     storeQuestions: function storeQuestions() {
-      var _this2 = this;
-
-      axios.post(this.storeRoute, {
-        'questions': this.selected
-      }).then(function (response) {
-        _this2.showAlert('Successfully Added to the exam', 'success');
-
-        var r = _this2.redirectRoute;
-        setTimeout(function () {
-          // window.history.back();
-          window.location.replace(r);
-        }, 4000);
-      })["catch"](function (error) {
-        return function (error) {
-          console.log(error);
-
-          _this2.showAlert('Something happened. Please call support');
-        };
-      });
-    },
-    storeParagraphs: function storeParagraphs() {
       var _this3 = this;
 
       axios.post(this.storeRoute, {
-        'paragraphs': this.selected
+        'questions': this.selected
       }).then(function (response) {
         _this3.showAlert('Successfully Added to the exam', 'success');
 
@@ -2706,11 +2800,11 @@ __webpack_require__.r(__webpack_exports__);
         };
       });
     },
-    storeAudios: function storeAudios() {
+    storeParagraphs: function storeParagraphs() {
       var _this4 = this;
 
       axios.post(this.storeRoute, {
-        'audios': this.selected
+        'paragraphs': this.selected
       }).then(function (response) {
         _this4.showAlert('Successfully Added to the exam', 'success');
 
@@ -2724,6 +2818,27 @@ __webpack_require__.r(__webpack_exports__);
           console.log(error);
 
           _this4.showAlert('Something happened. Please call support');
+        };
+      });
+    },
+    storeAudios: function storeAudios() {
+      var _this5 = this;
+
+      axios.post(this.storeRoute, {
+        'audios': this.selected
+      }).then(function (response) {
+        _this5.showAlert('Successfully Added to the exam', 'success');
+
+        var r = _this5.redirectRoute;
+        setTimeout(function () {
+          // window.history.back();
+          window.location.replace(r);
+        }, 4000);
+      })["catch"](function (error) {
+        return function (error) {
+          console.log(error);
+
+          _this5.showAlert('Something happened. Please call support');
         };
       });
     }
@@ -2822,11 +2937,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
 
-    axios.get('/reservations/').then(function (response) {
+    axios.get('/reservations/exams').then(function (response) {
       _this.reservations = response.data;
 
       if (_this.reservations.length == 0) {
@@ -2860,7 +2976,9 @@ __webpack_require__.r(__webpack_exports__);
       enter: false,
       started: false,
       working: false,
-      hasExams: false
+      hasExams: false,
+      reservationExamined: false,
+      groupExamined: false
     };
   },
   methods: {
@@ -2907,7 +3025,7 @@ __webpack_require__.r(__webpack_exports__);
         this.students = []; // setTimeout(null,1000);
 
         if (d.m.length == 0) d.getStudentsData();
-      }, 120000); // setTimeout(null,60000);
+      }, 60000); // setTimeout(null,60000);
     },
     enterExam: function enterExam() {
       var _this4 = this;
@@ -2916,25 +3034,35 @@ __webpack_require__.r(__webpack_exports__);
         this.message = 'Wait until the data processing finished';
         this.showAlert();
       } else {
-        if (this.hasExams) {
-          this.checkIfExamEntered();
+        this.checkIsGroupExamined();
+        this.checkIfGroupHasExams();
+        setTimeout(null, 3000);
 
-          if (!this.enter) {
-            axios.post('/students/' + this.group + "/enter").then(function (response) {
-              _this4.message = "The students can login now";
-              _this4.alert = "success";
+        if (!this.groupExamined) {
+          if (this.hasExams) {
+            this.checkIfExamEntered();
+            setTimeout(null, 3000);
 
-              _this4.showAlert();
+            if (!this.enter) {
+              axios.post('/students/' + this.group + "/enter").then(function (response) {
+                _this4.message = "The students can login now";
+                _this4.alert = "success";
 
-              _this4.enter = true;
-              _this4.working = _this4.enter && _this4.started;
-            })["catch"](function (errors) {});
+                _this4.showAlert();
+
+                _this4.enter = true;
+                _this4.working = _this4.enter && _this4.started;
+              })["catch"](function (errors) {});
+            } else {
+              this.message = "The exam is already opened,so students can login ";
+              this.showAlert();
+            }
           } else {
-            this.message = "The exam is already opened,so students can login ";
+            this.message = "Sorry this group doesn't have exams";
             this.showAlert();
           }
         } else {
-          this.message = "Sorry this group doesn't have exams";
+          this.message = "Sorry this group had been examined";
           this.showAlert();
         }
       }
@@ -3069,13 +3197,27 @@ __webpack_require__.r(__webpack_exports__);
         _this11.working = response.data.success;
       })["catch"](function (errors) {});
     },
-    // checkIfGroupHasExams(){
-    //     axios.get('/group/' + this.group + "/hasExams")
-    //         .then(response => {
-    //            this.hasExams=response.data.success;
-    //         }).catch(errors => {
-    //     });
-    // },
+    checkIsReservationExamined: function checkIsReservationExamined() {
+      var _this12 = this;
+
+      axios.get('/reservation/' + this.reservation + "/examined").then(function (response) {
+        _this12.reservationExamined = response.data.success;
+      })["catch"](function (errors) {});
+    },
+    checkIsGroupExamined: function checkIsGroupExamined() {
+      var _this13 = this;
+
+      axios.post('/group/' + this.group + "/examined").then(function (response) {
+        _this13.groupExamined = response.data.success;
+      })["catch"](function (errors) {});
+    },
+    checkIfGroupHasExams: function checkIfGroupHasExams() {
+      var _this14 = this;
+
+      axios.get('/group/' + this.group + "/hasExams").then(function (response) {
+        _this14.hasExams = response.data.success;
+      })["catch"](function (errors) {});
+    },
     countDownChanged: function countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
 
@@ -3343,6 +3485,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
@@ -3364,10 +3521,15 @@ __webpack_require__.r(__webpack_exports__);
       currentScore: 0,
       requiredScore: 0,
       st_name: '',
-      student: null
+      student: null,
+      perPage: 20,
+      currentPage: 1
     };
   },
   computed: {
+    rows: function rows() {
+      return this.students.length;
+    },
     scoreState: function scoreState() {
       if (this.score == 0) return null;else return parseInt(this.score, 10) > this.currentScore && parseInt(this.score, 10) >= this.requiredScore && parseInt(this.score, 10) < 500;
     }
@@ -3854,11 +4016,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ReservationsPanel",
-  props: ['res'],
+  props: ['dataRoute'],
   mounted: function mounted() {
-    this.reservations = JSON.parse(this.res);
+    // this.reservations = JSON.parse(this.res);
+    this.getReservations();
     var today = new Date();
     this.today = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
   },
@@ -3876,8 +4066,29 @@ __webpack_require__.r(__webpack_exports__);
       count: 0,
       currentDate: '',
       currentCount: 0,
-      filter: null
+      filter: null,
+      perPage: 10,
+      currentPage: 1,
+      current: 1,
+      countOfReservations: 0,
+      startDataFilter: ''
     };
+  },
+  watch: {
+    currentPage: function currentPage(newPage, oldPage) {
+      this.reservations = [];
+      var self = this;
+      var route = this.dataRoute + '?page=' + newPage; // if(this.phoneFilter.length>0)
+      // data.append('phone',this.phoneFilter);
+
+      if (this.startDataFilter.length > 0) route += '&&filter=' + this.startDataFilter;
+      axios.get(route).then(function (response) {
+        self.reservations = response.data.reservations; // self.questions = ;
+
+        self.countOfReservations = response.data.count;
+      });
+      this.$emit('input', newPage);
+    }
   },
   computed: {
     countState: function countState() {
@@ -3892,6 +4103,16 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    getReservations: function getReservations() {
+      var _this = this;
+
+      axios.get(this.dataRoute).then(function (response) {
+        _this.reservations = response.data.reservations;
+        _this.countOfReservations = response.data.count;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     countDownChanged: function countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
 
@@ -3939,7 +4160,7 @@ __webpack_require__.r(__webpack_exports__);
       this.handleSubmit();
     },
     handleSubmit: function handleSubmit() {
-      var _this = this;
+      var _this2 = this;
 
       // Exit when the form isn't valid
       if (!this.countState) {
@@ -3954,23 +4175,23 @@ __webpack_require__.r(__webpack_exports__);
       if (this.edit) this.sendChange();else this.createReservation(); // Hide the modal manually
 
       this.$nextTick(function () {
-        _this.$refs.resModal.hide();
+        _this2.$refs.resModal.hide();
       });
     },
     sendChange: function sendChange() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.patch('/cpanel/res/' + this.reservation.id, {
         'start': this.date,
         'max_students': this.count
       }).then(function (response) {
         if (response.data.success) {
-          _this2.reservation['Max Students Count'] = _this2.count;
-          _this2.reservation.start = _this2.date;
+          _this3.reservation['Max Students Count'] = _this3.count;
+          _this3.reservation.start = _this3.date;
 
-          _this2.showAlert("Successfully Updated", "success");
+          _this3.showAlert("Successfully Updated", "success");
         } else {
-          if (response.data.message !== undefined) _this2.showAlert(response.data.message);else _this2.showAlert("Something happened when updating . Please call Support");
+          if (response.data.message !== undefined) _this3.showAlert(response.data.message);else _this3.showAlert("Something happened when updating . Please call Support");
         }
       })["catch"](function (error) {
         console.log(error);
@@ -3978,23 +4199,48 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     createReservation: function createReservation() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.post('/cpanel/res', {
         'start': this.date,
         'max_students': this.count
       }).then(function (response) {
         if (response.data.success) {
-          _this3.reservations = JSON.parse(response.data.res);
+          _this4.reservations = JSON.parse(response.data.res);
 
-          _this3.showAlert("Successfully Added", "success");
+          _this4.showAlert("Successfully Added", "success");
         } else {
-          if (response.data.message !== undefined) _this3.showAlert(response.data.message);else _this3.showAlert("Something happened when processing . Please call Support");
+          if (response.data.message !== undefined) _this4.showAlert(response.data.message);else _this4.showAlert("Something happened when processing . Please call Support");
         }
       })["catch"](function (error) {
         console.log(error);
         this.showAlert("Something happened when processing . Please call Support"); // console.log(error);
       });
+    },
+    search: function search() {
+      var _this5 = this;
+
+      this.reservations = [];
+
+      if (this.startDataFilter.length > 0) {
+        axios.get(this.dataRoute + '?filter=' + this.startDataFilter).then(function (response) {
+          if (response.data.reservations.length == 0) {
+            _this5.showAlert('Sorry there is no reservations with this date');
+
+            setTimeout(null, 2000);
+
+            _this5.getReservations();
+          } else {
+            _this5.reservations = response.data.reservations;
+            _this5.count = response.data.count;
+          }
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      } else {
+        this.currentPage = 1;
+        this.getReservations();
+      }
     }
   }
 });
@@ -4010,6 +4256,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4088,8 +4344,15 @@ __webpack_require__.r(__webpack_exports__);
       dismissSecs: 4,
       dismissCountDown: 0,
       message: "",
-      alertVariant: "danger"
+      alertVariant: "danger",
+      perPage: 20,
+      currentPage: 1
     };
+  },
+  computed: {
+    rows: function rows() {
+      return this.data.length;
+    }
   },
   methods: {
     getData: function getData() {
@@ -4238,6 +4501,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "StudentsDisplayPanel",
   props: ['data'],
@@ -4247,8 +4520,15 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       filter: null,
-      students: []
+      students: [],
+      perPage: 20,
+      currentPage: 1
     };
+  },
+  computed: {
+    rows: function rows() {
+      return this.students.length;
+    }
   }
 });
 
@@ -4524,18 +4804,42 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
-    var _this = this;
-
-    axios.get('/student').then(function (response) {
-      _this.students = response.data; // console.log(response.data);
-    })["catch"](function (errors) {});
+    this.getStudents();
     this.getAvailableReservations();
   },
+  props: ['dataRoute'],
   data: function data() {
     return {
-      fields: ["id", "Arabic Name", "English Name", "phone", "email", "Studying Degree", "Required Score", "verified", "actions"],
+      fields: ["id", "Arabic Name", "English Name", "Reservation", "phone", "email", "Studying Degree", "Required Score", "verified", "actions"],
       reservation: null,
       groupType: null,
       groupTypes: [],
@@ -4559,14 +4863,35 @@ __webpack_require__.r(__webpack_exports__);
       confirmPhoneState: null,
       isUniqueEmail: null,
       isUniquePhone: null,
-      filter: null,
       images: {
         personalImage: null,
         nidImage: null,
         certificateImage: null,
         messageImage: null
-      }
+      },
+      perPage: 50,
+      currentPage: 1,
+      current: 1,
+      count: 0,
+      reservationFilter: '',
+      phoneFilter: ''
     };
+  },
+  watch: {
+    currentPage: function currentPage(newPage, oldPage) {
+      this.students = [];
+      var self = this;
+      var route = this.dataRoute + '?page=' + newPage; // if(this.phoneFilter.length>0)
+      // data.append('phone',this.phoneFilter);
+
+      if (this.reservationFilter.length > 0) route += '&&filter=' + this.reservationFilter;
+      axios.get(route).then(function (response) {
+        self.students = response.data.students; // self.questions = ;
+
+        self.count = response.data.count;
+      });
+      this.$emit('input', newPage);
+    }
   },
   computed: {
     englishNameState: function englishNameState() {
@@ -4592,6 +4917,15 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    getStudents: function getStudents() {
+      var _this = this;
+
+      axios.get('/student').then(function (response) {
+        _this.students = response.data.students; // self.questions = ;
+
+        _this.count = response.data.count; // console.log(response.data);
+      })["catch"](function (errors) {});
+    },
     validateEmail: function validateEmail(email) {
       var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);
@@ -4835,6 +5169,8 @@ __webpack_require__.r(__webpack_exports__);
         'type': this.groupType
       }).then(function (response) {
         if (response.data.success) {
+          _this6.student.failed = true;
+
           _this6.showAlert("Successfully Updated", "success");
         } else {
           _this6.showAlert(response.data.message);
@@ -4944,6 +5280,54 @@ __webpack_require__.r(__webpack_exports__);
         }); // console.log(response.data);
 
       })["catch"](function (errors) {});
+    },
+    search: function search() {
+      var _this11 = this;
+
+      this.students = [];
+
+      if (this.reservationFilter.length > 0) {
+        axios.get('/student?filter=' + this.reservationFilter).then(function (response) {
+          if (response.data.students.length == 0) {
+            _this11.showAlert('Sorry there is no students with this reservation date');
+
+            setTimeout(null, 2000);
+
+            _this11.getStudents();
+          } else {
+            _this11.students = response.data.students;
+            _this11.count = response.data.count;
+          }
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      } else {
+        this.currentPage = 1;
+        this.getStudents();
+      }
+    },
+    searchByPhone: function searchByPhone() {
+      var _this12 = this;
+
+      if (this.phoneFilter == '') this.getStudents();else if (this.validatePhone(this.phoneFilter)) {
+        this.students = [];
+        axios.get('/student?phone=' + this.phoneFilter).then(function (response) {
+          if (response.data.students.length == 0) {
+            _this12.showAlert('Sorry there is no student with this phone number');
+
+            setTimeout(null, 2000);
+
+            _this12.getStudents();
+          } else {
+            _this12.students = response.data.students;
+            _this12.count = response.data.count;
+          }
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      } else {
+        this.showAlert('Write correct phone number');
+      }
     }
   }
 });
@@ -72768,6 +73152,21 @@ var render = function() {
         [_vm._v("\n            " + _vm._s(_vm.message) + "\n        ")]
       ),
       _vm._v(" "),
+      _c(
+        "b-alert",
+        {
+          attrs: {
+            show: _vm.students.length == 0 && _vm.reservation != "",
+            variant: "danger"
+          }
+        },
+        [
+          _vm._v(
+            "\n            Sorry there is no succeeded students in this reservation\n        "
+          )
+        ]
+      ),
+      _vm._v(" "),
       _c("div", { staticClass: "form-group row" }, [
         _c(
           "label",
@@ -72852,9 +73251,35 @@ var render = function() {
           striped: "",
           hover: "",
           "sticky-header": true,
-          items: _vm.students
+          items: _vm.students,
+          "per-page": _vm.perPage,
+          "current-page": _vm.currentPage
         }
       }),
+      _vm._v(" "),
+      _vm.students.length != 0
+        ? _c(
+            "div",
+            { staticClass: "row justify-content-center" },
+            [
+              _c("b-pagination", {
+                attrs: {
+                  "total-rows": _vm.rows,
+                  "per-page": _vm.perPage,
+                  "aria-controls": "my-table"
+                },
+                model: {
+                  value: _vm.currentPage,
+                  callback: function($$v) {
+                    _vm.currentPage = $$v
+                  },
+                  expression: "currentPage"
+                }
+              })
+            ],
+            1
+          )
+        : _vm._e(),
       _vm._v(" "),
       _c(
         "b-modal",
@@ -73411,29 +73836,38 @@ var render = function() {
         [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
       ),
       _vm._v(" "),
-      _c("b-form-input", {
-        staticClass: "mt-2 mb-2",
-        attrs: { id: "search-input", placeholder: "type to search" },
-        model: {
-          value: _vm.filter,
-          callback: function($$v) {
-            _vm.filter = $$v
-          },
-          expression: "filter"
-        }
-      }),
-      _vm._v(" "),
       _c("b-table", {
         staticStyle: { "max-height": "70vh" },
         attrs: {
           striped: "",
           hover: "",
           "sticky-header": true,
-          items: _vm.jsonData,
+          items: _vm.exams,
           filter: _vm.filter,
-          "sort-by": "id"
+          "sort-by": "id",
+          busy: _vm.exams.length == 0,
+          "per-page": _vm.perPage,
+          "current-page": _vm.current
         },
         scopedSlots: _vm._u([
+          {
+            key: "table-busy",
+            fn: function() {
+              return [
+                _c(
+                  "div",
+                  { staticClass: "text-center text-danger my-2" },
+                  [
+                    _c("b-spinner", { staticClass: "align-middle" }),
+                    _vm._v(" "),
+                    _c("strong", [_vm._v("Loading...")])
+                  ],
+                  1
+                )
+              ]
+            },
+            proxy: true
+          },
           {
             key: "cell(actions)",
             fn: function(row) {
@@ -73525,7 +73959,29 @@ var render = function() {
             }
           }
         ])
-      })
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "row justify-content-center" },
+        [
+          _c("b-pagination", {
+            attrs: {
+              "total-rows": _vm.count,
+              "per-page": _vm.perPage,
+              "aria-controls": "my-table"
+            },
+            model: {
+              value: _vm.currentPage,
+              callback: function($$v) {
+                _vm.currentPage = $$v
+              },
+              expression: "currentPage"
+            }
+          })
+        ],
+        1
+      )
     ],
     1
   )
@@ -73566,20 +74022,8 @@ var render = function() {
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
         },
-        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+        [_vm._v("\n            " + _vm._s(_vm.message) + "\n        ")]
       ),
-      _vm._v(" "),
-      _c("b-form-input", {
-        staticClass: "mt-2 mb-2",
-        attrs: { id: "search-input", placeholder: "type to search" },
-        model: {
-          value: _vm.filter,
-          callback: function($$v) {
-            _vm.filter = $$v
-          },
-          expression: "filter"
-        }
-      }),
       _vm._v(" "),
       _c("b-table", {
         staticStyle: { "max-height": "70vh" },
@@ -73587,12 +74031,33 @@ var render = function() {
           striped: "",
           hover: "",
           "sticky-header": true,
-          items: _vm.jsonData,
+          items: _vm.questions,
           filter: _vm.filter,
-          "sort-by": "id"
+          "sort-by": "id",
+          busy: _vm.questions.length == 0,
+          "per-page": _vm.perPage,
+          "current-page": _vm.current
         },
         scopedSlots: _vm._u(
           [
+            {
+              key: "table-busy",
+              fn: function() {
+                return [
+                  _c(
+                    "div",
+                    { staticClass: "text-center text-danger my-2" },
+                    [
+                      _c("b-spinner", { staticClass: "align-middle" }),
+                      _vm._v(" "),
+                      _c("strong", [_vm._v("Loading...")])
+                    ],
+                    1
+                  )
+                ]
+              },
+              proxy: true
+            },
             {
               key: "cell(actions)",
               fn: function(row) {
@@ -73608,7 +74073,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Show")]
+                        [_vm._v("Show\n                ")]
                       )
                     : _vm._e(),
                   _vm._v(" "),
@@ -73623,7 +74088,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Edit")]
+                        [_vm._v("Edit\n                ")]
                       )
                     : _vm._e(),
                   _vm._v(" "),
@@ -73638,7 +74103,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Remove")]
+                        [_vm._v("Remove\n                ")]
                       )
                     : _vm._e(),
                   _vm._v(" "),
@@ -73653,7 +74118,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Show")]
+                        [_vm._v("Show\n                ")]
                       )
                     : _vm._e(),
                   _vm._v(" "),
@@ -73668,7 +74133,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Edit")]
+                        [_vm._v("Edit\n                ")]
                       )
                     : _vm._e()
                 ]
@@ -73708,6 +74173,28 @@ var render = function() {
         )
       }),
       _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "row justify-content-center" },
+        [
+          _c("b-pagination", {
+            attrs: {
+              "total-rows": _vm.count,
+              "per-page": _vm.perPage,
+              "aria-controls": "my-table"
+            },
+            model: {
+              value: _vm.currentPage,
+              callback: function($$v) {
+                _vm.currentPage = $$v
+              },
+              expression: "currentPage"
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
       _vm.canChooseQuestions && !_vm.isParagraphs && !_vm.isAudios
         ? _c(
             "button",
@@ -73715,7 +74202,7 @@ var render = function() {
               staticClass: "btn btn-primary",
               on: { click: _vm.storeQuestions }
             },
-            [_vm._v("Add Questions")]
+            [_vm._v("Add Questions\n        ")]
           )
         : _vm._e(),
       _vm._v(" "),
@@ -73726,7 +74213,7 @@ var render = function() {
               staticClass: "btn btn-primary",
               on: { click: _vm.storeParagraphs }
             },
-            [_vm._v("Add Paragraphs")]
+            [_vm._v("Add Paragraphs\n        ")]
           )
         : _vm._e(),
       _vm._v(" "),
@@ -73734,7 +74221,7 @@ var render = function() {
         ? _c(
             "button",
             { staticClass: "btn btn-primary", on: { click: _vm.storeAudios } },
-            [_vm._v("Add Audios")]
+            [_vm._v("Add Audios\n        ")]
           )
         : _vm._e()
     ],
@@ -73781,7 +74268,7 @@ var render = function() {
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
         },
-        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+        [_vm._v("\n        " + _vm._s(_vm.message) + "\n        \n    ")]
       ),
       _vm._v(" "),
       _c("div", { staticClass: "form-group row" }, [
@@ -74277,6 +74764,21 @@ var render = function() {
         [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
       ),
       _vm._v(" "),
+      _c(
+        "b-alert",
+        {
+          attrs: {
+            show: _vm.students.length == 0 && _vm.reservation != "",
+            variant: "danger"
+          }
+        },
+        [
+          _vm._v(
+            "\n        Sorry there is no students in this reservation\n    "
+          )
+        ]
+      ),
+      _vm._v(" "),
       _c("div", { staticClass: "form-group row" }, [
         _c(
           "label",
@@ -74338,7 +74840,7 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c("h1", [_vm._v("Students")]),
+      _c("h1", [_vm._v("Students' Scores")]),
       _vm._v(" "),
       _c("b-table", {
         staticStyle: { "max-height": "70vh" },
@@ -74346,7 +74848,9 @@ var render = function() {
           striped: "",
           hover: "",
           "sticky-header": true,
-          items: _vm.students
+          items: _vm.students,
+          "per-page": _vm.perPage,
+          "current-page": _vm.currentPage
         },
         scopedSlots: _vm._u([
           {
@@ -74370,6 +74874,30 @@ var render = function() {
           }
         ])
       }),
+      _vm._v(" "),
+      _vm.students.length != 0
+        ? _c(
+            "div",
+            { staticClass: "row justify-content-center" },
+            [
+              _c("b-pagination", {
+                attrs: {
+                  "total-rows": _vm.rows,
+                  "per-page": _vm.perPage,
+                  "aria-controls": "my-table"
+                },
+                model: {
+                  value: _vm.currentPage,
+                  callback: function($$v) {
+                    _vm.currentPage = $$v
+                  },
+                  expression: "currentPage"
+                }
+              })
+            ],
+            1
+          )
+        : _vm._e(),
       _vm._v(" "),
       _c(
         "b-modal",
@@ -74677,30 +75205,58 @@ var render = function() {
         [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
       ),
       _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "btn btn-primary mt-2 mb-2",
-          on: {
-            click: function($event) {
-              return _vm.showDialog(null, false)
+      _c("div", { staticClass: "row mt-2 mb-2 " }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary",
+            on: {
+              click: function($event) {
+                return _vm.showDialog(null, false)
+              }
             }
-          }
-        },
-        [_vm._v("Add Reservation")]
-      ),
-      _vm._v(" "),
-      _c("b-form-input", {
-        staticClass: "mt-2 mb-2",
-        attrs: { id: "search-input", placeholder: "type to search" },
-        model: {
-          value: _vm.filter,
-          callback: function($$v) {
-            _vm.filter = $$v
           },
-          expression: "filter"
-        }
-      }),
+          [_vm._v("Add Reservation")]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group row mt-2 mb-2" }, [
+        _c(
+          "label",
+          {
+            staticClass: "col-md-4 col-form-label left",
+            attrs: { for: "reservation" }
+          },
+          [_vm._v("Filter reservations based on\n            start date")]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-6" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.startDataFilter,
+                expression: "startDataFilter"
+              }
+            ],
+            staticClass: "form-control ",
+            attrs: { id: "reservation", type: "date" },
+            domProps: { value: _vm.startDataFilter },
+            on: {
+              change: function($event) {
+                return _vm.search()
+              },
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.startDataFilter = $event.target.value
+              }
+            }
+          })
+        ])
+      ]),
       _vm._v(" "),
       _c("b-table", {
         staticStyle: { "max-height": "70vh" },
@@ -74709,9 +75265,30 @@ var render = function() {
           hover: "",
           "sticky-header": true,
           items: _vm.reservations,
-          filter: _vm.filter
+          filter: _vm.filter,
+          busy: _vm.reservations.length == 0,
+          "per-page": _vm.perPage,
+          "current-page": _vm.current
         },
         scopedSlots: _vm._u([
+          {
+            key: "table-busy",
+            fn: function() {
+              return [
+                _c(
+                  "div",
+                  { staticClass: "text-center text-danger my-2" },
+                  [
+                    _c("b-spinner", { staticClass: "align-middle" }),
+                    _vm._v(" "),
+                    _c("strong", [_vm._v("Loading...")])
+                  ],
+                  1
+                )
+              ]
+            },
+            proxy: true
+          },
           {
             key: "cell(actions)",
             fn: function(row) {
@@ -74746,6 +75323,28 @@ var render = function() {
           }
         ])
       }),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "row justify-content-center" },
+        [
+          _c("b-pagination", {
+            attrs: {
+              "total-rows": _vm.countOfReservations,
+              "per-page": _vm.perPage,
+              "aria-controls": "my-table"
+            },
+            model: {
+              value: _vm.currentPage,
+              callback: function($$v) {
+                _vm.currentPage = $$v
+              },
+              expression: "currentPage"
+            }
+          })
+        ],
+        1
+      ),
       _vm._v(" "),
       _c(
         "b-modal",
@@ -74947,7 +75546,9 @@ var render = function() {
                   "sticky-header": true,
                   items: _vm.data,
                   fields: _vm.fields,
-                  filter: _vm.filter
+                  filter: _vm.filter,
+                  "per-page": _vm.perPage,
+                  "current-page": _vm.currentPage
                 },
                 scopedSlots: _vm._u(
                   [
@@ -74975,7 +75576,31 @@ var render = function() {
                   false,
                   1424897507
                 )
-              })
+              }),
+              _vm._v(" "),
+              _vm.students.length != 0
+                ? _c(
+                    "div",
+                    { staticClass: "row justify-content-center" },
+                    [
+                      _c("b-pagination", {
+                        attrs: {
+                          "total-rows": _vm.rows,
+                          "per-page": _vm.perPage,
+                          "aria-controls": "my-table"
+                        },
+                        model: {
+                          value: _vm.currentPage,
+                          callback: function($$v) {
+                            _vm.currentPage = $$v
+                          },
+                          expression: "currentPage"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                : _vm._e()
             ],
             1
           )
@@ -75028,9 +75653,33 @@ var render = function() {
           hover: "",
           "sticky-header": true,
           items: _vm.students,
-          filter: _vm.filter
+          filter: _vm.filter,
+          "per-page": _vm.perPage,
+          "current-page": _vm.currentPage
         }
-      })
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "row justify-content-center" },
+        [
+          _c("b-pagination", {
+            attrs: {
+              "total-rows": _vm.rows,
+              "per-page": _vm.perPage,
+              "aria-controls": "my-table"
+            },
+            model: {
+              value: _vm.currentPage,
+              callback: function($$v) {
+                _vm.currentPage = $$v
+              },
+              expression: "currentPage"
+            }
+          })
+        ],
+        1
+      )
     ],
     1
   )
@@ -75076,17 +75725,88 @@ var render = function() {
       _vm._v(" "),
       _c("h1", [_vm._v("Students")]),
       _vm._v(" "),
-      _c("b-form-input", {
-        staticClass: "mt-2 mb-2",
-        attrs: { id: "search-input", placeholder: "type to search" },
-        model: {
-          value: _vm.filter,
-          callback: function($$v) {
-            _vm.filter = $$v
+      _c("div", { staticClass: "form-group row mt-2 mb-2" }, [
+        _c(
+          "label",
+          {
+            staticClass: "col-md-4 col-form-label left",
+            attrs: { for: "reservation" }
           },
-          expression: "filter"
-        }
-      }),
+          [_vm._v("Filter students based on\n            Reservation")]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-6" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.reservationFilter,
+                expression: "reservationFilter"
+              }
+            ],
+            staticClass: "form-control ",
+            attrs: { id: "reservation", type: "date" },
+            domProps: { value: _vm.reservationFilter },
+            on: {
+              change: function($event) {
+                return _vm.search()
+              },
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.reservationFilter = $event.target.value
+              }
+            }
+          })
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group row mt-2 mb-2" }, [
+        _c("div", { staticClass: "col-md-10" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.phoneFilter,
+                expression: "phoneFilter"
+              }
+            ],
+            staticClass: "form-control ",
+            attrs: {
+              id: "search",
+              type: "search",
+              placeholder: "write student phone number "
+            },
+            domProps: { value: _vm.phoneFilter },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.phoneFilter = $event.target.value
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-2" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              on: {
+                click: function($event) {
+                  return _vm.searchByPhone()
+                }
+              }
+            },
+            [_vm._v("Search")]
+          )
+        ])
+      ]),
       _vm._v(" "),
       _c("b-table", {
         staticStyle: { "max-height": "70vh" },
@@ -75096,9 +75816,29 @@ var render = function() {
           fields: _vm.fields,
           hover: "",
           items: _vm.students,
-          filter: _vm.filter
+          busy: _vm.students.length == 0,
+          "per-page": _vm.perPage,
+          "current-page": _vm.current
         },
         scopedSlots: _vm._u([
+          {
+            key: "table-busy",
+            fn: function() {
+              return [
+                _c(
+                  "div",
+                  { staticClass: "text-center text-danger my-2" },
+                  [
+                    _c("b-spinner", { staticClass: "align-middle" }),
+                    _vm._v(" "),
+                    _c("strong", [_vm._v("Loading...")])
+                  ],
+                  1
+                )
+              ]
+            },
+            proxy: true
+          },
           {
             key: "cell(actions)",
             fn: function(row) {
@@ -75163,6 +75903,28 @@ var render = function() {
           }
         ])
       }),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "row justify-content-center" },
+        [
+          _c("b-pagination", {
+            attrs: {
+              "total-rows": _vm.count,
+              "per-page": _vm.perPage,
+              "aria-controls": "my-table"
+            },
+            model: {
+              value: _vm.currentPage,
+              callback: function($$v) {
+                _vm.currentPage = $$v
+              },
+              expression: "currentPage"
+            }
+          })
+        ],
+        1
+      ),
       _vm._v(" "),
       _c(
         "b-modal",

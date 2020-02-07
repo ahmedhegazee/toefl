@@ -49,7 +49,7 @@
 
 
         <display-questions-panel
-            exams="<?php echo e($questions); ?>"
+
             route="<?php echo e(route('paragraph.question.store',compact('paragraph'))); ?>"
             delete-route="<?php echo e(route('paragraph.question.store',compact('paragraph'))); ?>"
             is-paragraph=false
@@ -57,4 +57,4 @@
         ></display-questions-panel>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/ahmedhegazy/Desktop/toefl/toeflsystem/resources/views/reading/paragraph/show.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('cpanel', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/ahmedhegazy/Desktop/toefl/toeflsystem/resources/views/reading/paragraph/show.blade.php ENDPATH**/ ?>

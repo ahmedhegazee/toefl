@@ -31,7 +31,6 @@ class CreateStudentsTable extends Migration
             $table->foreign('uid')->references('id')->on('users');
             $table->foreign('res_id')->references('id')->on('reservations');
             $table->foreign('group_id')->references('id')->on('groups');
-
             $table->timestamps();
         });
     }

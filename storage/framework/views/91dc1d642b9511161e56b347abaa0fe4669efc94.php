@@ -48,9 +48,8 @@
 
 
         <display-questions-panel
-            exams="<?php echo e($questions1); ?>"
-            route="<?php echo e(route('grammar.question.store')); ?>"
 
+            route="<?php echo e(route('grammar.question.store')); ?>"
             delete-route="<?php echo e(route('grammar.question.store')); ?>"
             is-paragraph=false
             can-choose=false

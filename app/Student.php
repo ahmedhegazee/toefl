@@ -9,6 +9,7 @@ use App\Listening\ListeningResult;
 use App\Reading\ParagraphAnswer;
 use App\Reading\ReadingResult;
 use App\Reading\VocabAnswer;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
@@ -97,7 +98,7 @@ class Student extends Model
 
     public function editResult($marks)
     {
-        $result =$this->attempts()->last()->result;
+        $result =$this->attempts->last()->result;
         $marks=$this->implementScoreEquation($marks);
 
         $result->update([
@@ -119,5 +120,38 @@ class Student extends Model
     {
         return  Cache::has('group-can-start-exam-'.$this->group->id);
 
+    }
+
+    public function deleteActiveSession()
+    {
+        Cache::forget('student-is-online-' . $this->id);
+
+    }
+
+    public static function getStudents($students)
+    {
+        return $students->map(function ($student) {
+            $failed=1;
+            if (!is_null($student->results->last()))
+                $failed=
+                    $student->results->last()->success
+                        ? true : $student->attempts->last()->reservation->id!=$student->reservation->id;
+            return [
+                'id' => $student->id,
+                'Arabic Name' => $student->arabic_name,
+                'English Name' => $student->user->name,
+                'Reservation'=>Carbon::parse($student->reservation->start)->format('d-m-yy'),
+                'phone' => $student->phone,
+                'email' => $student->user->email,
+                'verified' => $student->verified,
+                'Studying Degree' => $student->studying,
+                'Required Score' => $student->required_score,
+                'Actions' => '',
+                'failed' => $failed,
+            ];
+
+
+        });
+        ;
     }
 }

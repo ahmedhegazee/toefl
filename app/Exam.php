@@ -121,12 +121,15 @@ class Exam{
 
             });
         }
-        $expiresAt = Carbon::now()->addMinutes(5);
+        $expiresAt = Carbon::now()->addHours(4);
         Cache::put('exam-group-' . $group->id.'-is-stopped', true, $expiresAt);
         Cache::forget('group-can-start-exam-' . $group->id);
         Cache::forget('group-can-enter-exam-' . $group->id);
         Cache::forget('reservation-'.$group->reservation->id.'-exam-is-running');
-
+        $group->update(['is_examined'=>1]);
+        if($group->reservation->isAllGroupsExamined()){
+            $group->reservation->update(['is_examined'=>1]);
+        }
     }
 
     public static function getGrammarMarks($answers)

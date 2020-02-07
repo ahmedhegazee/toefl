@@ -8,6 +8,7 @@ use App\Group;
 use App\Http\Controllers\Controller;
 use App\Listening\ListeningExam;
 use App\Reading\ReadingExam;
+use App\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -56,5 +57,14 @@ class ExamsApiController extends Controller
     public function isGroupHasExams(Group $group)
     {
         return response()->json(['success' => Exam::isGroupHasExams($group)]);
+    }
+
+    public function isGroupExamined(Group $group)
+    {
+        return response()->json(['success' => $group->is_examined]);
+    }
+    public function isReservationExamined(Reservation $res)
+    {
+        return response()->json(['success' => $res->is_examined]);
     }
 }

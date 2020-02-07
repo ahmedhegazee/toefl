@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Listening\Audio;
 use App\Listening\ListeningQuestion;
 use App\Logging;
+use App\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,11 +15,14 @@ class ListeningQuestionsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Audio $audio
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Audio $audio)
     {
-        //
+        $questions = Question::getQuestions($audio->questions()->paginate(50));
+        $count = $audio->questions()->count();
+        return response()->json(['questions' => $questions, 'count' => $count]);
     }
 
     /**
@@ -133,7 +137,7 @@ class ListeningQuestionsController extends Controller
     public function destroy(Audio $audio,ListeningQuestion $question)
     {
         $check=false;
-        if($question->exam()->count()==0){
+        if($audio->exam()->count()==0){
             $message=" delete listening question with id {".$question->id."} ";
             Logging::logProfessor(auth()->user(),$message);
             $question->options()->delete();

@@ -14,15 +14,17 @@ class ParagraphsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
 //        $paragraphs=Paragraph::paginate(15);
-        $paragraphs = Paragraph::getParagraphs(Paragraph::all());
+        $paragraphs = Paragraph::getParagraphs(Paragraph::paginate(50));
+        $count=Paragraph::all()->count();
+        return response()->json(['questions'=>$paragraphs,'count'=>$count]);
+//        $paragraphs = json_encode($paragraphs);
 
-        $paragraphs = json_encode($paragraphs);
-        return view('reading.paragraph.index',compact('paragraphs'));
+//        return view('reading.paragraph.index',compact('paragraphs'));
     }
 
     /**
@@ -53,15 +55,11 @@ class ParagraphsController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Paragraph  $paragraph
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show(Paragraph $paragraph)
     {
-//        $questions=$paragraph->questions()->paginate(15);
-        $questions = Question::getQuestions( $paragraph->questions()->get());
-
-        $questions = json_encode($questions);
-        return view ('reading.paragraph.show',compact('paragraph','questions'));
+        return view ('reading.paragraph.show',compact('paragraph'));
 
     }
 

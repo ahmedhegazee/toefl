@@ -41,12 +41,13 @@
 
 
         <display-questions-panel
-            exams="<?php echo e($audios); ?>"
+
             route="<?php echo e(route('audio.store')); ?>"
             store-route="<?php echo e(route('listening.exam.audio.store',compact('exam'))); ?>"
+            delete-route="<?php echo e(route('listening.exam.audio.store',compact('exam'))); ?>"
             is-Audio="true"
             can-choose=true
-            checked="<?php echo e($checked); ?>"
+
             redirect-route="<?php echo e(route('listening.exam.show',compact('exam'))); ?>"
         ></display-questions-panel>
     </div>

@@ -43,7 +43,7 @@
 
 
         <display-questions-panel
-        exams="<?php echo e($questions); ?>"
+
         route="<?php echo e(route('vocab.store')); ?>"
         delete-route="<?php echo e(route('vocab.store')); ?>"
         is-paragraph=false

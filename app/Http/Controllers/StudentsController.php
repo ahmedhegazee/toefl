@@ -7,6 +7,7 @@ use App\Logging;
 use App\Reservation;
 use App\Student;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -27,30 +28,32 @@ class StudentsController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
 //        $students= Student::paginate(15);
 //        return view('students.index',compact('students'));
-        $students = Student::all()->map(function ($student) {
-            $failed=1;
-            if (!is_null($student->results->last()))
-                $failed=$student->results->last()->success ? true : false;
-            return [
-                'id' => $student->id,
-                'Arabic Name' => $student->arabic_name,
-                'English Name' => $student->user->name,
-                'phone' => $student->phone,
-                'email' => $student->user->email,
-                'verified' => $student->verified,
-                'Studying Degree' => $student->studying,
-                'Required Score' => $student->required_score,
-                'Actions' => '',
-                'failed' => $failed,
-            ];
+        $students = [];
+        $count = 0;
+//        dd($request->all());
+        if ($request->has('filter') || ($request->has('filter') && $request->has('page'))) {
+
+            $reservations = Reservation::where('start', '>=', $request->get('filter'))->get()->pluck('id');
+            $studentsQuery=Student::whereIn('res_id', $reservations)->orderBy('created_at', 'desc');
+            $count = $studentsQuery->get()->count();
+            $students = Student::getStudents($studentsQuery->paginate(50));
 
 
-        });
-        return response()->json($students);
+            $students = $students->all();
+        } elseif ($request->has('phone')) {
+            $studentsQuery=Student::where('phone', $request->get('phone'))->orderBy('created_at', 'desc');
+            $students = Student::getStudents($studentsQuery->paginate(50));
+            $count = Student::getStudents($studentsQuery->get())->count();
+        } else {
+            $students = Student::getStudents(Student::latest()->paginate(50));
+            $count = Student::all()->count();
+        }
+
+        return response()->json(['students' => $students, 'count' => $count]);
     }
 
 
@@ -99,16 +102,16 @@ class StudentsController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        $data=[];
-        $user_data=[];
-    $checkUpdate=true;
-    $checkUserUpdate=true;
+        $data = [];
+        $user_data = [];
+        $checkUpdate = true;
+        $checkUserUpdate = true;
 //        $checkGroupType = true;
 
         if (strlen($request->name) > 0) {
             $message = " update student account with id is " . $student->id . " and old name is" . $student->user->name . " new name is " . $request->name;
             Logging::logAdmin(auth()->user(), $message);
-            $user_data['name']=$request->name;
+            $user_data['name'] = $request->name;
 //            $checkEnglishName = $student->user->update([
 //                'name' => $request->name,
 //            ]);
@@ -117,7 +120,7 @@ class StudentsController extends Controller
         if (strlen($request->arabic_name) > 0) {
             $message = " update student account with id is " . $student->id . " and old name is" . $student->arabic_name . " new name is " . $request->arabic_name;
             Logging::logAdmin(auth()->user(), $message);
-            $data['arabic_name']=$request->arabic_name;
+            $data['arabic_name'] = $request->arabic_name;
 //            $checkArabicName = $student->update([
 //                'arabic_name' => $request->arabic_name,
 //            ]);
@@ -128,7 +131,7 @@ class StudentsController extends Controller
             $message = " update student account with id is " . $student->id . " and old email is" . $student->user->email . " new email is " . $request->email;
 
             Logging::logAdmin(auth()->user(), $message);
-            $user_data['email']=$request->email;
+            $user_data['email'] = $request->email;
 //            $checkEmail = $student->user->update([
 //                'email' => $request->email,
 //            ]);
@@ -137,23 +140,23 @@ class StudentsController extends Controller
         if ($request->required_score > 0) {
             $message = " update student account with id is " . $student->id . " and old required score is" . $student->required_score . " new required score is " . $request->required_score;
             Logging::logAdmin(auth()->user(), $message);
-            $data['required_score']=$request->required_score;
+            $data['required_score'] = $request->required_score;
 
 //            $checkRequiredScore = $student->update([
 //                'required_score' => $request->required_score,
 //            ]);
         }
-        $studyingOption=[
+        $studyingOption = [
 
-            1=>'Ms.c(Master)',
-            2=>'PhD(Doctor)',
-            3=>'Board certified',
+            1 => 'Ms.c(Master)',
+            2 => 'PhD(Doctor)',
+            3 => 'Board certified',
         ];
         if ($request->studying > 0) {
             $message = " update student account with id is " . $student->id . " and old studying degree is" . $student->studying . " new studying degree is "
-                . $studyingOption[$request->studying] ;
+                . $studyingOption[$request->studying];
             Logging::logAdmin(auth()->user(), $message);
-            $data['studying']=$request->studying;
+            $data['studying'] = $request->studying;
 
 //            $checkStudyingDegree = $student->update([
 //                'studying' => $request->studying,
@@ -181,8 +184,8 @@ class StudentsController extends Controller
 //
 //        }
         if (strlen($request->phone) > 0) {
-            $user_data['password']=Hash::make($request->phone);
-            $data['phone']=$request->phone;
+            $user_data['password'] = Hash::make($request->phone);
+            $data['phone'] = $request->phone;
 
 //            $checkPhone = $student->user->update([
 //                'password' => Hash::make($request->phone),
@@ -194,15 +197,15 @@ class StudentsController extends Controller
 //                'phone' => $request->phone,
 //            ]);
         }
-        if(!empty($data)){
-            $checkUpdate =  $student->update($data);
+        if (!empty($data)) {
+            $checkUpdate = $student->update($data);
         }
-        if(!empty($user_data)){
-            $checkUserUpdate =  $student->user->update($user_data);
+        if (!empty($user_data)) {
+            $checkUserUpdate = $student->user->update($user_data);
         }
 
 //        $check =  $checkGroupType&&$checkUpdate&&$checkUserUpdate;
-        $check =  $checkUpdate&&$checkUserUpdate;
+        $check = $checkUpdate && $checkUserUpdate;
 
         return response()->json(['success' => $check]);
 
@@ -254,53 +257,54 @@ class StudentsController extends Controller
      * @param \App\Student $student
      * @return \Illuminate\Http\JsonResponse
      */
-    public function updateImages(Request $request,Student $student)
+    public function updateImages(Request $request, Student $student)
     {
-        $data=[];
-        if($request->files->has('personalImage')){
+        $data = [];
+        if ($request->files->has('personalImage')) {
             $this->deleteImage($student->personalimage);
-            $data['personalimage']=$this->getImageLink($request->file('personalImage'),'personalimages');
+            $data['personalimage'] = $this->getImageLink($request->file('personalImage'), 'personalimages');
         }
-        if($request->files->has('nidImage')){
+        if ($request->files->has('nidImage')) {
 
             $this->deleteImage($student->nidimage);
 
-            $data['nidimage']=$this->getImageLink($request->file('nidImage'),'nidimages');
+            $data['nidimage'] = $this->getImageLink($request->file('nidImage'), 'nidimages');
         }
-        if($request->files->has('certificateImage')){
+        if ($request->files->has('certificateImage')) {
             $this->deleteImage($student->certificateimage);
-            $data['certificateimage']=$this->getImageLink($request->file('certificateImage'),'certificateimages');
+            $data['certificateimage'] = $this->getImageLink($request->file('certificateImage'), 'certificateimages');
         }
-        if($request->files->has('messageImage')){
+        if ($request->files->has('messageImage')) {
             $this->deleteImage($student->messageimage);
-            $data['messageimage']=$this->getImageLink($request->file('messageImage'),'messageimages');
+            $data['messageimage'] = $this->getImageLink($request->file('messageImage'), 'messageimages');
         }
-        if(!empty($data)){
-          $check=  $student->update($data);
-            if($check)
-                return response()->json(['success'=>$check]);
+        if (!empty($data)) {
+            $check = $student->update($data);
+            if ($check)
+                return response()->json(['success' => $check]);
             else
-                return response()->json(['success'=>$check,'message'=>"Cannot changing student's images.Please call support"]);
+                return response()->json(['success' => $check, 'message' => "Cannot changing student's images.Please call support"]);
         }
 
-}
+    }
 
     public function deleteImage($image)
     {
-        $imageDirectory=public_path('storage/'.$image);
-        if(file_exists($imageDirectory))
+        $imageDirectory = public_path('storage/' . $image);
+        if (file_exists($imageDirectory))
             unlink($imageDirectory);
-}
+    }
 
-    public function getImageLink(UploadedFile $image,$imgKind)
+    public function getImageLink(UploadedFile $image, $imgKind)
     {
-        $encryptedName =sha1(now()->toTimeString());
-        $dir=public_path('/storage/'.$imgKind);
-        $imageName =$encryptedName.'.'.$image->getClientOriginalExtension();
-        $image->move($dir,$imageName);
+        $encryptedName = sha1(now()->toTimeString());
+        $dir = public_path('/storage/' . $imgKind);
+        $imageName = $encryptedName . '.' . $image->getClientOriginalExtension();
+        $image->move($dir, $imageName);
         sleep(1);
-        return $imgKind.'/'.$imageName;
-}
+        return $imgKind . '/' . $imageName;
+    }
+
     public function destroy(Student $student)
     {
         //

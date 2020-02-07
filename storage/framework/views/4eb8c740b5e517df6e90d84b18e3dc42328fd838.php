@@ -13,7 +13,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">Full Name</label>
 
                             <div class="col-md-6">
-                                <input id="name" pattern="[A-Za-z0-9 ]+" type="text" class="form-control <?php if ($errors->has('name')) :
+                                <input id="name" pattern="[A-Za-z ]+" type="text" class="form-control <?php if ($errors->has('name')) :
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('name'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }
@@ -119,7 +119,7 @@ endif; ?>
                             <label for="personalimage" class="col-md-4 col-form-label text-md-right"><?php echo e(__('Personal Image')); ?></label>
 
                             <div class="col-md-6">
-                                <input id="personalimage" type="file" class="form-control <?php if ($errors->has('personalimage')) :
+                                <input id="personalimage" type="file"  accept="image/*" class="form-control <?php if ($errors->has('personalimage')) :
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('personalimage'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }
@@ -140,7 +140,7 @@ endif; ?>
                             <label for="nidimage" class="col-md-4 col-form-label text-md-right"><?php echo e(__('National ID Image')); ?></label>
 
                             <div class="col-md-6">
-                                <input id="nidimage" type="file" class="form-control <?php if ($errors->has('nidimage')) :
+                                <input id="nidimage" type="file"  accept="image/*" class="form-control <?php if ($errors->has('nidimage')) :
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('nidimage'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }
@@ -161,7 +161,7 @@ endif; ?>
                             <label for="certificateimage" class="col-md-4 col-form-label text-md-right"><?php echo e(__('Certificate Image')); ?></label>
 
                             <div class="col-md-6">
-                                <input id="certificateimage" type="file" class="form-control <?php if ($errors->has('certificateimage')) :
+                                <input id="certificateimage"  accept="image/*" type="file" class="form-control <?php if ($errors->has('certificateimage')) :
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('certificateimage'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }
@@ -182,7 +182,7 @@ endif; ?>
                             <label for="messageimage" class="col-md-4 col-form-label text-md-right"><?php echo e(__('Message Image')); ?></label>
 
                             <div class="col-md-6">
-                                <input id="messageimage" type="file" class="form-control <?php if ($errors->has('messageimage')) :
+                                <input id="messageimage"  accept="image/*" type="file" class="form-control <?php if ($errors->has('messageimage')) :
 if (isset($message)) { $messageCache = $message; }
 $message = $errors->first('messageimage'); ?> is-invalid <?php unset($message);
 if (isset($messageCache)) { $message = $messageCache; }

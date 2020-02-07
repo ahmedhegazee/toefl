@@ -489,7 +489,7 @@ function sendActiveRequest(){
         axios.get('/active' )
             .then(response => {}).catch(error => console.log(error));
 
-    },240000); //5 Minutes
+    },180000); //3 Minutes
 }
 
 

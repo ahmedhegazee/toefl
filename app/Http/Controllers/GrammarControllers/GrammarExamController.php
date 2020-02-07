@@ -19,13 +19,12 @@ class GrammarExamController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        $exams = GrammarExam::all();
-//       dd($exams);
-        $jsonExams = $exams->map(function ($exam) {
+        $exams = GrammarExam::paginate(50)
+            ->map(function ($exam) {
             return [
                 'id' => $exam->id,
                 'Reservation Date' => $exam->reservation->start,
@@ -34,17 +33,25 @@ class GrammarExamController extends Controller
                 'actions' => '',
             ];
         })->values()->toArray();
-        $jsonExams = json_encode($jsonExams);
+//        $jsonExams = json_encode($jsonExams);
 //       return view('grammar.exams.index',compact('exams','jsonExams'));
-        return view('grammar.exams.index', compact('jsonExams'));
+//        return view('grammar.exams.index', compact('jsonExams'));
+        $count=GrammarExam::all()->count();
+        return response()->json(['exams'=>$exams,'count'=>$count]);
     }
 
 
     public function create()
     {
-        $reservations = Reservation::all();
+        $reservations = Reservation::closed(1)->get();
+        $reservations=$reservations->filter(function($res){
+            if(is_null($res->grammarExam))
+                return $res;
+        });
+//                dd($reservations);
+
         if (empty($reservations->toArray()))
-            return redirect()->back()->with('error', 'No Reservation is Available');
+            return redirect()->back()->with('error', 'No Reservation is Available and closed');
 
 //        $types=GroupType::all();
 //        return view('grammar.exams.create',compact('reservations','types'));
@@ -80,22 +87,17 @@ class GrammarExamController extends Controller
         }
 
     }
-
     /**
      * Display the specified resource.
      *
      * @param GrammarExam $exam
-     * @return void
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
+
+
     public function show(GrammarExam $exam)
     {
-
-//        $questions = $grammarExam->questions()->orderBy('id', 'asc')->paginate(15);;
-//        $questions = $exam->questions()->paginate(15);
-        $questions1 = Question::getGrammarQuestions($exam->questions()->get());
-        $questions1 = json_encode($questions1);
-//        return view('grammar.exams.show', compact('questions', 'exam','questions1'));
-        return view('grammar.exams.show', compact('exam', 'questions1'));
+        return view('grammar.exams.show', compact('exam'));
     }
 
     /**
@@ -106,7 +108,14 @@ class GrammarExamController extends Controller
      */
     public function edit(GrammarExam $exam)
     {
-        $reservations = Reservation::all();
+        $reservations = Reservation::closed(1)->get();;
+        $reservations=$reservations->filter(function($res){
+            if(is_null($res->grammarExam))
+                return $res;
+        });
+        if (empty($reservations->toArray()))
+            return redirect()->back()->with('error', 'No Reservation is Available and closed');
+
 //        $types=GroupType::all();
 //        return view('grammar.exams.update',compact('exam','reservations','types'));
         return view('grammar.exams.update', compact('exam', 'reservations'));

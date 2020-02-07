@@ -50,7 +50,7 @@
 {{--{{$questions->links()}}--}}
 {{--    </div>--}}
         <display-questions-panel
-            exams="{{$questions}}"
+{{--            exams="{{$questions}}"--}}
             route="{{route('paragraph.question.store',compact('paragraph'))}}"
             delete-route="{{route('paragraph.question.store',compact('paragraph'))}}"
             is-paragraph=false
