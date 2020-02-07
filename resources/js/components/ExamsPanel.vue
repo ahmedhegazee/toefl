@@ -9,6 +9,7 @@
             @dismiss-count-down="countDownChanged"
         >
             {{message}}
+            
         </b-alert>
         <div class="form-group row">
             <label for="reservation" class="col-md-4 col-form-label text-md-right">Select Reservation</label>

@@ -2937,6 +2937,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
@@ -74267,7 +74268,7 @@ var render = function() {
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
         },
-        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+        [_vm._v("\n        " + _vm._s(_vm.message) + "\n        \n    ")]
       ),
       _vm._v(" "),
       _c("div", { staticClass: "form-group row" }, [
