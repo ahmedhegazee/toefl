@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div class="mt-3">
+
         <b-alert
             :show="dismissCountDown"
             dismissible
@@ -36,9 +37,10 @@
                  hover
                  :items="students"
                  style="max-height: 70vh"
-                 :busy="students.length==0"
+                 :busy="busyState"
                  :per-page="perPage"
                  :current-page="current"
+                 v-if="showTable"
         >
             <template v-slot:table-busy>
                 <div class="text-center text-danger my-2">
@@ -59,7 +61,7 @@
             </template>
 
         </b-table>
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" v-if="students.length!=0">
             <b-pagination
                 v-model="currentPage"
                 :total-rows="count"
@@ -290,8 +292,21 @@
 
     export default {
         mounted() {
-            this.getStudents();
-            this.getAvailableReservations();
+            this.busyState=true;
+            var self=this;
+            setTimeout(function(){
+                self.getStudents();
+                self.getAvailableReservations();
+            },2000);
+
+            setTimeout(function(){
+                if(self.students.length==0){
+                    self.busyState=false;
+                    self.showTable=false;
+                    self.showAlert('No student is found','success');
+                }
+                self.busyState=false;
+            },3000);
 
         },
         props: ['dataRoute'],
@@ -334,6 +349,8 @@
                 count: 0,
                 reservationFilter: '',
                 phoneFilter: '',
+                busyState:false,
+                showTable:true,
             }
         },
         watch: {

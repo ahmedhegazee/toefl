@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mt-3">
         <b-alert
             :show="dismissCountDown"
             dismissible
@@ -33,7 +33,7 @@
                  :items="reservations"
                  :filter="filter"
                  style="max-height: 70vh"
-                 :busy="reservations.length==0"
+                 :busy="busyState"
                  :per-page="perPage"
                  :current-page="current"
         >
@@ -50,7 +50,7 @@
             </template>
 
         </b-table>
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" v-if="reservations.length!=0">
             <b-pagination
                 v-model="currentPage"
                 :total-rows="countOfReservations"
@@ -117,9 +117,21 @@
         ],
         mounted() {
             // this.reservations = JSON.parse(this.res);
-            this.getReservations();
-            var today = new Date();
-            this.today = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            this.busyState=true;
+            var self=this;
+            setTimeout(function(){
+                self.getReservations();
+                var today = new Date();
+                self.today = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+
+                },2000);
+            setTimeout(function(){
+                if(self.reservations.length==0){
+                    self.showAlert('No reservation is available.Add new one','success');
+                }
+                self.busyState=false;
+            },3000);
+
 
         },
         data: function () {
@@ -142,6 +154,7 @@
                 current: 1,
                 countOfReservations: 0,
                 startDataFilter: '',
+                busyState:false,
             }
         },
         watch: {
@@ -164,7 +177,6 @@
                 this.$emit('input', newPage);
             }
         }, computed: {
-
             countState: function () {
                 if (parseInt(this.count) == 0)
                     return null;

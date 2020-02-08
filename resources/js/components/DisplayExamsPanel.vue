@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="mt-3">
     <b-alert
         :show="dismissCountDown"
         dismissible
@@ -21,7 +21,7 @@
              :items="exams"
              :filter="filter"
              sort-by="id"
-             :busy="exams.length==0"
+             :busy="busyState"
              :per-page="perPage"
              :current-page="current"
              style="max-height: 70vh"
@@ -49,6 +49,7 @@
             :total-rows="count"
             :per-page="perPage"
             aria-controls="my-table"
+            v-if="exams.length!=0"
         ></b-pagination>
     </div>
 </div>
@@ -59,10 +60,20 @@
         name: "DisplayExamsPanel",
         mounted() {
             // console.log(this.exams);
+            this.busyState=true;
+            var self=this;
             axios.get(this.route).then(response => {
-                this.exams = response.data.exams;
-                this.count = response.data.count;
+                self.exams = response.data.exams;
+                self.count = response.data.count;
             });
+            setTimeout(function(){
+                if(self.exams.length==0){
+                    self.showAlert('No exam is available.Add new one','success');
+                }
+                self.busyState=false;
+            },3000);
+
+
         },
         props:['liveRoute','route','isReading'],
         data:function(){
@@ -77,6 +88,7 @@
                 currentPage: 1,
                 current: 1,
                 count: 0,
+                busyState:false,
             }
         },
         watch: {

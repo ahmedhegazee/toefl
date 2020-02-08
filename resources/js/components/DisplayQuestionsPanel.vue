@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mt-3">
         <b-alert
             :show="dismissCountDown"
             dismissible
@@ -22,7 +22,7 @@
                  :filter="filter"
                  sort-by="id"
                  style="max-height: 70vh"
-                 :busy="questions.length==0"
+                 :busy="busyState"
                  :per-page="perPage"
                  :current-page="current"
         >
@@ -63,6 +63,7 @@
                 :total-rows="count"
                 :per-page="perPage"
                 aria-controls="my-table"
+                v-if="questions.length!=0"
             ></b-pagination>
         </div>
 
@@ -92,12 +93,21 @@
 
             if(window.location.pathname.indexOf('exam')>-1&&(window.location.pathname.indexOf('add')==-1))
                 this.showExam=true;
+            this.busyState=true;
+            var self=this;
             axios.get(this.deleteRoute+'?showExam='+this.showExam).then(response => {
                 this.questions = response.data.questions;
                 this.count = response.data.count;
                 if (this.canChooseQuestions)
                     this.selected = response.data.checked;
             });
+            setTimeout(function(){
+                if(self.questions.length==0){
+                    self.showAlert('No questions is available.Add new one','success');
+                }
+                self.busyState=false;
+            },3000);
+
             // this.questions = JSON.parse(this.questions);
         },
         props: [
@@ -120,6 +130,7 @@
                 current: 1,
                 count: 0,
                 showExam:false,
+                busyState:false,
             }
         },
         watch: {
