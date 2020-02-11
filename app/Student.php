@@ -152,6 +152,6 @@ class Student extends Model
 
 
         });
-        ;
+
     }
 }

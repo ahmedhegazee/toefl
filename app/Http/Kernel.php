@@ -67,7 +67,6 @@ class Kernel extends HttpKernel
         'student_is_online' => \App\Http\Middleware\StudentMiddlewares\studentLastActivity::class,
         'check_student' => \App\Http\Middleware\StudentMiddlewares\checkStudent::class,
         'can_start_exam' => \App\Http\Middleware\StudentMiddlewares\canStartExam::class,
-        'has_only_one_attempt' => \App\Http\Middleware\StudentMiddlewares\studentHasOnlyOneAttempt::class,
 //Admin Middleware
         'admin' => \App\Http\Middleware\AdminMiddleware\admin::class,
         'super-admin' => \App\Http\Middleware\AdminMiddleware\isSuperAdmin::class,
