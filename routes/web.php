@@ -71,7 +71,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::get('/cpanel/grammar/multiple-questions','GrammarControllers\GrammarQuestionsController@showMultipleQuestions')
             ->name('grammar.multiple-questions');;
         Route::post('/cpanel/grammar/multiple-questions','GrammarControllers\GrammarQuestionsController@storeMultipleQuestions')
-        ->name('grammar.multiple-questions.store');
+            ->name('grammar.multiple-questions.store');
         Route::view('/cpanel/grammar/exam-panel','grammar.exams.index')->name('grammar.exam-panel');
 
         Route::resource('/cpanel/grammar/exam', 'GrammarControllers\GrammarExamController')
@@ -203,12 +203,12 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
             return view('listening.exams.audios',compact('exam'));
 
         })->name('listening.exam.audios.add');
-            Route::resource('/cpanel/listening/exam/{exam}/audio','ListeningControllers\ListeningExamAudiosController')->only(['index', 'store', 'destroy'])
-                ->names([
-                    'store' => 'listening.exam.audio.store',
-                    'destroy' => 'listening.exam.audio.destroy',
-                    'index' => 'listening.exam.audio.index'
-                ]);
+        Route::resource('/cpanel/listening/exam/{exam}/audio','ListeningControllers\ListeningExamAudiosController')->only(['index', 'store', 'destroy'])
+            ->names([
+                'store' => 'listening.exam.audio.store',
+                'destroy' => 'listening.exam.audio.destroy',
+                'index' => 'listening.exam.audio.index'
+            ]);
         Route::get('/cpanel/listening/audio/{audio}/multiple-questions','ListeningControllers\ListeningQuestionsController@showMultipleQuestions')
             ->name('listening.multiple-questions');
         Route::post('/cpanel/listening/audio/{audio}/multiple-questions','ListeningControllers\ListeningQuestionsController@storeMultipleQuestions')
@@ -298,12 +298,13 @@ Route::post('/students/unique-phone', 'ApiControllers\ApiController@checkPhoneIs
 
 
 //Exams
-Route::group(['middleware' => ['auth','check_student','student_is_online','has_only_one_attempt']], function () {
+//,'has_only_one_attempt'
+Route::group(['middleware' => ['auth','check_student','student_is_online']], function () {
     Route::get('/exam/home', 'ExamsController@showStudentHome')->name('student.home');
     Route::group(['middleware' => 'can_start_exam'], function () {
         Route::get('/exam/start','ExamsController@showExam')->name('exam.show');
         Route::post('/exam/start','ExamsController@storeResult')->name('exam.store');
-        Route::any('/active',function() {})->middleware('student_is_online');
+        Route::any('/active',function() {});
 //        Route::get('/exam/grammar', 'ExamsController@showGrammarExam')->name('grammar.exam.start');
 //        Route::post('/exam/grammar', 'ExamsController@storeGrammarExamAttempt')->name('grammar.exam.submit');
 //        Route::get('/exam/reading', 'ExamsController@showReadingExam')->name('reading.exam.start');

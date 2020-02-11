@@ -2,8 +2,11 @@
 
 namespace Illuminate\Foundation\Auth;
 
+use App\Attempt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 
 trait AuthenticatesUsers
@@ -109,6 +112,33 @@ trait AuthenticatesUsers
         return $this->authenticated($request, $this->guard()->user())
             ?: redirect()->intended($this->redirectPath());
     }
+    public function isAdmin($user)
+    {
+        return $user->roles->contains(1);
+    }
+    public function isStudent($user)
+    {
+        return $user->roles->contains(2);
+    }
+    public function hasAttempt($user)
+    {
+        $student =$user->getStudent();
+        $attempt=  Attempt::where('student_id',$student->id)
+            ->where('reservation_id',$student->reservation->id)
+            ->where('group_id',$student->group->id)->get()->first();
+//      dd($attempt);
+        if(!is_null($attempt)) {
+//                if (!is_null($attempt->result))
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public function isOnline($user)
+    { $student =$user->getStudent();
+        return $student->isOnline()=='active';
+    }
 
     /**
      * The user has been authenticated.
@@ -119,8 +149,23 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-        //
+        if($this->isAdmin($user))
+            return redirect()->route('admin');
+        else if($this->isStudent($user))
+        {
+            if($this->hasAttempt($user)&&$this->isOnline($user)){
+                auth()->logout();
+                return redirect()->route('error')->with('error','you have only one attempt to take the exam');
+            }else{
+                $expiresAt = Carbon::now()->addMinutes(5);
+                Cache::put('student-is-online-' . $user->getStudent()->id, true, $expiresAt);
+
+                return redirect()->route('student.home');
+            }
+
+        }
     }
+
 
     /**
      * Get the failed login response instance.

@@ -24,7 +24,7 @@ class UsersTableSeeder extends Seeder
 
         //Mr.Hatem
         $user=User::create([
-            'name'=>'Admin',
+            'name'=>'Hatem',
             'email'=>'hatem@admin.com',
             'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
         ]);
@@ -32,21 +32,21 @@ class UsersTableSeeder extends Seeder
 
         //Prof.Ayman
         $user=User::create([
-            'name'=>'Admin',
+            'name'=>'Ayman',
             'email'=>'ayman@admin.com',
             'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
         ]);
         $user->roles()->attach([1,4,7]);
         //Prof.Khaled
         $user=User::create([
-            'name'=>'Admin',
+            'name'=>'Khaled',
             'email'=>'khaled@admin.com',
             'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
         ]);
         $user->roles()->attach([1,5,7]);
         //Prof.Ahmed
         $user=User::create([
-            'name'=>'Admin',
+            'name'=>'Ahmed',
             'email'=>'ahmed@admin.com',
             'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
         ]);
