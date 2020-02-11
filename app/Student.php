@@ -85,15 +85,19 @@ class Student extends Model
 }
     public function sumAllMarks( int $grammarMarks=0,int $readingMarks=0,int $listeningMarks=0)
     {
-        $marks=$grammarMarks+$readingMarks+$listeningMarks;
-        $marks=$this->implementScoreEquation($marks);
-        $this->results()->create([
-            'attempt_id'=>$this->attempts->last()->id,
-            'mark'=>intval($marks),
-            'success'=>$this->checkIfSuccess($marks),
-        ]);
-        $message=" solved toefl exam and has {".$marks."}";
-        Logging::logStudent($this, $message);
+
+        if(is_null($this->attempts->last()->result)){
+            $marks=$grammarMarks+$readingMarks+$listeningMarks;
+            $marks=$this->implementScoreEquation($marks);
+            $this->results()->create([
+                'attempt_id'=>$this->attempts->last()->id,
+                'mark'=>intval($marks),
+                'success'=>$this->checkIfSuccess($marks),
+            ]);
+            $message=" solved toefl exam and has {".$marks."}";
+            Logging::logStudent($this, $message);
+        }
+
     }
 
     public function editResult($marks)
