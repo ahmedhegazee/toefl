@@ -472,7 +472,6 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
         'App\\Http\\Middleware\\StudentMiddlewares\\canStartExam' => __DIR__ . '/../..' . '/app/Http/Middleware/StudentMiddlewares/canStartExam.php',
         'App\\Http\\Middleware\\StudentMiddlewares\\checkStudent' => __DIR__ . '/../..' . '/app/Http/Middleware/StudentMiddlewares/checkStudent.php',
-        'App\\Http\\Middleware\\StudentMiddlewares\\studentHasOnlyOneAttempt' => __DIR__ . '/../..' . '/app/Http/Middleware/StudentMiddlewares/studentHasOnlyOneAttempt.php',
         'App\\Http\\Middleware\\StudentMiddlewares\\studentLastActivity' => __DIR__ . '/../..' . '/app/Http/Middleware/StudentMiddlewares/studentLastActivity.php',
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',

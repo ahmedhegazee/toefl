@@ -69,7 +69,6 @@ return array(
     'App\\Http\\Middleware\\RedirectIfAuthenticated' => $baseDir . '/app/Http/Middleware/RedirectIfAuthenticated.php',
     'App\\Http\\Middleware\\StudentMiddlewares\\canStartExam' => $baseDir . '/app/Http/Middleware/StudentMiddlewares/canStartExam.php',
     'App\\Http\\Middleware\\StudentMiddlewares\\checkStudent' => $baseDir . '/app/Http/Middleware/StudentMiddlewares/checkStudent.php',
-    'App\\Http\\Middleware\\StudentMiddlewares\\studentHasOnlyOneAttempt' => $baseDir . '/app/Http/Middleware/StudentMiddlewares/studentHasOnlyOneAttempt.php',
     'App\\Http\\Middleware\\StudentMiddlewares\\studentLastActivity' => $baseDir . '/app/Http/Middleware/StudentMiddlewares/studentLastActivity.php',
     'App\\Http\\Middleware\\TrimStrings' => $baseDir . '/app/Http/Middleware/TrimStrings.php',
     'App\\Http\\Middleware\\TrustProxies' => $baseDir . '/app/Http/Middleware/TrustProxies.php',
