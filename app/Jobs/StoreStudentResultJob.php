@@ -10,14 +10,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class storeStudentResult implements ShouldQueue
+class StoreStudentResultJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-private $student;
-private $grammarAnswers;
-private $vocabAnswers;
-private $paragraphAnswers;
-private $listeningAnswers;
+    public $student;
+    public $grammarAnswers;
+    public $listeningAnswers;
+    public $paragraphAnswers;
+    public $vocabAnswers;
 
     /**
      * Create a new job instance.
@@ -28,8 +28,7 @@ private $listeningAnswers;
      * @param $paragraphAnswers
      * @param $listeningAnswers
      */
-
-    public function __construct($student,$grammarAnswers,$vocabAnswers,$paragraphAnswers,$listeningAnswers)
+    public function __construct($student, $grammarAnswers, $vocabAnswers, $paragraphAnswers, $listeningAnswers)
     {
         $this->student=$student;
         $this->grammarAnswers=$grammarAnswers;
@@ -59,6 +58,5 @@ private $listeningAnswers;
         Logging::logStudent($this->student, $message);
 
         $this->student->sumAllMarks($grammar_marks,$reading_marks,$listening_marks);
-
     }
 }

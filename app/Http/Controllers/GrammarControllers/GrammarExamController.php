@@ -79,7 +79,7 @@ class GrammarExamController extends Controller
             ]);
             $message = " add new grammar exam with id {" . $exam->id . "} for reservation with id {" . $res . "}";
             Logging::logProfessor(auth()->user(), $message);
-            return redirect()->to(route('grammar.exam.index'));
+            return redirect()->to(route('grammar.exam-panel'));
         } else {
             $message = " have made exam to this reservation with id {" . $res . "}";
             Logging::logProfessor(auth()->user(), $message);
@@ -142,7 +142,7 @@ class GrammarExamController extends Controller
                     'reservation_id' => intval($request['reservation']),
 //            'group_type_id'=>intval($request['type']),
                 ]);
-                return redirect()->to(route('grammar.exam.index'));
+                return redirect()->to(route('grammar.exam-panel'));
             } else {
                 $message = " have made exam to this reservation with id {" . $res . "}";
                 Logging::logProfessor(auth()->user(), $message);

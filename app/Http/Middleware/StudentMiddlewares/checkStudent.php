@@ -58,6 +58,8 @@ class checkStudent
             $marks=$grammar_marks+$reading_marks+$listening_marks;
             $student->editResult($marks);
 
+        }else if($request->path()=='active'){
+            return $next($request);
         }
         auth()->logout();
         return redirect()->route('error')->with('error','Time is out. Don\'t worry all your answers are saved' );

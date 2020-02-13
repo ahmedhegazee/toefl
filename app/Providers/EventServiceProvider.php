@@ -21,8 +21,15 @@ class EventServiceProvider extends ServiceProvider
         ClosedReservation::class=>[
             CloseReservation::class,
             GenerateGroups::class,
-
         ],
+//        StudentFinishExam::class=>[
+//            StoreStudentResult::class,
+//        ],
+//        ExamIsEnded::class=>[
+////            EndExam::class,
+//            ExecuteJobs::class,
+//        ]
+
 
     ];
 

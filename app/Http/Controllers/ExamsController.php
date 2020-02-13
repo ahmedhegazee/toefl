@@ -9,9 +9,11 @@ use App\Grammar\GrammarExam;
 use App\Grammar\GrammarOption;
 use App\Grammar\GrammarQuestion;
 use App\Jobs\storeStudentResult;
+use App\Jobs\StoreStudentResultJob;
 use App\Listening\ListeningExam;
 use App\Listening\ListeningOption;
 use App\Logging;
+use App\Providers\StudentFinishExam;
 use App\Reading\ParagraphQuestionOption;
 use App\Reading\ReadingExam;
 use App\Reading\VocabOption;
@@ -115,8 +117,11 @@ class ExamsController extends Controller
 //        Logging::logStudent(auth()->user()->getStudent(), $message);
 //
 //        $student->sumAllMarks($grammar_marks,$reading_marks,$listening_marks);
-        storeStudentResult::dispatch($student,$answers,$vocabAnswers,$paragraphAnswers,$listeningAnswers)
-            ->delay(Carbon::now()->addMinutes(5));
+//        storeStudentResult::dispatch($student,$answers,$vocabAnswers,$paragraphAnswers,$listeningAnswers)
+//            ->delay(Carbon::now()->addMinutes(1));
+        StoreStudentResultJob::dispatch($student,$answers,$vocabAnswers,$paragraphAnswers,$listeningAnswers)
+            ->delay(Carbon::now()->addMinutes(1));
+
         $this->logout();
         $message='You will know your grades soon';
         return view('success',compact('message'));

@@ -2,13 +2,13 @@
     <div class="container">
         <div class="row justify-content-center"><p id="timer"></p></div>
         <?php if(!is_null(auth()->user()->getStudent())): ?>
-        <input  class="form-control"
+        <input type="hidden" style="display:none" class="form-control"
                id="id" value="<?php echo e(auth()->user()->getStudent()->id); ?>">
-            <input  class="form-control"
+            <input type="hidden" style="display:none" class="form-control"
                id="name" value="<?php echo e(auth()->user()->name); ?>">
         <?php endif; ?>
 
-        <input  id="time" value="<?php echo e($time); ?>">
+        <input type="hidden" style="display:none" id="time"  value="<?php echo e($time); ?>">
         <form action="<?php echo e($route); ?>" method="post">
             <?php echo csrf_field(); ?>
 
@@ -18,7 +18,7 @@
                             <div class="col-md-8">
                                 <div class="card ">
                                     <div class="card-header">
-                                        <input  class="form-control"
+                                        <input type="hidden" style="display:none" class="form-control"
                                                name="questions" value="<?php echo e($question->id); ?>">
                                         <h2><?php echo e($question->type->name); ?></h2>
                                         <h3><?php echo e($question->content); ?></h3>
@@ -54,7 +54,7 @@
                             <div class="col-md-8">
                                 <div class="card ">
                                     <div class="card-header">
-                                        <input  class="form-control"
+                                        <input type="hidden" style="display:none" class="form-control"
                                                name="questions" value="<?php echo e($question->id); ?>">
                                         <h2><?php echo e($question->type->name); ?></h2>
 

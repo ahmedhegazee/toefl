@@ -155,7 +155,6 @@
         window.print();
     }
 </script>
-@foreach($students as $student)
     <center>
         <div style="width: 1050px; height: 742.3px" class="container">
             <img  style="width:1050px; height: auto;" src="{{asset('img/img1.jpg')}}"/>
@@ -198,7 +197,6 @@
         </div>
     </center>
 
-    @endforeach
 </body>
 </html>
 

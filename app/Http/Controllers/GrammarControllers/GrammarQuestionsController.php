@@ -84,7 +84,7 @@ class GrammarQuestionsController extends Controller
             ]);
         }
         $question->options[$request->correct - 1]->update(['correct' => 1]);
-        return \redirect()->to(route('grammar.question.index'));
+        return \redirect()->to(route('grammar.questions-panel'));
     }
 
 
@@ -139,7 +139,7 @@ class GrammarQuestionsController extends Controller
         if (session()->has('previous'))
             return \redirect()->to(session()->get('previous'));
         else
-            return \redirect()->to(route('grammar.question.index'));
+            return \redirect()->to(route('grammar.questions-panel'));
     }
 
     /**
@@ -169,7 +169,7 @@ class GrammarQuestionsController extends Controller
         $title="Add Multiple Grammar Questions";
         $isGrammar='true';
         $storeRoute=route('grammar.multiple-questions.store');
-        $redirectRoute=route('grammar.question.index');
+        $redirectRoute=route('grammar.questions-panel');
         return view('multiple-questions',compact('isGrammar','redirectRoute','storeRoute','title'));
 }
     public function storeMultipleQuestions(Request $request)

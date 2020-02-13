@@ -72,7 +72,7 @@ class ListeningExamController extends Controller
             ]);
             $message = " add new listening exam with id {" . $exam->id . "} for reservation with id {" . $res . "}";
             Logging::logProfessor(auth()->user(), $message);
-            return redirect()->to(route('listening.index'));
+            return redirect()->to(route('listening.exam-panel'));
         } else {
             $message = " have made exam to this reservation with id {" . $res . "}";
             Logging::logProfessor(auth()->user(), $message);
@@ -137,7 +137,7 @@ class ListeningExamController extends Controller
                     'reservation_id' => intval($request['reservation']),
 //                'group_type_id'=>intval($request['type']),
                 ]);
-                return redirect()->to(route('listening.index'));
+                return redirect()->to(route('listening.exam-panel'));
             } else {
                 $message = " have made exam to this reservation with id {" . $res . "}";
                 Logging::logProfessor(auth()->user(), $message);

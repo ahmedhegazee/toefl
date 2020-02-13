@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Attempt' => $baseDir . '/app/Attempt.php',
+    'App\\Certificate' => $baseDir . '/app/Certificate.php',
     'App\\Config' => $baseDir . '/app/Config.php',
     'App\\Console\\Commands\\GenerateGrammarExam' => $baseDir . '/app/Console/Commands/GenerateGrammarExam.php',
     'App\\Console\\Commands\\GenerateListeningExam' => $baseDir . '/app/Console/Commands/GenerateListeningExam.php',
@@ -75,6 +76,7 @@ return array(
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Http\\Middleware\\checkRoles' => $baseDir . '/app/Http/Middleware/checkRoles.php',
     'App\\Http\\Middleware\\isAvailableReservation' => $baseDir . '/app/Http/Middleware/isAvailableReservation.php',
+    'App\\Jobs\\storeStudentResult' => $baseDir . '/app/Jobs/storeStudentResult.php',
     'App\\Listening\\Audio' => $baseDir . '/app/Listening/Audio.php',
     'App\\Listening\\AudioType' => $baseDir . '/app/Listening/AudioType.php',
     'App\\Listening\\ListeningExam' => $baseDir . '/app/Listening/ListeningExam.php',
@@ -91,6 +93,8 @@ return array(
     'App\\Providers\\EventServiceProvider' => $baseDir . '/app/Providers/EventServiceProvider.php',
     'App\\Providers\\GenerateGroups' => $baseDir . '/app/Providers/GenerateGroups.php',
     'App\\Providers\\RouteServiceProvider' => $baseDir . '/app/Providers/RouteServiceProvider.php',
+    'App\\Providers\\StoreResult' => $baseDir . '/app/Providers/StoreResult.php',
+    'App\\Providers\\StudentResult' => $baseDir . '/app/Providers/StudentResult.php',
     'App\\Question' => $baseDir . '/app/Question.php',
     'App\\Reading\\Paragraph' => $baseDir . '/app/Reading/Paragraph.php',
     'App\\Reading\\ParagraphQuestion' => $baseDir . '/app/Reading/ParagraphQuestion.php',

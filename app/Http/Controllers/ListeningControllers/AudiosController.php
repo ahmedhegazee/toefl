@@ -57,7 +57,7 @@ class AudiosController extends Controller
         ]);
         $message = " make new audio {" . $audio->id . "} ";
         Logging::logProfessor(auth()->user(), $message);
-        return Redirect::route('listening.question.create', compact('audio'));
+        return Redirect::route('audio.show', compact('audio'));
     }
 
     /**
@@ -114,7 +114,7 @@ class AudiosController extends Controller
         if (session()->has('previous'))
             return \redirect()->to(session()->get('previous'));
         else
-            return Redirect::route('audio.index');
+            return Redirect::route('audio-panel');
     }
 
     /**

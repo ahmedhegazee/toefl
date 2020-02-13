@@ -410,6 +410,7 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
 
     public static $classMap = array (
         'App\\Attempt' => __DIR__ . '/../..' . '/app/Attempt.php',
+        'App\\Certificate' => __DIR__ . '/../..' . '/app/Certificate.php',
         'App\\Config' => __DIR__ . '/../..' . '/app/Config.php',
         'App\\Console\\Commands\\GenerateGrammarExam' => __DIR__ . '/../..' . '/app/Console/Commands/GenerateGrammarExam.php',
         'App\\Console\\Commands\\GenerateListeningExam' => __DIR__ . '/../..' . '/app/Console/Commands/GenerateListeningExam.php',
@@ -478,6 +479,7 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Http\\Middleware\\checkRoles' => __DIR__ . '/../..' . '/app/Http/Middleware/checkRoles.php',
         'App\\Http\\Middleware\\isAvailableReservation' => __DIR__ . '/../..' . '/app/Http/Middleware/isAvailableReservation.php',
+        'App\\Jobs\\storeStudentResult' => __DIR__ . '/../..' . '/app/Jobs/storeStudentResult.php',
         'App\\Listening\\Audio' => __DIR__ . '/../..' . '/app/Listening/Audio.php',
         'App\\Listening\\AudioType' => __DIR__ . '/../..' . '/app/Listening/AudioType.php',
         'App\\Listening\\ListeningExam' => __DIR__ . '/../..' . '/app/Listening/ListeningExam.php',
@@ -494,6 +496,8 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\GenerateGroups' => __DIR__ . '/../..' . '/app/Providers/GenerateGroups.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
+        'App\\Providers\\StoreResult' => __DIR__ . '/../..' . '/app/Providers/StoreResult.php',
+        'App\\Providers\\StudentResult' => __DIR__ . '/../..' . '/app/Providers/StudentResult.php',
         'App\\Question' => __DIR__ . '/../..' . '/app/Question.php',
         'App\\Reading\\Paragraph' => __DIR__ . '/../..' . '/app/Reading/Paragraph.php',
         'App\\Reading\\ParagraphQuestion' => __DIR__ . '/../..' . '/app/Reading/ParagraphQuestion.php',
