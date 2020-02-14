@@ -45,6 +45,8 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::resource('student', 'StudentsController')
             ->only(['index', 'show', 'update']);
         Route::post('/student/{student}/images','StudentsController@updateImages');
+        Route::get('/student/{student}/certificate','StudentsController@getCertificates');
+        Route::get('/student/{student}/certificate/{certificate}/print','ApiControllers\ApiController@printStudentCertificate');
         Route::patch('/student/{student}/verify', 'StudentsController@verifyStudent')->name('student.verify');
         Route::patch('/student/{student}/new-reservation', 'StudentsController@moveStudentToNewReservation');
         Route::get('/reservations/available', 'ApiControllers\ApiController@getAvailableReservations');

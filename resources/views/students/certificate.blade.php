@@ -175,19 +175,19 @@
             </div>
 
             <div class="Score">
-                <p>{{$student->results->last()->mark}}</p>
+                <p>{{$certificate->result->mark}}</p>
             </div>
 
             <div class="from">
-                <p>{{ $startDate}}</p>
+                <p>{{ $certificate->start_date}}</p>
             </div>
 
             <div class="till">
-                <p>{{$endDate}}</p>
+                <p>{{$certificate->end_date}}</p>
             </div>
 
             <div class="NumberOfCertification">
-                <p>({{ $student->certificates->last()->no}})</p>
+                <p>({{ $certificate->no}})</p>
             </div>
 
             <div class="NameOfStudent">

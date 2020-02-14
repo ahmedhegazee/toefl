@@ -4869,6 +4869,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     this.busyState = true;
@@ -4927,7 +4947,9 @@ __webpack_require__.r(__webpack_exports__);
       reservationFilter: '',
       phoneFilter: '',
       busyState: false,
-      showTable: true
+      showTable: true,
+      certificates: [],
+      certificate: null
     };
   },
   watch: {
@@ -5019,14 +5041,15 @@ __webpack_require__.r(__webpack_exports__);
     },
     showReservationsDialog: function showReservationsDialog(student) {
       this.getAvailableReservations();
-      setTimeout(null, 3000);
-
-      if (this.reservations.length == 1) {
-        this.showAlert('Sorry there is no available reservations');
-      } else {
-        this.student = student;
-        this.$refs.resChanger.show();
-      }
+      var self = this;
+      setTimeout(function () {
+        if (self.reservations.length == 1) {
+          self.showAlert('Sorry there is no available reservations');
+        } else {
+          self.student = student;
+          self.$refs.resChanger.show();
+        }
+      }, 3000);
     },
     verifyStudent: function verifyStudent(student) {
       window.location.replace('/student/' + student.id);
@@ -5334,22 +5357,58 @@ __webpack_require__.r(__webpack_exports__);
 
       })["catch"](function (errors) {});
     },
-    search: function search() {
+    showPrintDialog: function showPrintDialog(student) {
+      this.getStudentCertifications(student);
+      var self = this;
+      setTimeout(function () {
+        if (self.certificates.length == 0) {
+          self.showAlert('Sorry there is no certificates to this student');
+        } else {
+          self.student = student;
+          self.$refs.printCertificateModal.show();
+        }
+      }, 3000);
+    },
+    getStudentCertifications: function getStudentCertifications(student) {
       var _this11 = this;
+
+      axios.get("/student/".concat(student.id, "/certificate")).then(function (response) {
+        _this11.certificates = response.data; // console.log(response.data);
+      })["catch"](function (errors) {});
+    },
+    handleCertificateOk: function handleCertificateOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault();
+      this.handleCertificateSubmit();
+    },
+    handleCertificateSubmit: function handleCertificateSubmit() {
+      var _this12 = this;
+
+      if (this.certificate == null) return;
+      this.printCertificate();
+      this.$nextTick(function () {
+        _this12.$refs.printCertificateModal.hide();
+      });
+    },
+    printCertificate: function printCertificate() {
+      window.location.replace("/student/".concat(this.student.id, "/certificate/").concat(this.certificate, "/print"));
+    },
+    search: function search() {
+      var _this13 = this;
 
       this.students = [];
 
       if (this.reservationFilter.length > 0) {
         axios.get('/student?filter=' + this.reservationFilter).then(function (response) {
           if (response.data.students.length == 0) {
-            _this11.showAlert('Sorry there is no students with this reservation date');
+            _this13.showAlert('Sorry there is no students with this reservation date');
 
             setTimeout(null, 2000);
 
-            _this11.getStudents();
+            _this13.getStudents();
           } else {
-            _this11.students = response.data.students;
-            _this11.count = response.data.count;
+            _this13.students = response.data.students;
+            _this13.count = response.data.count;
           }
         })["catch"](function (error) {
           console.log(error);
@@ -5360,20 +5419,20 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     searchByPhone: function searchByPhone() {
-      var _this12 = this;
+      var _this14 = this;
 
       if (this.phoneFilter == '') this.getStudents();else if (this.validatePhone(this.phoneFilter)) {
         this.students = [];
         axios.get('/student?phone=' + this.phoneFilter).then(function (response) {
           if (response.data.students.length == 0) {
-            _this12.showAlert('Sorry there is no student with this phone number');
+            _this14.showAlert('Sorry there is no student with this phone number');
 
             setTimeout(null, 2000);
 
-            _this12.getStudents();
+            _this14.getStudents();
           } else {
-            _this12.students = response.data.students;
-            _this12.count = response.data.count;
+            _this14.students = response.data.students;
+            _this14.count = response.data.count;
           }
         })["catch"](function (error) {
           console.log(error);
@@ -75783,7 +75842,7 @@ var render = function() {
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
         },
-        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+        [_vm._v("\n            " + _vm._s(_vm.message) + "\n        ")]
       ),
       _vm._v(" "),
       _c("h1", [_vm._v("Students")]),
@@ -75795,7 +75854,7 @@ var render = function() {
             staticClass: "col-md-4 col-form-label left",
             attrs: { for: "reservation" }
           },
-          [_vm._v("Filter students based on\n            Reservation")]
+          [_vm._v("Filter students based on\n                Reservation")]
         ),
         _vm._v(" "),
         _c("div", { staticClass: "col-md-6" }, [
@@ -75919,7 +75978,7 @@ var render = function() {
                                 }
                               }
                             },
-                            [_vm._v("Verify\n            ")]
+                            [_vm._v("Verify\n                ")]
                           )
                         : _vm._e(),
                       _vm._v(" "),
@@ -75960,7 +76019,22 @@ var render = function() {
                                 }
                               }
                             },
-                            [_vm._v("New Res\n            ")]
+                            [_vm._v("New Res\n                ")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      row.item.has_certificates
+                        ? _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-primary mr-1 mb-1",
+                              on: {
+                                click: function($event) {
+                                  return _vm.showPrintDialog(row.item)
+                                }
+                              }
+                            },
+                            [_vm._v("Print\n                ")]
                           )
                         : _vm._e()
                     ]
@@ -75969,7 +76043,7 @@ var render = function() {
               ],
               null,
               false,
-              1724417298
+              3431077260
             )
           })
         : _vm._e(),
@@ -76054,7 +76128,7 @@ var render = function() {
                     { attrs: { state: _vm.englishNameState } },
                     [
                       _vm._v(
-                        "\n                    The english name length must be between 5 and 200 characters.\n                "
+                        "\n                        The english name length must be between 5 and 200 characters.\n                    "
                       )
                     ]
                   )
@@ -76093,7 +76167,7 @@ var render = function() {
                     { attrs: { state: _vm.arabicNameState } },
                     [
                       _vm._v(
-                        "\n                    The arabic name length must be between 5 and 200 arabic characters.\n                "
+                        "\n                        The arabic name length must be between 5 and 200 arabic characters.\n                    "
                       )
                     ]
                   )
@@ -76129,7 +76203,7 @@ var render = function() {
                     { attrs: { state: _vm.emailState } },
                     [
                       _vm._v(
-                        "\n                    Write correct email please.\n                "
+                        "\n                        Write correct email please.\n                    "
                       )
                     ]
                   ),
@@ -76142,7 +76216,7 @@ var render = function() {
                         { attrs: { state: _vm.isUniqueEmail } },
                         [
                           _vm._v(
-                            "\n                        Write another email please.This email is token\n                    "
+                            "\n                            Write another email please.This email is token\n                        "
                           )
                         ]
                       )
@@ -76185,7 +76259,7 @@ var render = function() {
                     { attrs: { state: _vm.confirmEmailState } },
                     [
                       _vm._v(
-                        "\n                    Confirm your email correctly.\n                "
+                        "\n                        Confirm your email correctly.\n                    "
                       )
                     ]
                   )
@@ -76224,7 +76298,7 @@ var render = function() {
                     { attrs: { state: _vm.phoneState } },
                     [
                       _vm._v(
-                        "\n                    Write correct phone number.\n                "
+                        "\n                        Write correct phone number.\n                    "
                       )
                     ]
                   ),
@@ -76237,7 +76311,7 @@ var render = function() {
                         { attrs: { state: _vm.isUniquePhone } },
                         [
                           _vm._v(
-                            "\n                        Write another phone number please.This phone number is token\n                    "
+                            "\n                            Write another phone number please.This phone number is token\n                        "
                           )
                         ]
                       )
@@ -76279,7 +76353,7 @@ var render = function() {
                     { attrs: { state: _vm.confirmPhoneState } },
                     [
                       _vm._v(
-                        "\n                    Confirm your phone correctly.\n                "
+                        "\n                        Confirm your phone correctly.\n                    "
                       )
                     ]
                   )
@@ -76320,7 +76394,7 @@ var render = function() {
                     { attrs: { state: _vm.requiredScoreState } },
                     [
                       _vm._v(
-                        "\n                    Write correct Score.\n                "
+                        "\n                        Write correct Score.\n                    "
                       )
                     ]
                   )
@@ -76551,6 +76625,56 @@ var render = function() {
                 ],
                 1
               )
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "b-modal",
+        {
+          ref: "printCertificateModal",
+          attrs: {
+            id: "modal-prevent-closing",
+            title: "Print Student Certificate"
+          },
+          on: {
+            shown: function($event) {
+              _vm.certificate = null
+            },
+            ok: _vm.handleCertificateOk
+          }
+        },
+        [
+          _c(
+            "form",
+            {
+              ref: "form",
+              attrs: { autocomplete: "off" },
+              on: {
+                submit: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  return _vm.handleCertificateSubmit($event)
+                }
+              }
+            },
+            [
+              _c("b-form-radio-group", {
+                attrs: {
+                  id: "radio-group-1",
+                  options: _vm.certificates,
+                  name: "certificate"
+                },
+                model: {
+                  value: _vm.certificate,
+                  callback: function($$v) {
+                    _vm.certificate = $$v
+                  },
+                  expression: "certificate"
+                }
+              })
             ],
             1
           )

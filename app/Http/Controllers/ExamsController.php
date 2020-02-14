@@ -119,7 +119,7 @@ class ExamsController extends Controller
 //        $student->sumAllMarks($grammar_marks,$reading_marks,$listening_marks);
 //        storeStudentResult::dispatch($student,$answers,$vocabAnswers,$paragraphAnswers,$listeningAnswers)
 //            ->delay(Carbon::now()->addMinutes(1));
-        StoreStudentResultJob::dispatch($student,$answers,$vocabAnswers,$paragraphAnswers,$listeningAnswers)
+        StoreStudentResultJob::dispatch($student,$answers,$vocabAnswers,$paragraphAnswers,$listeningAnswers,true)
             ->delay(Carbon::now()->addMinutes(1));
 
         $this->logout();

@@ -316,6 +316,16 @@ class StudentsController extends Controller
         //
     }
 
+    public function getCertificates(Student $student)
+    {
+        $certificates = $student->certificates->map(function($certificate){
+            return[
+                'text'=> $certificate->no." - ".$certificate->reservation->start." - ".$certificate->studying_degree,
+                'value'=>$certificate->no,
+            ];
+        })->values()->all();
+        return response()->json($certificates);
+}
 //    public function validator(array $data)
 //    {
 //        return Validator::make($data, [

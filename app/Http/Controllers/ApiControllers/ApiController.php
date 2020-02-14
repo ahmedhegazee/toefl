@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ApiControllers;
 
 use App\Attempt;
+use App\Certificate;
 use App\Config;
 use App\Exam;
 use App\Group;
@@ -85,6 +86,19 @@ class ApiController extends Controller
         $message = "print certificates of reservation id " . $reservation->id . " which has start data is " . $reservation->start;
         Logging::logAdmin(auth()->user(), $message);
         return view('certificate', compact('students', 'count', 'centerManager', 'FacultyDean', 'vicePresident', 'startDate', 'endDate'));
+//        return $pdf->download('certificates ' . $reservation->start . ' . pdf');
+
+    }
+    public function printStudentCertificate(Student $student,Certificate $certificate)
+    {
+
+        $centerManager = Config::find(5)->value;
+        $FacultyDean = Config::find(6)->value;
+        $vicePresident = Config::find(7)->value;
+
+        $message = "print certificate of student id " . $student->id . " which no is " . $certificate->no;
+        Logging::logAdmin(auth()->user(), $message);
+        return view('students.certificate', compact( 'centerManager', 'FacultyDean', 'vicePresident','certificate','student'));
 //        return $pdf->download('certificates ' . $reservation->start . ' . pdf');
 
     }
@@ -177,7 +191,7 @@ class ApiController extends Controller
 
     public function getGroups(Reservation $res)
     {
-        return response()->json($res->groups()->get(['id', 'name'])->toArray());
+        return response()->json($res->groups()->where('is_examined',0)->get(['id', 'name'])->toArray());
     }
 
     public function updateStudentMarks(Request $request)

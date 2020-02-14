@@ -152,6 +152,7 @@ class Student extends Model
                 'Required Score' => $student->required_score,
                 'Actions' => '',
                 'failed' => $failed,
+                'has_certificates'=>$student->certificates->count()>0,
             ];
 
 

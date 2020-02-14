@@ -11,18 +11,23 @@ class Certificate extends Model
 
     public function student()
     {
-        return $this->hasOne(Student::class);
+        return $this->belongsTo(Student::class);
     }
     public function reservation()
     {
-        return $this->hasOne(Reservation::class);
+        return $this->belongsTo(Reservation::class);
     }
     public function attempt()
     {
-        return $this->hasOne(Attempt::class);
+        return $this->belongsTo(Attempt::class);
     }
     public function result()
     {
-        return $this->hasOne(Result::class);
+        return $this->belongsTo(Result::class);
+    }
+
+    public function getKeyName()
+    {
+        return "no";
     }
 }
