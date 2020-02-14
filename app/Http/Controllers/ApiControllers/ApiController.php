@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ApiControllers;
 
 use App\Attempt;
+use App\Certificate;
 use App\Config;
 use App\Exam;
 use App\Group;
@@ -14,6 +15,7 @@ use App\Student;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use function foo\func;
 
 
 class ApiController extends Controller
@@ -51,6 +53,14 @@ class ApiController extends Controller
 
     public function printPDF(Request $request, Reservation $reservation)
     {
+
+        $startDate = Carbon::parse($request->start)->format('d-m-yy');
+        $endDate = Carbon::parse($request->end)->format('d-m-yy');
+        $certificateNumbering = Config::find(8);
+        $centerManager = Config::find(5)->value;
+        $FacultyDean = Config::find(6)->value;
+        $vicePresident = Config::find(7)->value;
+        $count = intval($certificateNumbering->value);
         $students = $reservation->students()->with('results')->get()
             ->filter(function ($student) {
                 if ($student->results()->count() > 0)
@@ -59,20 +69,37 @@ class ApiController extends Controller
                     else
                         return false;
             });
-        $centerManager = Config::find(5)->value;
-        $FacultyDean = Config::find(6)->value;
-        $vicePresident = Config::find(7)->value;
-        $certificateNumbering = Config::find(8);
-        $count = intval($certificateNumbering->value);
+        foreach ($students as $student) {
+            $student->certificates()->create([
+                    'reservation_id' => $student->reservation->id,
+                    'result_id' => $student->results->last()->id,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                    'studying_degree' => $student->studying,
+                    'no'=>$count++
+                ]
+            );
+        }
         $certificateNumbering->update([
-            'value' => $count + $students->count()
+            'value' => $count
         ]);
-        $startDate = Carbon::parse($request->start)->format('d-m-yy');
-        $endDate = Carbon::parse($request->end)->format('d-m-yy');
         $message = "print certificates of reservation id " . $reservation->id . " which has start data is " . $reservation->start;
         Logging::logAdmin(auth()->user(), $message);
         return view('certificate', compact('students', 'count', 'centerManager', 'FacultyDean', 'vicePresident', 'startDate', 'endDate'));
-//        return $pdf->download('certificates ' . $reservation->start . '.pdf');
+//        return $pdf->download('certificates ' . $reservation->start . ' . pdf');
+
+    }
+    public function printStudentCertificate(Student $student,Certificate $certificate)
+    {
+
+        $centerManager = Config::find(5)->value;
+        $FacultyDean = Config::find(6)->value;
+        $vicePresident = Config::find(7)->value;
+
+        $message = "print certificate of student id " . $student->id . " which no is " . $certificate->no;
+        Logging::logAdmin(auth()->user(), $message);
+        return view('students.certificate', compact( 'centerManager', 'FacultyDean', 'vicePresident','certificate','student'));
+//        return $pdf->download('certificates ' . $reservation->start . ' . pdf');
 
     }
 
@@ -128,7 +155,7 @@ class ApiController extends Controller
             ->filter(function ($student) {
                 if (!is_null($student->results->last()))
                     if (
-                        !$student->results->last()->success
+                    !$student->results->last()->success
 //                        && $student->results->last()->mark > 0
                     ) {
 //                        dump($student);
@@ -155,6 +182,7 @@ class ApiController extends Controller
 //        return response()->json(Reservation::where('is_examined', 1)->get(['id', 'start'])->toArray());
         return response()->json(Reservation::examined(1)->get(['id', 'start'])->toArray());
     }
+
     public function getReservationsForExams()
     {
 //        return response()->json(Reservation::where('is_examined', 0)->get(['id', 'start'])->toArray());
@@ -163,7 +191,7 @@ class ApiController extends Controller
 
     public function getGroups(Reservation $res)
     {
-        return response()->json($res->groups()->get(['id', 'name'])->toArray());
+        return response()->json($res->groups()->where('is_examined',0)->get(['id', 'name'])->toArray());
     }
 
     public function updateStudentMarks(Request $request)
@@ -213,9 +241,9 @@ class ApiController extends Controller
     public function getAvailableReservations()
     {
         $reservations = Reservation::closed(0)->get();
-//        $reservations = Reservation::where('start', '<=', now()->toDateString())->closed(0)->get();
+//        $reservations = Reservation::where('start', ' <= ', now()->toDateString())->closed(0)->get();
 
-//            ->where('end', '>=', now()->toDateString())
+//            ->where('end', ' >= ', now()->toDateString())
 
 
         $reservations = $reservations->map(function ($reservation) {
@@ -232,11 +260,11 @@ class ApiController extends Controller
         });
         $studyingDegrees = [
             [
-                'text' => 'Ms.c (Master)',
+                'text' => 'Ms . c(Master)',
                 'value' => 1,
             ],
             [
-                'text' => 'PhD (Doctor)',
+                'text' => 'PhD(Doctor)',
                 'value' => 2,
             ],
             [
@@ -268,7 +296,7 @@ class ApiController extends Controller
         $vocabAnswers = collect($data->get('vocab'));
         $paragraphAnswers = collect($data->get('paragraph'));
         $marks += Exam::getReadingMarks($vocabAnswers, $paragraphAnswers);
-        $student->editResult( $marks);
+        $student->editResult($marks);
 
 //        else{
 //            if($checkGrammar){

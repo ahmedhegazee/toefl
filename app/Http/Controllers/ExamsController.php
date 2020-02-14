@@ -8,9 +8,12 @@ use App\Exam;
 use App\Grammar\GrammarExam;
 use App\Grammar\GrammarOption;
 use App\Grammar\GrammarQuestion;
+use App\Jobs\storeStudentResult;
+use App\Jobs\StoreStudentResultJob;
 use App\Listening\ListeningExam;
 use App\Listening\ListeningOption;
 use App\Logging;
+use App\Providers\StudentFinishExam;
 use App\Reading\ParagraphQuestionOption;
 use App\Reading\ReadingExam;
 use App\Reading\VocabOption;
@@ -96,24 +99,29 @@ class ExamsController extends Controller
         $student = session()->get('student');
 
         $answers = $request->get('answers');
-        $grammar_marks = Exam::getGrammarMarks($answers);
+//        $grammar_marks = Exam::getGrammarMarks($answers);
 
         $vocabAnswers = $request->get('vocabAnswers');
         $paragraphAnswers = $request->get('paragraphAnswers');
 
-        $reading_marks = Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
+//        $reading_marks = Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
 
         $listeningAnswers = $request->get('listeningAnswers');
-        $listening_marks = Exam::getListeningMarks($listeningAnswers);
+//        $listening_marks = Exam::getListeningMarks($listeningAnswers);
         //Logs
-        $message=" solved grammar exam and has {".$grammar_marks."}";
-        Logging::logStudent(auth()->user()->getStudent(), $message);
-        $message=" solved reading exam and has {".$reading_marks."}";
-        Logging::logStudent(auth()->user()->getStudent(), $message);
-        $message=" solved listening exam and has {".$listening_marks."}";
-        Logging::logStudent(auth()->user()->getStudent(), $message);
+//        $message=" solved grammar exam and has {".$grammar_marks."}";
+//        Logging::logStudent(auth()->user()->getStudent(), $message);
+//        $message=" solved reading exam and has {".$reading_marks."}";
+//        Logging::logStudent(auth()->user()->getStudent(), $message);
+//        $message=" solved listening exam and has {".$listening_marks."}";
+//        Logging::logStudent(auth()->user()->getStudent(), $message);
+//
+//        $student->sumAllMarks($grammar_marks,$reading_marks,$listening_marks);
+//        storeStudentResult::dispatch($student,$answers,$vocabAnswers,$paragraphAnswers,$listeningAnswers)
+//            ->delay(Carbon::now()->addMinutes(1));
+        StoreStudentResultJob::dispatch($student,$answers,$vocabAnswers,$paragraphAnswers,$listeningAnswers,true)
+            ->delay(Carbon::now()->addMinutes(1));
 
-        $student->sumAllMarks($grammar_marks,$reading_marks,$listening_marks);
         $this->logout();
         $message='You will know your grades soon';
         return view('success',compact('message'));
@@ -216,9 +224,10 @@ class ExamsController extends Controller
 
     public function logout()
     {
-//        $student = session()->get('student');
+        $student = session()->get('student');
 //        Cache::forget('student-' . $student->id . '-grammar');
 //        Cache::forget('student-' . $student->id . '-reading');
+        Cache::forget('student-is-online-' . $student->id);
 //        session()->forget([ 'student-' . $student->id . '-grammar','student-' . $student->id . '-reading']);
         session()->forget(['student', 'grammarExam', 'readingExam', 'listeningExam']);
 

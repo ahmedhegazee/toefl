@@ -247,6 +247,7 @@
                             this.showAlert();
                         }).catch(errors => {
                     });
+
                 } else {
                     this.message = "The students already can solve the exam";
                     this.showAlert();
@@ -277,6 +278,7 @@
                                         this.working = false;
                                         this.started = false;
                                         this.enter = false;
+                                        this.groupExamined=true;
                                         this.showAlert();
                                     }).catch(errors => {
                                 });

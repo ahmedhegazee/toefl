@@ -219,7 +219,7 @@ endif; ?>
                             <label for="type" class="col-md-4 col-form-label text-md-right">Gender</label>
                             <div class="col-md-6">
                                 <select id="type" name="gender" class="form-control">
-                                    <option value="" disabled>Select Gender</option>
+                                    <option value="" disabled >Select Gender</option>
 
                                         <option value="1" >Male</option>
                                         <option value="2" >Female</option>
@@ -234,7 +234,7 @@ endif; ?>
                             <label for="studying" class="col-md-4 col-form-label text-md-right">Studying</label>
                             <div class="col-md-6">
                                 <select id="studying" name="studying" class="form-control">
-                                    <option value="" disabled>Select Studying</option>
+                                    <option value="" disabled >Select Studying Degree</option>
 
                                         <option value="1" >Ms.c(Master)</option>
                                         <option value="2" >PhD(Doctor)</option>

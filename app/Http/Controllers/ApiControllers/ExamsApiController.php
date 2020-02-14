@@ -22,6 +22,7 @@ class ExamsApiController extends Controller
 
     public function studentsCanStartExam(Group $group)
     {
+
         Exam::studentsCanStartExam($group);
     }
 
@@ -61,10 +62,10 @@ class ExamsApiController extends Controller
 
     public function isGroupExamined(Group $group)
     {
-        return response()->json(['success' => $group->is_examined]);
+        return response()->json(['success' => $group->is_examined==1]);
     }
     public function isReservationExamined(Reservation $res)
     {
-        return response()->json(['success' => $res->is_examined]);
+        return response()->json(['success' => $res->is_examined==1]);
     }
 }

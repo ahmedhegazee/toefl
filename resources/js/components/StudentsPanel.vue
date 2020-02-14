@@ -57,6 +57,9 @@
                 <button v-if="!row.item.failed" class="btn btn-primary mr-1 mb-1"
                         @click="showReservationsDialog(row.item)">New Res
                 </button>
+                <button v-if="row.item.has_certificates" class="btn btn-primary mr-1 mb-1"
+                        @click="showPrintDialog(row.item)">Print
+                </button>
 
             </template>
 
@@ -284,6 +287,23 @@
 
             </form>
         </b-modal>
+<!--   Print certificates     -->
+        <b-modal
+            id="modal-prevent-closing"
+            ref="printCertificateModal"
+            title="Print Student Certificate"
+            @shown="certificate=null"
+            @ok="handleCertificateOk"
+        >
+            <form ref="form" @submit.stop.prevent="handleCertificateSubmit" autocomplete="off">
+                <b-form-radio-group
+                    id="radio-group-1"
+                    v-model="certificate"
+                    :options="certificates"
+                    name="certificate"
+                ></b-form-radio-group>
+            </form>
+        </b-modal>
     </div>
 
 </template>
@@ -351,6 +371,8 @@
                 phoneFilter: '',
                 busyState:false,
                 showTable:true,
+                certificates:[],
+                certificate:null,
             }
         },
         watch: {
@@ -469,15 +491,19 @@
 
             showReservationsDialog(student) {
                 this.getAvailableReservations();
-                setTimeout(null, 3000);
-                if (this.reservations.length == 1) {
-                    this.showAlert('Sorry there is no available reservations')
-                } else {
-                    this.student = student;
-                    this.$refs.resChanger.show();
-                }
+                var self=this;
+                setTimeout(function () {
+                    if (self.reservations.length == 1) {
+                        self.showAlert('Sorry there is no available reservations')
+                    } else {
+                        self.student = student;
+                        self.$refs.resChanger.show();
+                    }
+                }, 3000);
+
 
             },
+
             verifyStudent(student) {
                 window.location.replace('/student/' + student.id);
             },
@@ -600,6 +626,7 @@
                     this.$refs.infoChanger.hide()
                 })
             },
+
             // handleNewUserSubmit() {
             //     // Exit when the form isn't valid
             //     if (
@@ -791,7 +818,49 @@
 
                 });
             },
+            showPrintDialog(student) {
+                this.getStudentCertifications(student);
+                var self=this;
+                setTimeout(function(){
+                    if (self.certificates.length == 0) {
+                        self.showAlert('Sorry there is no certificates to this student');
+                    } else {
+                        self.student = student;
+                        self.$refs.printCertificateModal.show();
+                    }
+                }, 3000);
 
+
+            },
+            getStudentCertifications(student) {
+                axios.get(`/student/${student.id}/certificate`)
+                    .then(response => {
+                        this.certificates=response.data;
+
+                        // console.log(response.data);
+                    }).catch(errors => {
+
+                });
+            },
+            handleCertificateOk(bvModalEvt) {
+                // Prevent modal from closing
+                bvModalEvt.preventDefault();
+
+                this.handleCertificateSubmit();
+
+            },
+            handleCertificateSubmit() {
+                if (this.certificate==null)
+                    return;
+                this.printCertificate();
+
+                this.$nextTick(() => {
+                    this.$refs.printCertificateModal.hide()
+                })
+            },
+            printCertificate(){
+                window.location.replace(`/student/${this.student.id}/certificate/${this.certificate}/print`)
+            },
             search() {
                 this.students = [];
                 if(this.reservationFilter.length>0){

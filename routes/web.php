@@ -45,6 +45,8 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::resource('student', 'StudentsController')
             ->only(['index', 'show', 'update']);
         Route::post('/student/{student}/images','StudentsController@updateImages');
+        Route::get('/student/{student}/certificate','StudentsController@getCertificates');
+        Route::get('/student/{student}/certificate/{certificate}/print','ApiControllers\ApiController@printStudentCertificate');
         Route::patch('/student/{student}/verify', 'StudentsController@verifyStudent')->name('student.verify');
         Route::patch('/student/{student}/new-reservation', 'StudentsController@moveStudentToNewReservation');
         Route::get('/reservations/available', 'ApiControllers\ApiController@getAvailableReservations');
@@ -301,10 +303,10 @@ Route::post('/students/unique-phone', 'ApiControllers\ApiController@checkPhoneIs
 //,'has_only_one_attempt'
 Route::group(['middleware' => ['auth','check_student','student_is_online']], function () {
     Route::get('/exam/home', 'ExamsController@showStudentHome')->name('student.home');
+    Route::any('/active',function() {});
     Route::group(['middleware' => 'can_start_exam'], function () {
         Route::get('/exam/start','ExamsController@showExam')->name('exam.show');
         Route::post('/exam/start','ExamsController@storeResult')->name('exam.store');
-        Route::any('/active',function() {});
 //        Route::get('/exam/grammar', 'ExamsController@showGrammarExam')->name('grammar.exam.start');
 //        Route::post('/exam/grammar', 'ExamsController@storeGrammarExamAttempt')->name('grammar.exam.submit');
 //        Route::get('/exam/reading', 'ExamsController@showReadingExam')->name('reading.exam.start');
@@ -368,3 +370,4 @@ Route::get("/speech", function () {
     }
 });
 */
+

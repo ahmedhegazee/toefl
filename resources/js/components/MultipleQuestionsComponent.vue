@@ -191,9 +191,12 @@
                             if (answers.length < 7) {
                                 this.alert.show = true;
                                 this.alert.message.push("write correct options in the question with id " + (i + 1));
-                            } else if (answers[6].length == 0) {
+                            } else if (answers[6].length == 0 ||answers[6]>4||answers[6]<1||isNaN(answers[6])) {
                                 this.alert.show = true;
                                 this.alert.message.push("write correct answer in the question with id " + (i + 1));
+                            }else if (answers[1].length == 0 ||answers[1]>2||answers[1]<1||isNaN(answers[1])) {
+                                this.alert.show = true;
+                                this.alert.message.push("write correct question type in the question with id " + (i + 1));
                             }
                             var question = {
                                 'id': (i + 1),
@@ -236,7 +239,7 @@
                             if (answers.length < 6) {
                                 this.alert.show = true;
                                 this.alert.message.push("write correct options in the question with id " + (i + 1));
-                            } else if (answers[5].length == 0) {
+                            } else if (answers[5].length == 0||answers[5]>4||answers[5]<1||isNaN(answers[5])) {
                                 this.alert.show = true;
                                 this.alert.message.push("write correct answer in the question with id " + (i + 1));
                             }

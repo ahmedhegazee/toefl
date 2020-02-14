@@ -1,39 +1,48 @@
 <?php
 namespace App;
- use App\Grammar\GrammarExam;
+
+use App\Grammar\GrammarExam;
 use App\Grammar\GrammarOption;
+use App\Jobs\EndExamJob;
 use App\Listening\ListeningExam;
 use App\Listening\ListeningOption;
+use App\Providers\ExamIsEnded;
+use App\Providers\ExecuteJobs;
 use App\Reading\ParagraphQuestionOption;
 use App\Reading\ReadingExam;
 use App\Reading\VocabOption;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
-class Exam{
+class Exam
+{
     public static function checkExamIsRunning($exam)
     {
-        return Cache::has('reservation-'.$exam->reservation->id.'-exam-is-running');
+        return Cache::has('reservation-' . $exam->reservation->id . '-exam-is-running');
     }
 
     public static function isStopped(Group $group)
     {
-       return Cache::has('exam-group-' . $group->id.'-is-stopped');
+        return Cache::has('exam-group-' . $group->id . '-is-stopped');
     }
-    private static function makeCache($name){
-        $expiresAt = Carbon::now()->addHours(8);
+
+    private static function makeCache($name)
+    {
+        $expiresAt = Carbon::now()->addHours(5);
         Cache::put($name, true, $expiresAt);
         $message = " make cache which its name is  " . $name . " for 8 hours";
         Logging::logAdmin(auth()->user(), $message);
     }
+
     public static function studentsCanEnterExam(Group $group)
     {
         Exam::makeCache('group-can-enter-exam-' . $group->id);
-        Exam::makeCache('reservation-'.$group->reservation->id.'-exam-is-running');
+        Exam::makeCache('reservation-' . $group->reservation->id . '-exam-is-running');
     }
 
     public static function studentsCanStartExam(Group $group)
     {
+        EndExamJob::dispatch($group, auth()->user())->delay(Carbon::now()->addHours(5));
         Exam::makeCache('group-can-start-exam-' . $group->id);
     }
 
@@ -41,25 +50,27 @@ class Exam{
     {
         return Cache::has('group-can-enter-exam-' . $group->id);
     }
+
     public static function isExamStarted(Group $group)
     {
-        return  Cache::has('group-can-start-exam-' . $group->id);
+        return Cache::has('group-can-start-exam-' . $group->id);
     }
 
     public static function isExamWorking(Group $group)
     {
-        return Exam::isExamStarted($group)&&Exam::isExamEntered($group);
+        return Exam::isExamStarted($group) && Exam::isExamEntered($group);
     }
 
     public static function closeExam(Group $group)
     {
-        if(Exam::isExamStarted($group))
-        Cache::forget('group-can-start-exam-' . $group->id);
-        if(Exam::isExamEntered($group))
-        Cache::forget('group-can-enter-exam-' . $group->id);
-        if(Exam::checkExamIsRunning($group))
-        Cache::forget('reservation-'.$group->reservation->id.'-exam-is-running');
+        if (Exam::isExamStarted($group))
+            Cache::forget('group-can-start-exam-' . $group->id);
+        if (Exam::isExamEntered($group))
+            Cache::forget('group-can-enter-exam-' . $group->id);
+        if (Exam::checkExamIsRunning($group))
+            Cache::forget('reservation-' . $group->reservation->id . '-exam-is-running');
     }
+
     public static function isGroupHasExams(Group $group)
     {
 //        dd($group);
@@ -79,57 +90,14 @@ class Exam{
                 ->get()->count() > 0;
         return $grammarExam && $readingExam && $listeningExam;
     }
+
     public static function endExam(Group $group)
     {
+//        event(new ExamIsEnded());
+               EndExamJob::dispatch($group, auth()->user())->delay(Carbon::now()->addMicroseconds(500));
 
-        if (
-            Cache::has('group-can-enter-exam-' . $group->id)
-            && Cache::has('group-can-start-exam-' . $group->id)
-        ) {
-            $message = " end exam  for group with id is" . $group->id ;
-            Logging::logAdmin(auth()->user(), $message);
-            $group->students()->each(function ($student) {
-                $attempt = Attempt::where('student_id', $student->id)
-                    ->where('reservation_id', $student->reservation->id)
-                    ->where('group_id', $student->group->id)->get();
-                $grammar = 0;
-                $reading = 0;
-                //if the student didn't came to take the exam
-                if ($attempt->count() == 0) {
-                    $student->attempts()->create([
-                        'reservation_id' => $student->reservation->id,
-                        'group_id' => $student->group->id,
-                    ]);
-                    //-1 means the student didn't attend.
-                    $grammar = -1;
-                }
-                //if the student came but he didn't finish in the time
-                if (is_null($attempt->first->result)) {
+//            event(new ExamIsEnded($group,auth()->user()));
 
-//                    if (Cache::has('student-' . $student->id . '-grammar')) {
-//                        $grammar = Cache::get('student-' . $student->id . '-grammar');
-//                        Cache::forget('student-' . $student->id . '-grammar');
-//                    } elseif (Cache::has('student-' . $student->id . '-reading')) {
-//                        $reading = Cache::get('student-' . $student->id . '-reading');
-//                        Cache::forget('student-' . $student->id . '-reading');
-//                    }
-
-
-                    $student->sumAllMarks($grammar, $reading, 0);
-
-                }
-
-            });
-        }
-        $expiresAt = Carbon::now()->addHours(4);
-        Cache::put('exam-group-' . $group->id.'-is-stopped', true, $expiresAt);
-        Cache::forget('group-can-start-exam-' . $group->id);
-        Cache::forget('group-can-enter-exam-' . $group->id);
-        Cache::forget('reservation-'.$group->reservation->id.'-exam-is-running');
-        $group->update(['is_examined'=>1]);
-        if($group->reservation->isAllGroupsExamined()){
-            $group->reservation->update(['is_examined'=>1]);
-        }
     }
 
     public static function getGrammarMarks($answers)
@@ -139,7 +107,7 @@ class Exam{
         })->sum();
     }
 
-    public static function getReadingMarks($vocab,$paragraphs)
+    public static function getReadingMarks($vocab, $paragraphs)
     {
         $vocabMarks = collect($vocab)->map(function ($answer) {
             return VocabOption::find($answer)->correct;
@@ -159,4 +127,5 @@ class Exam{
 
 
 }
+
 ?>

@@ -48,7 +48,7 @@ class ParagraphsController extends Controller
         $paragraph=Paragraph::create($this->validateData());
         $message=" make new paragraph {".$paragraph->id."} ";
         Logging::logProfessor(auth()->user(),$message);
-        return Redirect::route('paragraph.question.create',['paragraph'=>$paragraph]);
+        return Redirect::route('paragraph.show',['paragraph'=>$paragraph]);
     }
 
     /**
@@ -93,7 +93,7 @@ class ParagraphsController extends Controller
         if(session()->has('previous'))
             return \redirect()->to(session()->get('previous'));
         else
-        return Redirect::route('paragraph.index');
+        return Redirect::route('paragraph-panel');
 
     }
 

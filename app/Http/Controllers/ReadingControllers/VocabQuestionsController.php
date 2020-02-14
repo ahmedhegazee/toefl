@@ -23,7 +23,7 @@ class VocabQuestionsController extends Controller
         $questions = Question::getQuestions( VocabQuestion::paginate(50));
         $count=VocabQuestion::all()->count();
         return response()->json(['questions'=>$questions,'count'=>$count]);
-//      return view('reading.vocab.index',compact('questions'));
+//      return view('reading.vocab-panel',compact('questions'));
     }
 
     /**
@@ -63,7 +63,7 @@ class VocabQuestionsController extends Controller
             ]);
         }
         $question->options[$request->correct-1]->update(['correct'=>1]);
-        return \redirect()->to(route('vocab.index'));
+        return \redirect()->to(route('vocab-panel'));
     }
 
 
@@ -116,7 +116,7 @@ class VocabQuestionsController extends Controller
         if(session()->has('previous'))
             return \redirect()->to(session()->get('previous'));
         else
-            return \redirect()->to(route('vocab.index'));
+            return \redirect()->to(route('vocab-panel'));
 
     }
 
@@ -149,7 +149,7 @@ class VocabQuestionsController extends Controller
         $title="Add Multiple Vocab Questions";
         $isGrammar='false';
         $storeRoute=route('vocab.multiple-questions.store');
-        $redirectRoute=route('vocab.index');
+        $redirectRoute=route('vocab-panel');
         return view('multiple-questions',compact('isGrammar','redirectRoute','storeRoute','title'));
     }
     public function storeMultipleQuestions(Request $request)

@@ -153,7 +153,7 @@ trait AuthenticatesUsers
             return redirect()->route('admin');
         else if($this->isStudent($user))
         {
-            if($this->hasAttempt($user)&&$this->isOnline($user)){
+            if($this->hasAttempt($user)||$this->isOnline($user)){
                 auth()->logout();
                 return redirect()->route('error')->with('error','you have only one attempt to take the exam');
             }else{

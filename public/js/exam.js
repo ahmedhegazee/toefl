@@ -212,9 +212,9 @@ function setCookie(cname, cvalue, exdays) {
 function cacheAnswers(answers, id = 0, st_name='',exam='',kind='') {
     var json = JSON.stringify(answers);
     if(kind.length>0)
-    setCookie('student-' + id + "-" + st_name + "-reading-"+kind, json, 7);
+    setCookie('student-' + id + "-" + st_name + "-reading-"+kind, json, 4);
     else
-    setCookie('student-' + id + "-" + st_name + "-"+exam, json, 7);
+    setCookie('student-' + id + "-" + st_name + "-"+exam, json, 4);
 }
 //#region reading section
 let vocabQuestionsArray = [], randomVocabQuestions, vocabQuestion = 0, vocabQuestions;

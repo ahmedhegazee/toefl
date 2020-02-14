@@ -188,7 +188,7 @@
             </div>
 
             <div class="NumberOfCertification">
-                <p><?php echo e($count++); ?></p>
+                <p>(<?php echo e($student->certificates->last()->no); ?>)</p>
             </div>
 
             <div class="NameOfStudent">
