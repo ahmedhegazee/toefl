@@ -126,20 +126,27 @@ class RegisterController extends Controller
     public function createStudent($user,$data,Reservation $res)
     {
         $group=$res->groups()->where('group_type_id',intval($data['type']))->first();
-        Student::create([
+       $student= Student::create([
             'uid'=> $user->id,
             'phone'=>$data['phone'],
             'arabic_name'=>$data['arabic_name'],
             'personalimage'=>$data['personalimage']->store('personalimages','public'),
             'nidimage'=>$data['nidimage']->store('nidimages','public'),
-            'certificateimage'=>$data['certificateimage']->store('certificateimages','public'),
-            'messageimage'=>$data['messageimage']->store('messageimages','public'),
-            'res_id'=>$res->id,
-            'group_id'=>$group->id,
-            'gender'=>intval($data['gender']),
-            'studying'=>intval($data['studying']),
-            'required_score'=>intval($data['required_score'])
-        ]);
+           'gender'=>intval($data['gender']),
+            ]);
+      $document= $student->documents()->create([
+           'certificate_document'=>$data['certificateimage']->store('certificateimages','public'),
+           'message_document'=>$data['messageimage']->store('messageimages','public'),
+       ]);
+      $student->reservation()->attach([
+              $res->id=>[
+                  'studying'=>intval($data['studying']),
+                  'required_score'=>intval($data['required_score']),
+                  'student_documents_id'=>$document->id,
+              ]
+      ]
+          );
+       $group->students()->attach($student->id);
 }
 //    public function getAvailableReservation()
 //    {

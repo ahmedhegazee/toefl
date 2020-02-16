@@ -13,7 +13,8 @@ class Reservation extends Model
 
     public function students()
     {
-        return $this->hasMany(Student::class, 'res_id');
+        return $this->belongsToMany(Student::class,'student_reservation')
+            ->withPivot(['student_documents_id','required_score','studying','verified'])->withTimestamps();
     }
 
     public function getDoneAttribute($option)
@@ -63,5 +64,9 @@ class Reservation extends Model
         return $query->where('done', $done);
     }
 
+    public function document()
+    {
+        return $this->hasOne(StudentDocument::class);
+}
 
 }

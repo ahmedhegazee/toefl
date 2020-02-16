@@ -10,6 +10,7 @@ use App\Student;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -39,14 +40,17 @@ class StudentsController extends Controller
         if ($request->has('filter') || ($request->has('filter') && $request->has('page'))) {
 
             $reservations = Reservation::where('start', '>=', $request->get('filter'))->get()->pluck('id');
-            $studentsQuery=Student::whereIn('res_id', $reservations)->orderBy('created_at', 'desc');
+            $studentsQuery=   DB::table('student_reservation')->whereIn('reservation_id',$reservations)->latest();
+//            $studentsQuery = Student::whereIn('res_id', $reservations)->orderBy('created_at', 'desc');
+//            $studentsQuery = Student::all()->orderBy('created_at', 'desc');
+            $ids=$studentsQuery->pluck('student_id')->toArray();
             $count = $studentsQuery->get()->count();
-            $students = Student::getStudents($studentsQuery->paginate(50));
-
+            $students = Student::getStudents(Student::whereIn('id',$ids)->paginate(50));
+//            dd($students);
 
             $students = $students->all();
         } elseif ($request->has('phone')) {
-            $studentsQuery=Student::where('phone', $request->get('phone'))->orderBy('created_at', 'desc');
+            $studentsQuery = Student::where('phone', $request->get('phone'))->orderBy('created_at', 'desc');
             $students = Student::getStudents($studentsQuery->paginate(50));
             $count = Student::getStudents($studentsQuery->get())->count();
         } else {
@@ -139,9 +143,10 @@ class StudentsController extends Controller
         }
 
         if ($request->required_score > 0) {
-            $message = " update student account with id is " . $student->id . " and old required score is" . $student->required_score . " new required score is " . $request->required_score;
+            $message = " update student account with id is " . $student->id . " and old required score is" . $student->reservation->last()->required_score . " new required score is " . $request->required_score;
             Logging::logAdmin(auth()->user(), $message);
-            $data['required_score'] = $request->required_score;
+            $student->reservation()->updateExistingPivot($student->reservation->last()->id, ['required_score' => $request->required_score]);
+//            $data['required_score'] =$request->required_score ;
 
 //            $checkRequiredScore = $student->update([
 //                'required_score' => $request->required_score,
@@ -154,10 +159,12 @@ class StudentsController extends Controller
             3 => 'Board certified',
         ];
         if ($request->studying > 0) {
-            $message = " update student account with id is " . $student->id . " and old studying degree is" . $student->studying . " new studying degree is "
+            $message = " update student account with id is " . $student->id . " and old studying degree is" . $student->reservation->last()->studying . " new studying degree is "
                 . $studyingOption[$request->studying];
             Logging::logAdmin(auth()->user(), $message);
-            $data['studying'] = $request->studying;
+            $student->reservation()->updateExistingPivot($student->reservation->last()->id, ['studying' => $request->studying]);
+
+//            $data['studying'] = $request->studying;
 
 //            $checkStudyingDegree = $student->update([
 //                'studying' => $request->studying,
@@ -216,8 +223,8 @@ class StudentsController extends Controller
     {
         if ($request->has('res')) {
             $type = intval($request->get('type'));
-            $oldGroup = $student->group;
-            $oldReservation = $student->reservation;
+            $oldGroup = $student->group->last();
+            $oldReservation = $student->reservation->last();
             $res = intval($request->get('res'));
             $newReservation = Reservation::findOrFail($res);
             $newGroup = $newReservation->groups()->where('group_type_id', $type)->get()->last();
@@ -225,14 +232,22 @@ class StudentsController extends Controller
                 $oldGroup->id != $newGroup->id
                 && $oldReservation->id != $newReservation->id
             ) {
-                if ($newReservation->students->count()==$newReservation->max_students-1)
-                {
+                if ($newReservation->students->count() == $newReservation->max_students - 1) {
                     event(new ClosedReservation($res));
                 }
-                $student->update([
-                    'res_id' => $newReservation->id,
-                    'group_id' => $newGroup->id,
+                $newReservation->students()->attach([
+                    $student->id=>[
+                        'studying'=>$student->reservation->last()->pivot->studying,
+                        'required_score'=>$student->reservation->last()->pivot->required_score,
+                        'student_documents_id'=>$student->documents->last()->id,
+                        'verified'=>1
+                    ]
                 ]);
+                $newGroup->students()->attach($student->id);
+//                $student->update([
+//                    'res_id' => $newReservation->id,
+//                    'group_id' => $newGroup->id,
+//                ]);
 
                 $message = " move student with id {" . $student->id . "} from reservation with id {" . $oldReservation . "} to reservation with id {" . $newReservation . "}";
                 Logging::logAdmin(auth()->user(), $message);
@@ -249,11 +264,12 @@ class StudentsController extends Controller
     {
         $message = " verify student with id {" . $student->id . "} ";
         Logging::logAdmin(auth()->user(), $message);
-        $student->update([
-//                'required_score'=>intval($request['required_score']),
-            'verified' => 1
-        ]);
-        return view('cpanel.studentspanel');
+        $student->reservation()->updateExistingPivot($student->reservation->last()->id, ['verified' => 1]);
+//        $student->update([
+////                'required_score'=>intval($request['required_score']),
+//            'verified' => 1
+//        ]);
+        return redirect()->to(route('cpanel.students-panel'));
     }
 
     /**
@@ -266,6 +282,7 @@ class StudentsController extends Controller
     public function updateImages(Request $request, Student $student)
     {
         $data = [];
+        $documents_data = [];
         if ($request->files->has('personalImage')) {
             $this->deleteImage($student->personalimage);
             $data['personalimage'] = $this->getImageLink($request->file('personalImage'), 'personalimages');
@@ -277,20 +294,26 @@ class StudentsController extends Controller
             $data['nidimage'] = $this->getImageLink($request->file('nidImage'), 'nidimages');
         }
         if ($request->files->has('certificateImage')) {
-            $this->deleteImage($student->certificateimage);
-            $data['certificateimage'] = $this->getImageLink($request->file('certificateImage'), 'certificateimages');
+            $this->deleteImage($student->documents->last()->certificate_document);
+            $documents_data['certificate_document'] = $this->getImageLink($request->file('certificateImage'), 'certificateimages');
         }
         if ($request->files->has('messageImage')) {
-            $this->deleteImage($student->messageimage);
-            $data['messageimage'] = $this->getImageLink($request->file('messageImage'), 'messageimages');
+            $this->deleteImage($student->documents->last()->message_document);
+            $documents_data['message_document'] = $this->getImageLink($request->file('messageImage'), 'messageimages');
         }
+        $check = false;
+        $documents_check = false;
         if (!empty($data)) {
             $check = $student->update($data);
-            if ($check)
-                return response()->json(['success' => $check]);
-            else
-                return response()->json(['success' => $check, 'message' => "Cannot changing student's images.Please call support"]);
         }
+        if (!empty($documents_data)) {
+            $documents_check = $student->documents->last()->update($documents_data);
+        }
+        if ($check||$documents_check)
+            return response()->json(['success' => true]);
+        else
+            return response()->json(['success' => false, 'message' => "Cannot changing student's images.Please call support"]);
+
 
     }
 
@@ -318,14 +341,14 @@ class StudentsController extends Controller
 
     public function getCertificates(Student $student)
     {
-        $certificates = $student->certificates->map(function($certificate){
-            return[
-                'text'=> $certificate->no." - ".$certificate->reservation->start." - ".$certificate->studying_degree,
-                'value'=>$certificate->no,
+        $certificates = $student->certificates->map(function ($certificate) {
+            return [
+                'text' => $certificate->no . " - " . $certificate->reservation->start . " - " . $certificate->studying_degree,
+                'value' => $certificate->no,
             ];
         })->values()->all();
         return response()->json($certificates);
-}
+    }
 //    public function validator(array $data)
 //    {
 //        return Validator::make($data, [

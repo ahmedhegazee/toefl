@@ -76,7 +76,7 @@
                         required
                     ></b-form-input>
                     <b-form-invalid-feedback :state="scoreState">
-                        The score must be higher than the old one and less than 500.
+                        The score must be higher than the old one and less than 677.
                     </b-form-invalid-feedback>
                     <b-form-valid-feedback :state="scoreState">
                         Looks Good.
@@ -126,7 +126,7 @@
                 if(this.score==0)
                     return null;
                 else
-                    return parseInt(this.score,10)>this.currentScore&&parseInt(this.score,10)>=this.requiredScore&&parseInt(this.score,10)<500;
+                    return parseInt(this.score,10)>this.currentScore&&parseInt(this.score,10)>=this.requiredScore&&parseInt(this.score,10)<677;
             }
         },
         methods: {

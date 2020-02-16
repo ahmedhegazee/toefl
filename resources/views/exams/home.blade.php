@@ -15,8 +15,8 @@
                         <h5 class="card-title">Welcome ,{{$fullName}}</h5>
                         <p>Arabic Name : {{$student->arabic_name}}</p>
 
-                        <p>Reservation : {{$student->reservation->start}}</p>
-                        <p>Group : {{$student->group->type->type}}</p>
+                        <p>Reservation : {{$student->reservation->last()->start}}</p>
+                        <p>Group : {{$student->group->last()->type->type}}</p>
                     </div>
                     <div class="col-9">
                         <img src="/storage/{{$student->personalimage}}" class="w-100" style="max-height: 70vh" alt="">

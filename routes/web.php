@@ -237,12 +237,16 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     });
     Route::group(['middleware' => ['manage-exams-panel']], function () {
         Route::view('/cpanel/exam-panel', 'exams.examControlPanel')->name('cpanel.exams-panel');
-
+        Route::view('/cpanel/attempts-panel','exams.attemptsPanel')->name('cpanel.attempts-panel');
         Route::view('/cpanel/student-data', 'students-data')->name('cpanel.student-data');
         Route::patch('/cpanel/student/{student}/edit', 'ApiControllers\ApiController@editStudentResult');
 
         Route::post('/attempt/{student}', 'ApiControllers\ApiController@checkStudentAttempt');
         Route::get('/reservations/exams', 'ApiControllers\ApiController@getReservationsForExams');
+        Route::get('/reservations/closed', 'ApiControllers\ApiController@getClosedReservations');
+        Route::get('/groups/{res}/examined', 'ApiControllers\ApiController@getExaminedGroups');
+        Route::get('/students/{group}/examined', 'ApiControllers\ApiController@getExaminedStudents');
+        Route::patch('/students/retake-exam', 'ApiControllers\ApiController@retakeExamAgain');
         Route::get('/groups/{res}', 'ApiControllers\ApiController@getGroups');
         Route::get('/students/{group}', 'ApiControllers\ApiController@getStudents');
         Route::post('/group/{group}/examined', 'ApiControllers\ExamsApiController@isGroupExamined');

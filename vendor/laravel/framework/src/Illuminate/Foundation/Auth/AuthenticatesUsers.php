@@ -124,8 +124,8 @@ trait AuthenticatesUsers
     {
         $student =$user->getStudent();
         $attempt=  Attempt::where('student_id',$student->id)
-            ->where('reservation_id',$student->reservation->id)
-            ->where('group_id',$student->group->id)->get()->first();
+            ->where('reservation_id',$student->reservation->last()->id)
+            ->where('group_id',$student->group->last()->id)->get()->first();
 //      dd($attempt);
         if(!is_null($attempt)) {
 //                if (!is_null($attempt->result))

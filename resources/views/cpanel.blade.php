@@ -150,18 +150,21 @@
                     <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                 href="{{route('cpanel.exams-panel')}}" aria-expanded="false">
                             <i class="fas fa-stopwatch mr-2 ml-1 fa-1x"></i><span class="hide-menu">Exams Panel</span></a></li>
+
+                            <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                                href="{{route('cpanel.attempts-panel')}}" aria-expanded="false">
+                            <i class="fas fa-stopwatch mr-2 ml-1 fa-1x"></i><span class="hide-menu">Attempts Panel</span></a></li>
+
+                            <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                                        href="{{route('cpanel.student-data')}}" aria-expanded="false">
+                                    <i class="fas fa-user-edit mr-2 ml-1 fa-1x">
+                                    </i><span class="hide-menu">Edit Students' Marks</span></a>
+                            </li>
                    @endif
-                    @if(auth()->user()->canManageExamsPanel())
+                    @if(auth()->user()->canPrintCertificates())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('cpanel.certificates-panel')}}" aria-expanded="false"><i
                                     class="fas fa-medal mr-2 ml-1 fa-1x"></i><span class="hide-menu">Certificates</span></a>
-                        </li>
-                    @endif
-                    @if(auth()->user()->canManageExamsPanel())
-                        <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                                    href="{{route('cpanel.student-data')}}" aria-expanded="false">
-                                <i class="fas fa-user-edit mr-2 ml-1 fa-1x">
-                                </i><span class="hide-menu">Edit Students' Marks</span></a>
                         </li>
                     @endif
                     @if(auth()->user()->isSuperAdmin())

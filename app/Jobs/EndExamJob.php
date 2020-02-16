@@ -46,15 +46,15 @@ class EndExamJob implements ShouldQueue
             Logging::logAdmin($this->user, $message);
             $this->group->students()->each(function ($student) {
                 $attempt = Attempt::where('student_id', $student->id)
-                    ->where('reservation_id', $student->reservation->id)
-                    ->where('group_id', $student->group->id)->get();
+                    ->where('reservation_id', $student->reservation->last()->id)
+                    ->where('group_id', $student->group->last()->id)->get();
                 $grammar = 0;
                 $reading = 0;
                 //if the student didn't came to take the exam
                 if ($attempt->count() == 0) {
                     $student->attempts()->create([
-                        'reservation_id' => $student->reservation->id,
-                        'group_id' => $student->group->id,
+                        'reservation_id' => $student->reservation->last()->id,
+                        'group_id' => $student->group->last()->id,
                     ]);
                     //-1 means the student didn't attend.
                     $grammar = -1;

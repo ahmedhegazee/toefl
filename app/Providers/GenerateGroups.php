@@ -47,8 +47,11 @@ class GenerateGroups
                     $counter++;
                     $index = $i * $computers;
                     $students = $group->students->slice($index, $computers);
-                    DB::table('students')->whereIn('id',$students->pluck('id')->toArray())
-                        ->update(['group_id' => $createdGroup->id]);
+                    $ids=$students->pluck('id')->toArray();
+                    $group->students()->detach($ids);
+                    $createdGroup->students()->attach($ids);
+//                    DB::table('students')->whereIn('id',)
+//                        ->update(['group_id' => $createdGroup->id]);
 //                    $students->each(function ($student) use ($createdGroup) {
 //                        $student->update(['group_id' => $createdGroup->id]);
 //                    });
@@ -58,7 +61,6 @@ class GenerateGroups
 
 
             }
-
             $check=$group->delete();
         });
 

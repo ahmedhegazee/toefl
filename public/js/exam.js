@@ -2,6 +2,7 @@ let fillQuestionsArray = [], randomFillQuestions, fillQuestion = 0, fillQuestion
 let findQuestionsArray = [], randomFindQuestions, findQuestion = 0, findQuestions;
 let isFindQuestions = false, isReadingSection = false, isListeningSection = false;
 let id = '', name = '', counter = null;
+
 // let questionsArray = [], randomQuestions, question = 0, questions;
 window.onload = function () {
     sendActiveRequest();
@@ -487,7 +488,23 @@ function sendActiveRequest(){
 
     setInterval(function () {
         axios.get('/active' )
-            .then(response => {}).catch(error => console.log(error));
+            .then(response => {
+                if(response.data.close){
+                    let count=0;
+                    if(!isReadingSection&&!isListeningSection)
+                        count=3;
+                    else if(isReadingSection&&!isListeningSection)
+                        count=2;
+                    else if(!isReadingSection&&isListeningSection)
+                        count=1;
+                    for(var i=0;i<count;i++){
+                        setTimeout(function(){
+                            document.getElementById('submit').click();
+                        },1000);
+
+                    }
+                }
+            }).catch(error => console.log(error));
 
     },180000); //3 Minutes
 }

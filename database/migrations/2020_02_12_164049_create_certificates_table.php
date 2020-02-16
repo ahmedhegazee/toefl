@@ -19,9 +19,9 @@ class CreateCertificatesTable extends Migration
             $table->unsignedInteger('reservation_id');
             $table->unsignedInteger('result_id');
             $table->unsignedInteger('no');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->integer('studying_degree');
+            $table->string('start_date');
+            $table->string('end_date');
+            $table->string('studying_degree');
 
             $table->foreign('student_id')->references('id')->on('students');
             $table->foreign('reservation_id')->references('id')->on('reservations');
