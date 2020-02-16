@@ -15,11 +15,11 @@
         </div>
         <div class="row mb-4">
             <div class="col-6">
-                <img src="/storage/{{$student->certificateimage}}" style="height:400px;" alt="">
+                <img src="/storage/{{$student->documents->last()->certificate_document}}" style="height:400px;" alt="">
 
             </div>
             <div class="col-6">
-                <img src="/storage/{{$student->messageimage}}" style="height:400px;" alt="">
+                <img src="/storage/{{$student->documents->last()->message_document}}" style="height:400px;" alt="">
 
             </div>
         </div>

@@ -13,11 +13,11 @@
         </div>
         <div class="row mb-4">
             <div class="col-6">
-                <img src="/storage/<?php echo e($student->certificateimage); ?>" style="height:400px;" alt="">
+                <img src="/storage/<?php echo e($student->documents->last()->certificate_document); ?>" style="height:400px;" alt="">
 
             </div>
             <div class="col-6">
-                <img src="/storage/<?php echo e($student->messageimage); ?>" style="height:400px;" alt="">
+                <img src="/storage/<?php echo e($student->documents->last()->message_document); ?>" style="height:400px;" alt="">
 
             </div>
         </div>

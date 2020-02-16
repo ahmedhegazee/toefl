@@ -14,8 +14,8 @@
                         <h5 class="card-title">Welcome ,<?php echo e($fullName); ?></h5>
                         <p>Arabic Name : <?php echo e($student->arabic_name); ?></p>
 
-                        <p>Reservation : <?php echo e($student->reservation->start); ?></p>
-                        <p>Group : <?php echo e($student->group->type->type); ?></p>
+                        <p>Reservation : <?php echo e($student->reservation->last()->start); ?></p>
+                        <p>Group : <?php echo e($student->group->last()->type->type); ?></p>
                     </div>
                     <div class="col-9">
                         <img src="/storage/<?php echo e($student->personalimage); ?>" class="w-100" style="max-height: 70vh" alt="">

@@ -40,9 +40,9 @@
             <button @click="stopExam()" class="btn btn-danger mr-2">
                 End Exam
             </button>
-            <button @click="closeExam()" class="btn btn-danger">
-                Close Exam Session
-            </button>
+<!--            <button @click="closeExam()" class="btn btn-danger">-->
+<!--                Close Exam Session-->
+<!--            </button>-->
         </div>
         <div class="form-group row mb-0 justify-content-center mt-2" v-if="this.group!==''">
             <h4>

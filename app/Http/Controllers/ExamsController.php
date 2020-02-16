@@ -4,19 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Attempt;
 use App\Config;
-use App\Exam;
-use App\Grammar\GrammarExam;
-use App\Grammar\GrammarOption;
-use App\Grammar\GrammarQuestion;
-use App\Jobs\storeStudentResult;
 use App\Jobs\StoreStudentResultJob;
-use App\Listening\ListeningExam;
-use App\Listening\ListeningOption;
 use App\Logging;
-use App\Providers\StudentFinishExam;
-use App\Reading\ParagraphQuestionOption;
-use App\Reading\ReadingExam;
-use App\Reading\VocabOption;
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -32,17 +22,17 @@ class ExamsController extends Controller
 //        $reservation = $student->reservation->id;
 //        $groupType = $student->group->type->id;
 //        $grammarExam = GrammarExam::where('reservation_id', $reservation)->get()->first();
-        $grammarExam = $student->reservation->grammarExam;
+        $grammarExam = $student->reservation->last()->grammarExam;
 //        $grammarExam = GrammarExam::where('reservation_id', $reservation)
 //            ->where('group_type_id', $groupType)->get()->first();
 //        $readingExam = ReadingExam::where('reservation_id', $reservation)
 //            ->where('group_type_id', $groupType)->get()->first();
 //        $readingExam = ReadingExam::where('reservation_id', $reservation)->get()->first();
-        $readingExam =$student->reservation->readingExam;
+        $readingExam =$student->reservation->last()->readingExam;
 //        $listeningExam = ListeningExam::where('reservation_id', $reservation)
 //            ->where('group_type_id', $groupType)->get()->first();
 //        $listeningExam = ListeningExam::where('reservation_id', $reservation)->get()->first();
-        $listeningExam = $student->reservation->listeningExam;
+        $listeningExam = $student->reservation->last()->listeningExam;
         session([
             'student' => $student,
             'grammarExam' => $grammarExam,
@@ -50,12 +40,12 @@ class ExamsController extends Controller
             'listeningExam' => $listeningExam,
         ]);
         $count =Attempt::where('student_id',$student->id)
-            ->where('reservation_id',$student->reservation->id)
-            ->where('group_id',$student->group->id)->count();
+            ->where('reservation_id',$student->reservation->last()->id)
+            ->where('group_id',$student->group->last()->id)->count();
         if($count==0){
             $attempt =$student->attempts()->create([
-                'group_id' => $student->group->id,
-                'reservation_id' => $student->reservation->id,
+                'group_id' => $student->group->last()->id,
+                'reservation_id' => $student->reservation->last()->id,
             ]);
             $message=" has new attempt {".$attempt->id."}";
             Logging::logStudent(auth()->user()->getStudent(), $message);

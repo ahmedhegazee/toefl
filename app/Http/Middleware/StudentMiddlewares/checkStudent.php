@@ -41,11 +41,12 @@ class checkStudent
         $student =auth()->user()->getStudent();
 //        dd(Exam::isStopped($student->group));
         if(!$this->isVerified($student)){
+            Cache::forget('student-is-online-' . $student->id);
             auth()->logout();
             return redirect(route('error'))->with('error','You Are Not Verified');
         }
 
-        else if(Exam::isStopped($student->group)){
+        else if(Exam::isStopped($student->group->last())){
 //            dd($request->path());
         if($request->method()=='POST'){
             $answers = $request->get('answers');
@@ -64,12 +65,13 @@ class checkStudent
 //            $student->editResult($marks);
 
         }else if($request->path()=='active'){
-            return $next($request);
+            return response()->json(['close'=>true]);
         }
             Cache::forget('student-is-online-' . $student->id);
         auth()->logout();
-        return redirect()->route('error')->with('error','Time is out. Don\'t worry all your answers are saved' );
+            return redirect()->route('error')->with('error','Time is out. Don\'t worry all your answers are saved' );
     } else if( !$this->canEnterExam($student)){
+            Cache::forget('student-is-online-' . $student->id);
             auth()->logout();
             return redirect(route('error'))->with('error','You Are Not Allowed to Enter Exam');
         }

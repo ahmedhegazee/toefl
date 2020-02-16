@@ -724,6 +724,8 @@
                     if (response.data.success) {
                         this.student.failed = true;
                         this.showAlert("Successfully Updated", "success");
+                        this.students=[];
+                        this.getStudents();
                     } else {
                         this.showAlert(response.data.message);
                     }

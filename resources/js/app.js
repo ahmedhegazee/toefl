@@ -32,6 +32,7 @@ Vue.component('display-students-panel', require('./components/StudentsDisplayPan
 Vue.component('display-questions-panel', require('./components/DisplayQuestionsPanel.vue').default);
 Vue.component('multiple-questions', require('./components/MultipleQuestionsComponent.vue').default);
 Vue.component('stored-data-panel', require('./components/StoredDataPanel.vue').default);
+Vue.component('attempts-panel', require('./components/AttemptsPanel.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
