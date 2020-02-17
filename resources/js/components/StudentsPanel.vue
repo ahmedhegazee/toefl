@@ -54,8 +54,8 @@
                 </button>
                 <button class="btn btn-primary mr-1 mb-1" @click="showEditInfoDialog(row.item)">Edit Info</button>
                 <button class="btn btn-primary mr-1 mb-1" @click="showEditImagesDialog(row.item)">Change Images</button>
-                <button v-if="!row.item.failed" class="btn btn-primary mr-1 mb-1"
-                        @click="showReservationsDialog(row.item)">New Res
+                <button  class="btn btn-primary mr-1 mb-1"
+                        @click="showReservationsDialog(row.item)">Reservations
                 </button>
                 <button v-if="row.item.has_certificates" class="btn btn-primary mr-1 mb-1"
                         @click="showPrintDialog(row.item)">Print
@@ -214,17 +214,75 @@
 
             </form>
         </b-modal>
+<!--        Student Reservations -->
+        <b-modal
+            id="modal-prevent-closing"
+            ref="reservationsModal"
+            title="Student Reservations"
+        >
+            <div class="row justify-content-end">
+                <button class="btn btn-primary mr-2" v-if="student.failed!=-1" @click="showNewReservationDialog()">New Reservation</button></div>
+            <form ref="form"  autocomplete="off">
+                <ul>
+                    <li v-for="res in student_reservations">{{res.text}}</li>
+                </ul>
+
+            </form>
+        </b-modal>
         <!--      Move to new reservation-->
         <b-modal
             id="modal-prevent-closing"
             ref="resChanger"
-            title="Change Student Reservation"
+            title="New Student Reservation"
             @shown="resetModalForRes"
             @ok="handleResChangerOk"
         >
             <form ref="form" @submit.stop.prevent="handleResSubmit" autocomplete="off">
                 <b-form-select v-model="reservation" class="mb-2" :options="reservations"></b-form-select>
-                <b-form-select v-model="groupType" :options="groupTypes"></b-form-select>
+                <b-form-select v-model="groupType" class="mb-2" :options="groupTypes"></b-form-select>
+                <div v-if="student.failed==1">
+                    <b-form-group
+                        :state="requiredScoreState"
+                        label="Required Score"
+                        label-for="required-score-input"
+                    >
+                        <b-form-input
+                            id="required-score-input"
+                            :type="'number'"
+                            min="300"
+                            max="700"
+                            v-model="requiredScore"
+                            :state="requiredScoreState"
+                            required
+                        ></b-form-input>
+                        <b-form-invalid-feedback :state="requiredScoreState">
+                            Write correct Score.
+                        </b-form-invalid-feedback>
+                    </b-form-group>
+                    <b-form-select  v-model="studyingDegree" class="mb-2" :options="studyingDegrees"></b-form-select>
+                    <b-form-group label="Certificate Image" label-for="certificateImage" label-cols-sm="2" label-size="sm">
+                        <b-form-file
+                            id="certificateImage"
+                            v-model="images.certificateImage"
+                            placeholder="Choose a certificate image or drop it here..."
+                            drop-placeholder="Drop certificate image here..."
+                            class="mb-2"
+                            accept="image/*"
+                        ></b-form-file>
+                    </b-form-group>
+                    <b-form-group label="Message Image" label-for="messageImage" label-cols-sm="2" label-size="sm">
+                        <b-form-file
+                            id="messageImage"
+                            v-model="images.messageImage"
+                            placeholder="Choose a message image or drop it here..."
+                            drop-placeholder="Drop message image here..."
+                            class="mb-2"
+                            accept="image/*"
+                        ></b-form-file>
+                    </b-form-group>
+                </div>
+
+
             </form>
         </b-modal>
 
@@ -373,6 +431,7 @@
                 showTable:true,
                 certificates:[],
                 certificate:null,
+                student_reservations:[],
             }
         },
         watch: {
@@ -490,18 +549,25 @@
             },
 
             showReservationsDialog(student) {
+                this.student = student;
+                this.getStudentReservations(student);
+                var self= this;
+                setTimeout(function(){
+                    self.$refs.reservationsModal.show();
+                },3000);
+
+            },
+            showNewReservationDialog(){
                 this.getAvailableReservations();
                 var self=this;
                 setTimeout(function () {
                     if (self.reservations.length == 1) {
                         self.showAlert('Sorry there is no available reservations')
                     } else {
-                        self.student = student;
                         self.$refs.resChanger.show();
+                        self.$refs.reservationsModal.hide();
                     }
                 }, 3000);
-
-
             },
 
             verifyStudent(student) {
@@ -530,6 +596,10 @@
             resetModalForRes() {
                 this.reservation = null;
                 this.groupType = null;
+                this.studyingDegree = null;
+                this.requiredScore = 0;
+                this.images.certificateImage = null;
+                this.images.messageImage = null;
             },
             resetImagesChangerModal() {
                 // this.student=null;
@@ -562,10 +632,21 @@
                     return;
                 if (!this.groupType)
                     return;
+                if(this.student.failed==1){
+                    if (!this.studyingDegree)
+                        return;
+                    if (!this.requiredScore)
+                        return;
+                    if (!this.images.certificateImage)
+                        return;
+                    if (!this.images.messageImage)
+                        return;
+                }
+
                 this.sendResUpdate();
 
                 this.$nextTick(() => {
-                    this.$refs.resChanger.hide()
+                    this.$refs.resChanger.hide();
                 })
             },
             handleImagesChangerOk(bvModalEvt) {
@@ -717,9 +798,21 @@
 
 
             sendResUpdate() {
-                axios.patch('/student/' + this.student.id + '/new-reservation', {
-                    'res': this.reservation,
-                    'type': this.groupType,
+                var data = new FormData();
+                data.append('res',this.reservation);
+                data.append('type',this.groupType);
+                data.append('failed',this.student.failed==1);
+                if(this.student.failed==1){
+                    data.append('studying',this.studyingDegree);
+                    data.append('required_score',this.requiredScore);
+                    data.append('certificate',this.images.certificateImage);
+                    data.append('message',this.images.messageImage);
+                }
+
+                axios.post( `/student/${this.student.id}/new-reservation` , data, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
                 }).then(response => {
                     if (response.data.success) {
                         this.student.failed = true;
@@ -820,6 +913,11 @@
 
                 });
             },
+            getStudentReservations(student){
+                axios.get(`/student/${student.id}/reservations`).then(response=>{
+                    this.student_reservations=response.data;
+                }).catch(error=>console.log(error))
+            },
             showPrintDialog(student) {
                 this.getStudentCertifications(student);
                 var self=this;
@@ -834,6 +932,7 @@
 
 
             },
+
             getStudentCertifications(student) {
                 axios.get(`/student/${student.id}/certificate`)
                     .then(response => {
