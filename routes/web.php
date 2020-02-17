@@ -48,7 +48,8 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::get('/student/{student}/certificate','StudentsController@getCertificates');
         Route::get('/student/{student}/certificate/{certificate}/print','ApiControllers\ApiController@printStudentCertificate');
         Route::patch('/student/{student}/verify', 'StudentsController@verifyStudent')->name('student.verify');
-        Route::patch('/student/{student}/new-reservation', 'StudentsController@moveStudentToNewReservation');
+        Route::post('/student/{student}/new-reservation', 'StudentsController@moveStudentToNewReservation');
+        Route::get('/student/{student}/reservations', 'StudentsController@getStudentReservations');
         Route::get('/reservations/available', 'ApiControllers\ApiController@getAvailableReservations');
 //        Route::any('/search', function () {
 //            $q = request()->get('q');

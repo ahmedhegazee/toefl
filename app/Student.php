@@ -144,10 +144,15 @@ class Student extends Model
     {
 
         return $students->map(function ($student) {
-            $failed = 1;
-            if (!is_null($student->results->last()))
-                $failed =
-                    intval($student->results->last()->success);
+            $attempt=Attempt::where('reservation_id', $student->reservation->last()->id)->where('student_id', $student->id)->get()->first();
+
+//            $failed = -1;
+            if(is_null($attempt))
+            {
+                $failed=-1;
+            }else{
+                $failed=  intval($attempt->result->success);
+            }
 //                        ? true : $student->attempts->last()->reservation->id != $student->reservation->last()->id;
             return [
                 'id' => $student->id,

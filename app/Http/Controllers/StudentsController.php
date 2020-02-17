@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Attempt;
 use App\Logging;
 use App\Providers\ClosedReservation;
 use App\Reservation;
@@ -235,12 +236,33 @@ class StudentsController extends Controller
                 if ($newReservation->students->count() == $newReservation->max_students - 1) {
                     event(new ClosedReservation($res));
                 }
+//                dd($request->get('failed'));
+                if($request->get('failed')=='true'){
+                    $studying = $request->get('studying');
+                    $required_score = $request->get('required_score');
+                    $certificate=$this->getImageLink($request->file('certificate'), 'certificateimages');
+                   $message= $this->getImageLink($request->file('message'), 'messageimages');
+                    $document=$student->documents()->create([
+                        'certificate_document'=>$certificate,
+                        'message_document'=>$message
+                    ]);
+                    $document=$document->id;
+                    $verified=0;
+                }
+
+                else
+                {
+                    $studying=$student->reservation->last()->pivot->studying;
+                    $required_score=$student->reservation->last()->pivot->required_score;
+                    $document=$student->documents->last()->id;
+                    $verified=1;
+                }
                 $newReservation->students()->attach([
                     $student->id=>[
-                        'studying'=>$student->reservation->last()->pivot->studying,
-                        'required_score'=>$student->reservation->last()->pivot->required_score,
-                        'student_documents_id'=>$student->documents->last()->id,
-                        'verified'=>1
+                        'studying'=>$studying,
+                        'required_score'=>$required_score,
+                        'student_documents_id'=>$document,
+                        'verified'=>$verified
                     ]
                 ]);
                 $newGroup->students()->attach($student->id);
@@ -341,13 +363,35 @@ class StudentsController extends Controller
 
     public function getCertificates(Student $student)
     {
-        $certificates = $student->certificates->map(function ($certificate) {
+        $certificates = $student->certificates->map(function ($certificate) use ($student) {
             return [
-                'text' => $certificate->no . " - " . $certificate->reservation->start . " - " . $certificate->studying_degree,
+                'text' => $certificate->no . " - " . $certificate->reservation->start . " - " . $student->getStudyingAttribute($certificate->studying_degree),
                 'value' => $certificate->no,
             ];
         })->values()->all();
         return response()->json($certificates);
+    }
+
+    public function getStudentReservations(Student $student)
+    {
+      $reservations=  $student->reservation->map(function ($reservation) use ($student) {
+          $attempt=Attempt::where('reservation_id', $reservation->id)->where('student_id', $student->id)->get()->first();
+//          dd(is_null($attempt));
+          $result='';
+          if(is_null($attempt))
+          {
+              $result='not examined yet';
+          }elseif (is_null($attempt->result)){
+              $result="doesn't have result";
+          }
+          else{
+                $result=$attempt->result->mark;
+          }
+            return[
+                'text'=>$reservation->start.' - '.$result.' - '.$student->getStudyingAttribute($reservation->pivot->studying)
+            ];
+        })->all();
+        return response()->json($reservations);
     }
 //    public function validator(array $data)
 //    {
