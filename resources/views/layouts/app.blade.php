@@ -79,7 +79,19 @@
 
         <main class="py-4">
             @yield('content')
+
         </main>
+
+    </div>
+    <div class="row bg-light shadow" style="
+    padding-left: 45vw;
+    padding-top:10px;
+    padding-bottom:10px;
+    text-align: center;
+    line-height: 1.8;
+    margin-top: 37vh;">
+        Developed By Ahmed Hegazy <br>
+        FCI SWE Dept 2019-2020 &copy;
     </div>
 {{--@if(\Illuminate\Support\Facades\Auth::check())--}}
 {{--    <script src="{{asset('js/script.js')}}"></script>--}}

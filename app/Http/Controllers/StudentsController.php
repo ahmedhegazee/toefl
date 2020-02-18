@@ -247,7 +247,6 @@ class StudentsController extends Controller
                         'message_document'=>$message
                     ]);
                     $document=$document->id;
-                    $verified=0;
                 }
 
                 else
@@ -255,14 +254,13 @@ class StudentsController extends Controller
                     $studying=$student->reservation->last()->pivot->studying;
                     $required_score=$student->reservation->last()->pivot->required_score;
                     $document=$student->documents->last()->id;
-                    $verified=1;
                 }
                 $newReservation->students()->attach([
                     $student->id=>[
                         'studying'=>$studying,
                         'required_score'=>$required_score,
                         'student_documents_id'=>$document,
-                        'verified'=>$verified
+                        'verified'=>0
                     ]
                 ]);
                 $newGroup->students()->attach($student->id);
