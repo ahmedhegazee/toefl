@@ -30,7 +30,11 @@ class ReadingExamParagraphsController extends Controller
 
     public function store(Request $request, ReadingExam $exam)
     {
-        $message = " add  paragraphs {" . $request['paragraphs'] . "} to reading exam  with id {" . $exam->id . "} ";
+        $str='';
+        for($i=0;$i<sizeof($request['paragraphs']);$i++){
+            $str.=$request['paragraphs'][$i].',';
+        }
+        $message = " add  paragraphs {" .$str . "} to reading exam  with id {" . $exam->id . "} ";
         Logging::logProfessor(auth()->user(), $message);
         $paragraphs = Paragraph::whereIn('id', $request['paragraphs'])->get();
         $exam->paragraphs()->sync($paragraphs);

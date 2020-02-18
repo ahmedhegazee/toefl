@@ -28,7 +28,11 @@ class ReadingExamVocabQuestionsController extends Controller
 
     public function store(Request $request, ReadingExam $exam)
     {
-        $message = " add  vocab questions {" . $request['questions'] . "} to reading exam  with id {" . $exam->id . "} ";
+        $str='';
+        for($i=0;$i<sizeof($request['questions']);$i++){
+            $str.=$request['questions'][$i].',';
+        }
+        $message = " add  vocab questions {" . $str . "} to reading exam  with id {" . $exam->id . "} ";
         Logging::logProfessor(auth()->user(), $message);
         $questions = VocabQuestion::whereIn('id', $request['questions'])->get();
         $exam->vocabQuestions()->sync($questions);

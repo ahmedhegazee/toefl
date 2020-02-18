@@ -29,8 +29,12 @@ class ListeningExamAudiosController extends Controller
     public function store(Request $request, ListeningExam $exam)
     {
 //        dd($request['questions']);
+        $str='';
+        for($i=0;$i<sizeof($request['audios']);$i++){
+            $str.=$request['audios'][$i].',';
+        }
         $audios = Audio::whereIn('id', $request['audios'])->get();
-        $message = " add  audios {" . $request['audios'] . "} to listening exam  with id {" . $exam->id . "} ";
+        $message = " add  audios {" . $str . "} to listening exam  with id {" . $exam->id . "} ";
         Logging::logProfessor(auth()->user(), $message);
         $exam->audios()->sync($audios);
 //        dd($exam->questions);

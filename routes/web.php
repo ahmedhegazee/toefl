@@ -224,14 +224,15 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::post('/cpanel/live/listening', 'LiveExamsController@storeListeningExamAttempt')->name('listening.live.exam.submit');
     });
     Route::group(['middleware' => ['print-certificates']], function () {
-        Route::get('/reservations/', 'ApiControllers\ApiController@getReservations');
         Route::view('/cpanel/certificates-panel', 'cpanel.certificatesControlPanel')->name('cpanel.certificates-panel');
         Route::post('/students/{reservation}/print', 'ApiControllers\ApiController@printPDF');
         Route::get('/students/{reservation}/certificates', 'ApiControllers\ApiController@getStudentsForCertificates');
     });
+    
+        Route::get('/reservations/', 'ApiControllers\ApiController@getReservations');
+
     Route::group(['middleware' => ['edit-student-marks']], function () {
         Route::view('/cpanel/marks', 'cpanel.failedStudents')->name('cpanel.marks-panel');
-        Route::get('/reservations/', 'ApiControllers\ApiController@getReservations');
         Route::get('/students/{reservation}/failed', 'ApiControllers\ApiController@getFailedStudents');
         Route::patch('/students/marks', 'ApiControllers\ApiController@updateStudentMarks');
 
