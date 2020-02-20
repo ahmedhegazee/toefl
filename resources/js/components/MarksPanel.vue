@@ -10,18 +10,27 @@
             {{message}}
         </b-alert>
         <b-alert
-            :show="students.length==0&&reservation!=''"
+            :show="show"
             variant="danger"
         >
-            Sorry there is no students in this reservation
+            {{msg}}
         </b-alert>
         <div class="form-group row">
             <label for="reservation" class="col-md-4 col-form-label text-md-right">Select Reservation</label>
             <div class="col-md-6">
-                <select @change="getStudents()" id="reservation" name="reservation" class="form-control"
+                <select @change="getGroups()" id="reservation" name="reservation" class="form-control"
                         v-model="reservation">
                     <option value="" disabled>Select Reservation</option>
                     <option v-for="res in reservations" :value="res.id">{{res.start}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="reservation" class="col-md-4 col-form-label text-md-right">Select Group</label>
+            <div class="col-md-6">
+                <select @change="getStudents()" id="group" name="group" class="form-control" v-model="group">
+                    <option disabled value="">Select Group</option>
+                    <option v-for="group in groups" :value="group.id">{{group.name}}</option>
                 </select>
             </div>
         </div>
@@ -58,7 +67,7 @@
             @ok="handleOk"
         >
             <form ref="form" @submit.stop.prevent="handleSubmit">
-                <h4 >Student Name : {{st_name}}</h4>
+                <h4>Student Name : {{st_name}}</h4>
                 <h4>Current Score : {{currentScore}}</h4>
                 <h4>Required Score : {{requiredScore}}</h4>
                 <b-form-group
@@ -93,9 +102,14 @@
 
     export default {
         mounted() {
-            axios.get('/reservations/')
+            axios.get('/reservations/closed')
                 .then(response => {
                     this.reservations = response.data;
+                    if (this.reservations.length == 0) {
+                        this.msg = '  Sorry there is no available reservations';
+                        this.show = true;
+                    }
+
                     // console.log(response.data);
                 }).catch(errors => {
 
@@ -111,27 +125,48 @@
                 message: "",
                 alert: "danger",
                 score: 0,
-                currentScore:0,
-                requiredScore:0,
-                st_name:'',
-                student:null,
+                currentScore: 0,
+                requiredScore: 0,
+                st_name: '',
+                student: null,
                 perPage: 20,
                 currentPage: 1,
+                msg: '',
+                show: false,
+                groups: [],
+                group: '',
             }
-        }, computed:{
+        }, computed: {
             rows() {
                 return this.students.length
             },
-            scoreState:function(){
-                if(this.score==0)
+            scoreState: function () {
+                if (this.score == 0)
                     return null;
                 else
-                    return parseInt(this.score,10)>this.currentScore&&parseInt(this.score,10)>=this.requiredScore&&parseInt(this.score,10)<677;
+                    return parseInt(this.score, 10) > this.currentScore && parseInt(this.score, 10) >= this.requiredScore && parseInt(this.score, 10) < 677;
             }
         },
         methods: {
+            clearMessage(){
+                this.show=false;
+                this.msg='';
+            },
+            getGroups() {
+                this.clearMessage();
+                axios.get(`/groups/${this.reservation}/examined`)
+                    .then(response => {
+                        this.groups = response.data;
+                        if (this.groups.length == 0)
+                            this.showAlert("This reservation doesn't have examined groups");
+                        // console.log(response.data);
+                    }).catch(errors => {
+
+                });
+
+            },
             getStudents() {
-                axios.get('/students/' + this.reservation + '/failed')
+                axios.get('/students/' + this.group + '/failed')
                     .then(response => {
                         this.students = response.data;
                     }).catch(errors => {
@@ -144,18 +179,18 @@
                     this.alert = "danger";
                 }
             },
-            showAlert(message,alert="danger") {
+            showAlert(message, alert = "danger") {
                 this.message = message;
                 this.alert = alert;
                 this.dismissCountDown = this.dismissSecs
             },
 
             showDialog(student) {
-                this.student=student;
-                this.requiredScore=student.required_score;
-                this.currentScore=student.score;
-                this.score=student.score;
-                this.st_name=student.english_name;
+                this.student = student;
+                this.requiredScore = student.required_score;
+                this.currentScore = student.score;
+                this.score = student.score;
+                this.st_name = student.english_name;
                 this.$refs.modal.show();
             },
 
@@ -183,18 +218,18 @@
                     this.$refs.modal.hide()
                 })
             },
-            sendMarksChange(){
-                axios.patch('/students/marks',{
-                    'id':this.student.ID,
-                    'score':this.score
-                }).then(response=>{
-                    if(response.data.success){
+            sendMarksChange() {
+                axios.patch('/students/marks', {
+                    'id': this.student.ID,
+                    'score': this.score
+                }).then(response => {
+                    if (response.data.success) {
                         var index = this.students.indexOf(this.student);
                         if (index > -1) {
                             this.students.splice(index, 1);
                         }
-                        this.showAlert("Successfully Updated","success");
-                    }else{
+                        this.showAlert("Successfully Updated", "success");
+                    } else {
                         this.showAlert("Something happened when updating . Please call Support");
                     }
                 })
@@ -205,7 +240,6 @@
 
             },
         }
-
 
 
     }

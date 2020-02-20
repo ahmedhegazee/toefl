@@ -20,7 +20,7 @@
     <link href="<?php echo e(asset('css/app.css')); ?>" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <div id="app" style="min-height: 90vh">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="<?php echo e(url('/')); ?>">
@@ -84,13 +84,19 @@
         </main>
 
     </div>
-    <div class="row bg-light shadow" style="
+    <div class="row bg-light " style="
+border-top: 1px solid rgba(0, 0, 0, 0.15);
     padding-left: 45vw;
     padding-top:10px;
     padding-bottom:10px;
     text-align: center;
     line-height: 1.8;
-    margin-top: 37vh;">
+    overflow: hidden;
+    bottom: 0;
+    right:0;
+    margin:0;
+    width: 100%;
+">
         Developed By Ahmed Hegazy <br>
         FCI SWE Dept 2019-2020 &copy;
     </div>
