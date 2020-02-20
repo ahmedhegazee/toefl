@@ -26,6 +26,7 @@ class UsersTableSeeder extends Seeder
         $user=User::create([
             'name'=>'Hatem',
             'email'=>'hatem@admin.com',
+
             'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
         ]);
         $user->roles()->attach([1,11,10,9,8,3]);
@@ -34,6 +35,7 @@ class UsersTableSeeder extends Seeder
         $user=User::create([
             'name'=>'Ayman',
             'email'=>'ayman@admin.com',
+
             'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
         ]);
         $user->roles()->attach([1,4,7]);
@@ -41,6 +43,7 @@ class UsersTableSeeder extends Seeder
         $user=User::create([
             'name'=>'Khaled',
             'email'=>'khaled@admin.com',
+
             'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
         ]);
         $user->roles()->attach([1,5,7]);
@@ -48,6 +51,7 @@ class UsersTableSeeder extends Seeder
         $user=User::create([
             'name'=>'Ahmed',
             'email'=>'ahmed@admin.com',
+
             'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
         ]);
         $user->roles()->attach([1,6,7]);
