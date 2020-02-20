@@ -45,7 +45,7 @@
 <!-- ============================================================== -->
 <!-- Main wrapper - style you can find in pages.scss -->
 <!-- ============================================================== -->
-<div id="main-wrapper">
+<div id="main-wrapper" >
     <!-- ============================================================== -->
     <!-- Topbar header - style you can find in pages.scss -->
     <!-- ============================================================== -->
@@ -246,14 +246,14 @@
     <!-- ============================================================== -->
 
 </div>
-
 <div class="row shadow" style="
     padding-left: 50vw;
     padding-top: 10px;
     overflow: hidden;
-    position: absolute;
     bottom: 0;
     right:0;
+    position: fixed;
+    margin:0;
     padding-bottom: 10px;
     line-height: 1.8;
     color:#fff;
@@ -263,6 +263,7 @@
     Developed By Ahmed Hegazy <br>
     FCI SWE Dept 2019-2020 &copy;
 </div>
+
 <script src="{{asset('js/app.js')}}"></script>
 <script src="{{asset('js/all.min.js')}}"></script>
 <script src="{{asset('js/jquery.min.js')}}"></script>

@@ -155,7 +155,7 @@
         window.print();
     }
 </script>
-<?php $__currentLoopData = $students; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $student): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+<?php $__currentLoopData = $certificates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $certificate): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
     <center>
         <div style="width: 1050px; height: 742.3px" class="container">
             <img  style="width:1050px; height: auto;" src="<?php echo e(asset('img/img1.jpg')); ?>"/>
@@ -176,23 +176,23 @@
             </div>
 
             <div class="Score">
-                <p><?php echo e($student->results->last()->mark); ?></p>
+                <p><?php echo e($certificate->result->mark); ?></p>
             </div>
 
             <div class="from">
-                <p><?php echo e($startDate); ?></p>
+                <p><?php echo e($certificate->start_date); ?></p>
             </div>
 
             <div class="till">
-                <p><?php echo e($endDate); ?></p>
+                <p><?php echo e($certificate->end_date); ?></p>
             </div>
 
             <div class="NumberOfCertification">
-                <p>(<?php echo e($student->certificates->last()->no); ?>)</p>
+                <p>(<?php echo e($certificate->no); ?>)</p>
             </div>
 
             <div class="NameOfStudent">
-                <p><?php echo e($student->gender==1?'Mr. ':'Miss. '); ?><?php echo e($student->user->name); ?></p>
+                <p><?php echo e($certificate->student->gender==1?'Mr. ':'Miss. '); ?><?php echo e($certificate->student->user->name); ?></p>
             </div>
 
         </div>

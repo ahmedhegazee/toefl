@@ -56,8 +56,7 @@ class EndExamJob implements ShouldQueue
                         'reservation_id' => $student->reservation->last()->id,
                         'group_id' => $student->group->last()->id,
                     ]);
-                    //-1 means the student didn't attend.
-                    $grammar = -1;
+
                 }
                 //if the student came but he didn't finish in the time
                 if (is_null($attempt->first->result)) {

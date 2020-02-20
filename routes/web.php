@@ -225,15 +225,16 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     });
     Route::group(['middleware' => ['print-certificates']], function () {
         Route::view('/cpanel/certificates-panel', 'cpanel.certificatesControlPanel')->name('cpanel.certificates-panel');
-        Route::post('/students/{reservation}/print', 'ApiControllers\ApiController@printPDF');
-        Route::get('/students/{reservation}/certificates', 'ApiControllers\ApiController@getStudentsForCertificates');
+        Route::post('/students/{group}/print', 'ApiControllers\ApiController@printPDF');
+        Route::get('/students/{group}/certificates', 'ApiControllers\ApiController@getStudentsForCertificates');
     });
-    
-        Route::get('/reservations/', 'ApiControllers\ApiController@getReservations');
+
+    Route::get('/reservations/closed', 'ApiControllers\ApiController@getClosedReservations');
+    Route::get('/groups/{res}/examined', 'ApiControllers\ApiController@getExaminedGroups');
 
     Route::group(['middleware' => ['edit-student-marks']], function () {
         Route::view('/cpanel/marks', 'cpanel.failedStudents')->name('cpanel.marks-panel');
-        Route::get('/students/{reservation}/failed', 'ApiControllers\ApiController@getFailedStudents');
+        Route::get('/students/{group}/failed', 'ApiControllers\ApiController@getFailedStudents');
         Route::patch('/students/marks', 'ApiControllers\ApiController@updateStudentMarks');
 
     });
@@ -245,8 +246,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
 
         Route::post('/attempt/{student}', 'ApiControllers\ApiController@checkStudentAttempt');
         Route::get('/reservations/exams', 'ApiControllers\ApiController@getReservationsForExams');
-        Route::get('/reservations/closed', 'ApiControllers\ApiController@getClosedReservations');
-        Route::get('/groups/{res}/examined', 'ApiControllers\ApiController@getExaminedGroups');
         Route::get('/students/{group}/examined', 'ApiControllers\ApiController@getExaminedStudents');
         Route::patch('/students/retake-exam', 'ApiControllers\ApiController@retakeExamAgain');
         Route::get('/groups/{res}', 'ApiControllers\ApiController@getGroups');

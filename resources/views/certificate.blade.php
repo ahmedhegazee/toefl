@@ -155,7 +155,7 @@
         window.print();
     }
 </script>
-@foreach($students as $student)
+@foreach($certificates as $certificate)
     <center>
         <div style="width: 1050px; height: 742.3px" class="container">
             <img  style="width:1050px; height: auto;" src="{{asset('img/img1.jpg')}}"/>
@@ -176,23 +176,23 @@
             </div>
 
             <div class="Score">
-                <p>{{$student->results->last()->mark}}</p>
+                <p>{{$certificate->result->mark}}</p>
             </div>
 
             <div class="from">
-                <p>{{ $startDate}}</p>
+                <p>{{ $certificate->start_date}}</p>
             </div>
 
             <div class="till">
-                <p>{{$endDate}}</p>
+                <p>{{$certificate->end_date}}</p>
             </div>
 
             <div class="NumberOfCertification">
-                <p>({{ $student->certificates->last()->no}})</p>
+                <p>({{ $certificate->no}})</p>
             </div>
 
             <div class="NameOfStudent">
-                <p>{{$student->gender==1?'Mr. ':'Miss. '}}{{$student->user->name}}</p>
+                <p>{{$certificate->student->gender==1?'Mr. ':'Miss. '}}{{$certificate->student->user->name}}</p>
             </div>
 
         </div>

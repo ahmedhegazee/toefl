@@ -10,21 +10,28 @@
             {{message}}
         </b-alert>
         <b-alert
-            :show="students.length==0&&reservation!=''"
+            :show="show"
             variant="danger"
         >
-            Sorry there is no succeeded students in this reservation
+          {{msg}}
         </b-alert>
         <div class="form-group row">
             <label for="reservation" class="col-md-4 col-form-label text-md-right">Select Reservation</label>
             <div class="col-md-6">
-                <select @change="getStudents()" id="reservation" name="reservation" class="form-control"
+                <select @change="getGroups()" id="reservation" name="reservation" class="form-control"
                         v-model="reservation">
                     <option value="" disabled>Select Reservation</option>
                     <option v-for="res in reservations" :value="res.id">{{res.start}}</option>
-
                 </select>
-
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="reservation" class="col-md-4 col-form-label text-md-right">Select Group</label>
+            <div class="col-md-6">
+                <select @change="getStudents()" id="group" name="group" class="form-control" v-model="group">
+                    <option disabled value="">Select Group</option>
+                    <option v-for="group in groups" :value="group.id">{{group.name}}</option>
+                </select>
             </div>
         </div>
 
@@ -106,9 +113,14 @@
     export default {
         name: "CertificatePanel",
         mounted() {
-            axios.get('/reservations/')
+            axios.get('/reservations/closed')
                 .then(response => {
                     this.reservations = response.data;
+                    if(this.reservations.length==0){
+                        this.msg='  Sorry there is no available reservations';
+                        this.show=true;
+                    }
+
                     // console.log(response.data);
                 }).catch(errors => {
 
@@ -119,6 +131,7 @@
                 reservations: [],
                 students: [],
                 reservation: '',
+                groups: [],
                 group: '',
                 dismissSecs: 5,
                 dismissCountDown: 0,
@@ -128,6 +141,8 @@
                 endDate: '',
                 perPage: 20,
                 currentPage: 1,
+                msg:'',
+                show:false,
         }
         }, computed: {
             rows() {
@@ -139,21 +154,42 @@
             endState() {
                 var startDate = new Date(this.startDate);
                 var endDate = new Date(this.endDate);
-
                     return  (startDate < endDate) && this.endDate.length != 0;
             }
         },
         methods: {
-            getStudents() {
-
-                axios.get('/students/' + this.reservation + "/certificates")
+            clearMessage(){
+                this.show=false;
+                this.msg='';
+            },
+            getGroups() {
+                this.clearMessage();
+                axios.get(`/groups/${this.reservation}/examined`)
                     .then(response => {
-                        this.students = response.data;
+                        this.groups = response.data;
+                        if(this.groups.length==0)
+                            this.showAlert("This reservation doesn't have examined groups");
+                        // console.log(response.data);
                     }).catch(errors => {
 
                 });
 
             },
+            getStudents(){
+                this.clearMessage();
+                axios.get(`/students/${this.group}/certificates`)
+                    .then(response => {
+                        this.students = response.data;
+                        if(this.students.length==0){
+                            this.msg='Sorry there is no succeeded students in this group';
+                            this.show=true;
+                        }
+                        // console.log(response.data);
+                    }).catch(errors => {
+
+                });
+            },
+
 
             chooseDates() {
                 if (this.students.length > 0)
@@ -172,7 +208,7 @@
             },
             print(){
                 // if (this.endState && this.startState)
-                    axios.post("/students/" + this.reservation + "/print",{
+                    axios.post("/students/" + this.group + "/print",{
                         'start':this.startDate,
                         'end':this.endDate,
                     }).then(response=>{
