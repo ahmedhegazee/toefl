@@ -17,8 +17,8 @@ class CreatesGroupStudentPivotTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('student_id');
             $table->unsignedBigInteger('group_id');
-            $table->foreign('student_id')->references('id')->on('students');
-            $table->foreign('group_id')->references('id')->on('groups');
+            $table->foreign('student_id')->on('students')->references('id');
+            $table->foreign('group_id')->on('groups')->references('id');
 
             $table->timestamps();
         });
