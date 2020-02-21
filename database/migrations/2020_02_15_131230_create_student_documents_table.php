@@ -15,7 +15,7 @@ class CreateStudentDocumentsTable extends Migration
     {
         Schema::create('student_documents', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedInteger('student_id');
+            $table->unsignedBigInteger('student_id');
             $table->string('certificate_document');
             $table->string('message_document');
             $table->foreign('student_id')->on('students')->references('id');

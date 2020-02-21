@@ -15,9 +15,9 @@ class CreatesStudentReservationPivotTable extends Migration
     {
         Schema::create('student_reservation', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedInteger('reservation_id');
-            $table->unsignedInteger('student_id');
-            $table->unsignedInteger('student_documents_id');
+            $table->unsignedBigInteger('reservation_id');
+            $table->unsignedBigInteger('student_id');
+            $table->unsignedBigInteger('student_documents_id');
             $table->integer('required_score')->default(400);
             $table->integer('studying');
             $table->integer('verified')->default(0);
