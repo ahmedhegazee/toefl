@@ -144,7 +144,9 @@ class Student extends Model
     {
 
         return $students->map(function ($student) {
-            $attempt=Attempt::where('reservation_id', $student->reservation->last()->id)->where('student_id', $student->id)->get()->first();
+//            $attempt=Attempt::where('reservation_id', $student->reservation->last()->id)->where('student_id', $student->id)->get()->first();
+            $attempt=$student->attempts()->where('reservation_id', $student->reservation->last()->id)
+                ->where('group_id', $student->group->last()->id)->get()->first();
 
 //            $failed = -1;
             if(is_null($attempt))

@@ -45,8 +45,7 @@ class EndExamJob implements ShouldQueue
             $message = " end exam  for group with id is " . $this->group->id;
             Logging::logAdmin($this->user, $message);
             $this->group->students()->each(function ($student) {
-                $attempt = Attempt::where('student_id', $student->id)
-                    ->where('reservation_id', $student->reservation->last()->id)
+                $attempt = $student->attempts()->where('reservation_id', $student->reservation->last()->id)
                     ->where('group_id', $student->group->last()->id)->get();
                 $grammar = 0;
                 $reading = 0;
@@ -59,7 +58,7 @@ class EndExamJob implements ShouldQueue
 
                 }
                 //if the student came but he didn't finish in the time
-                if (is_null($attempt->first->result)) {
+                if (is_null($attempt->first()->result)) {
 
 //                    if (Cache::has('student-' . $student->id . '-grammar')) {
 //                        $grammar = Cache::get('student-' . $student->id . '-grammar');

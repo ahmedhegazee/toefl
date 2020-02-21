@@ -64,14 +64,18 @@ class ApiController extends Controller
         $students = $group->students()->with('results')->get()
             ->filter(function ($student) use ($group) {
                 if ($student->results()->count() > 0) {
-                    $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+//                    $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+                    $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
+                        ->where('group_id', $group->id)->get()->first();
                     return $attempt->result->success == 1;
                 }
 
             });
         foreach ($students as $student) {
             if ($student->certificates->where('reservation_id', $group->reservation->id)->count() == 0) {
-                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+//                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+                $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
+                    ->where('group_id', $group->id)->get()->first();
                 $student->certificates()->create([
                         'reservation_id' => $group->reservation->id,
                         'result_id' => $attempt->result->id,
@@ -114,13 +118,18 @@ class ApiController extends Controller
     {
         $students = $group->students()->get()
             ->filter(function($student) use ($group){
-                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+//                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+                $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
+                    ->where('group_id', $group->id)->get()->first();
 
                 if (!is_null($attempt->result))
                    return $attempt->result->success == 1;
             })
             ->map(function ($student)  use ($group){
-                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+
+//                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+                $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
+                    ->where('group_id', $group->id)->get()->first();
                         return [
                             "ID" => $student->id,
                             "English Name" => $student->user->name,
@@ -163,7 +172,9 @@ class ApiController extends Controller
 
         $students = $group->students()->get()
             ->filter(function ($student) use ($group) {
-                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+//                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+                $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
+                    ->where('group_id', $group->id)->get()->first();
 
                 if (!is_null($attempt->result))
                     return  !$attempt->result->success;
@@ -214,11 +225,15 @@ class ApiController extends Controller
     {
         $reservation = Reservation::find($request->get('reservation'));
         $group = Group::find($request->get('group'));
-        $students = Student::whereIn('id', $request->get('students'))->get()->filter(function ($student) use ($reservation, $group) {
-            $attempt = Attempt::where('student_id', $student->id)
-                ->where('reservation_id', $reservation->id)
-                ->where('group_id', $group->id)->get()->first();
-            return $student->results->last()->success == 0 && $attempt->result->id == $student->results->last()->id;
+        $students = Student::whereIn('id', $request->get('students'))->get()
+            ->filter(function ($student) use ($reservation, $group) {
+//            $attempt = Attempt::where('student_id', $student->id)
+//                ->where('reservation_id', $reservation->id)
+//                ->where('group_id', $group->id)->get()->first();
+            return $student->attempts()->where('reservation_id', $reservation->id)
+                    ->where('group_id', $group->id)->get()->first()->success==0
+                && $student->reservation->last()->id ==$reservation->id;
+//            return $student->results->last()->success == 0 && $attempt->result->id == $student->results->last()->id;
         });
 //        dd($students);
         $ids = $students->each(function ($student) {
