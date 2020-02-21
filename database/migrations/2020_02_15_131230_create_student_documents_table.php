@@ -18,7 +18,7 @@ class CreateStudentDocumentsTable extends Migration
             $table->unsignedInteger('student_id');
             $table->string('certificate_document');
             $table->string('message_document');
-            $table->foreign('student_id')->references('id')->on('students');
+            $table->foreign('student_id')->on('students')->references('id');
 
             $table->timestamps();
         });

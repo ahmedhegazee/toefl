@@ -23,9 +23,9 @@ class CreateCertificatesTable extends Migration
             $table->string('end_date');
             $table->string('studying_degree');
 
-            $table->foreign('student_id')->references('id')->on('students');
-            $table->foreign('reservation_id')->references('id')->on('reservations');
-            $table->foreign('result_id')->references('id')->on('results');
+            $table->foreign('student_id')->on('students')->references('id');
+            $table->foreign('reservation_id')->on('reservations')->references('id');
+            $table->foreign('result_id')->on('results')->references('id');
             $table->timestamps();
         });
     }

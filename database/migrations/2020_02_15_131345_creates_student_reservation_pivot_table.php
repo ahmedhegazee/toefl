@@ -21,9 +21,9 @@ class CreatesStudentReservationPivotTable extends Migration
             $table->integer('required_score')->default(400);
             $table->integer('studying');
             $table->integer('verified')->default(0);
-            $table->foreign('reservation_id')->references('id')->on('reservations');
-            $table->foreign('student_id')->references('id')->on('students');
-            $table->foreign('student_documents_id')->references('id')->on('student_documents');
+            $table->foreign('reservation_id')->on('reservations')->references('id');
+            $table->foreign('student_id')->on('students')->references('id');
+            $table->foreign('student_documents_id')->on('student_documents')->references('id');
 
 
             $table->timestamps();

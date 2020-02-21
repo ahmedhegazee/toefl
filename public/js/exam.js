@@ -203,9 +203,9 @@ function getAnswers(questions,name) {
     return answers;
 }
 
-function setCookie(cname, cvalue, exdays) {
+function setCookie(cname, cvalue, hours) {
     var d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    d.setTime(d.getTime() + (hours  * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
@@ -213,9 +213,9 @@ function setCookie(cname, cvalue, exdays) {
 function cacheAnswers(answers, id = 0, st_name='',exam='',kind='') {
     var json = JSON.stringify(answers);
     if(kind.length>0)
-    setCookie('student-' + id + "-" + st_name + "-reading-"+kind, json, 4);
+    setCookie('student-' + id + "-" + st_name + "-reading-"+kind, json, 10);
     else
-    setCookie('student-' + id + "-" + st_name + "-"+exam, json, 4);
+    setCookie('student-' + id + "-" + st_name + "-"+exam, json, 10);
 }
 //#region reading section
 let vocabQuestionsArray = [], randomVocabQuestions, vocabQuestion = 0, vocabQuestions;
