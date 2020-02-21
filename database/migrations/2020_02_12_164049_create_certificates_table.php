@@ -15,10 +15,10 @@ class CreateCertificatesTable extends Migration
     {
         Schema::create('certificates', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedInteger('student_id');
-            $table->unsignedInteger('reservation_id');
-            $table->unsignedInteger('result_id');
-            $table->unsignedInteger('no');
+            $table->unsignedBigInteger('student_id');
+            $table->unsignedBigInteger('reservation_id');
+            $table->unsignedBigInteger('result_id');
+            $table->unsignedBigInteger('no');
             $table->string('start_date');
             $table->string('end_date');
             $table->string('studying_degree');

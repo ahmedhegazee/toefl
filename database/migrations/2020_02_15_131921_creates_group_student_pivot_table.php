@@ -15,7 +15,7 @@ class CreatesGroupStudentPivotTable extends Migration
     {
         Schema::create('group_student', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedInteger('student_id');
+            $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('group_id');
             $table->foreign('student_id')->on('students')->references('id');
             $table->foreign('group_id')->on('groups')->references('id');
