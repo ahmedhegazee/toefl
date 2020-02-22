@@ -250,9 +250,8 @@
     padding-left: 50vw;
     padding-top: 10px;
     overflow: hidden;
-    bottom: 0;
+    bottom: -20vh;
     right:0;
-    position: fixed;
     margin:0;
     padding-bottom: 10px;
     line-height: 1.8;
