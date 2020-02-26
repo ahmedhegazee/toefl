@@ -152,14 +152,17 @@ class Student extends Model
             if(is_null($attempt))
             {
                 $failed=-1;
-            }else{
-                try{
-                    $failed=  intval($attempt->result->success);
-                }catch(\Exception $exception){
+            }else if(is_null($attempt->result))
                     $failed=-1;
-                }
+            else
+                    $failed=  intval($attempt->result->success);
+//                try{
+//                    $failed=  intval($attempt->result->success);
+//                }catch(\Exception $exception){
+//                    $failed=-1;
+//                }
 
-            }
+
 //                        ? true : $student->attempts->last()->reservation->id != $student->reservation->last()->id;
             return [
                 'id' => $student->id,
