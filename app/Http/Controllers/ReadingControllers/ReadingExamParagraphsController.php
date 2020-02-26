@@ -21,7 +21,7 @@ class ReadingExamParagraphsController extends Controller
             $paragraphs = Paragraph::getParagraphsForChoose(Paragraph::paginate(50));
             $checked = $exam->paragraphs()->pluck('paragraph_id');
             $count = Paragraph::all()->count();
-            $checked = json_encode($checked);
+//            $checked = json_encode($checked);
             return response()->json(['questions' => $paragraphs, 'count' => $count, 'checked' => $checked]);
 
         }

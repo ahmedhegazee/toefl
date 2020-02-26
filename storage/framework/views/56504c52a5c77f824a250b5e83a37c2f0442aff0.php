@@ -1,7 +1,7 @@
 <?php $__env->startSection('content'); ?>
     <div class="container ">
         <h2>Paragraphs in this Exam</h2>
-        <a href="<?php echo e(route('reading.exam.paragraph.index',compact('exam'))); ?>" class="btn btn-primary">Add Paragraphs to this Exam</a>
+        <a href="<?php echo e(route('reading.exam.paragraph.add',compact('exam'))); ?>" class="btn btn-primary">Add Paragraphs to this Exam</a>
 
 
 

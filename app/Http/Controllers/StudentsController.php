@@ -233,9 +233,7 @@ class StudentsController extends Controller
                 $oldGroup->id != $newGroup->id
                 && $oldReservation->id != $newReservation->id
             ) {
-                if ($newReservation->students->count() == $newReservation->max_students - 1) {
-                    event(new ClosedReservation($res));
-                }
+
 //                dd($request->get('failed'));
                 if($request->get('failed')=='true'){
                     $studying = $request->get('studying');
@@ -268,7 +266,9 @@ class StudentsController extends Controller
 //                    'res_id' => $newReservation->id,
 //                    'group_id' => $newGroup->id,
 //                ]);
-
+                if ($newReservation->students->count() == $newReservation->max_students ) {
+                    event(new ClosedReservation($newReservation));
+                }
                 $message = " move student with id {" . $student->id . "} from reservation with id {" . $oldReservation . "} to reservation with id {" . $newReservation . "}";
                 Logging::logAdmin(auth()->user(), $message);
                 return response()->json(['success' => true]);

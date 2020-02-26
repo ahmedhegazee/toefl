@@ -272,7 +272,7 @@ class ApiController extends Controller
         $requiredScore = $student->required_score;
         $score = $request->score;
         $message = "";
-        if ($score < 500 && $score > $currentScore && $score >= $requiredScore) {
+        if ($score < 677 && $score > $currentScore && $score >= $requiredScore) {
             $message = "update student mark whose name is " . $student->user->name . " and id is " . $student->id . " from " . $student->results->last()->mark . " to " . $score;
             $check = $student->results->last()->update(
                 [
