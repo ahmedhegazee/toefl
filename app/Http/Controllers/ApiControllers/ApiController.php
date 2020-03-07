@@ -71,12 +71,12 @@ class ApiController extends Controller
                 }
 
             });
-        foreach ($students as $student) {
+        $certificates=$students->map(function ($student) use ($count, $endDate, $startDate, $group) {
             if ($student->certificates->where('reservation_id', $group->reservation->id)->count() == 0) {
 //                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
                 $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
                     ->where('group_id', $group->id)->get()->first();
-                $student->certificates()->create([
+                return  $student->certificates()->create([
                         'reservation_id' => $group->reservation->id,
                         'result_id' => $attempt->result->id,
                         'start_date' => $startDate,
@@ -86,10 +86,31 @@ class ApiController extends Controller
                     ]
                 );
             }
-        }
-        $certificates= $students->map(function($student) use ($group) {
-            return $student->certificates->where('reservation_id', $group->reservation->id)->first();
+            else
+                return $student->certificates->where('reservation_id', $group->reservation->id)->first();
         });
+//        foreach ($students as $student) {
+//            if ($student->certificates->where('reservation_id', $group->reservation->id)->count() == 0) {
+////                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+//                $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
+//                    ->where('group_id', $group->id)->get()->first();
+//                $student->certificates()->create([
+//                        'reservation_id' => $group->reservation->id,
+//                        'result_id' => $attempt->result->id,
+//                        'start_date' => $startDate,
+//                        'end_date' => $endDate,
+//                        'studying_degree' => $group->reservation->students->where('id', $student->id)->first()->pivot->studying,
+//                        'no' => $count++
+//                    ]
+//                );
+//            }
+//            sleep(5);
+//        }
+//        sleep(60);
+//        $certificates= $students->map(function($student) use ($group) {
+//            return $student->certificates->where('reservation_id', $group->reservation->id)->first();
+//        });
+//        dd($certificates);
         $certificateNumbering->update([
             'value' => $count
         ]);
@@ -99,7 +120,6 @@ class ApiController extends Controller
 //        return $pdf->download('certificates ' . $reservation->start . ' . pdf');
 
     }
-
     public function printStudentCertificate(Student $student, Certificate $certificate)
     {
 
