@@ -29,7 +29,7 @@ class UsersTableSeeder extends Seeder
 
             'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
         ]);
-        $user->roles()->attach([1,11,10,9,8,3]);
+        $user->roles()->attach([1,10,9,8,3]);
 
         //Prof.Ayman
         $user=User::create([
@@ -55,6 +55,13 @@ class UsersTableSeeder extends Seeder
             'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
         ]);
         $user->roles()->attach([1,6,7]);
+        $user=User::create([
+            'name'=>'Technical Support',
+            'email'=>'support@admin.com',
+
+            'password'=>'$2y$10$aVsbF321xGmFj/JSO8OeTe80REpDa.sJD.0roGzqG9OxwfDDfYB1a', //password
+        ]);
+        $user->roles()->attach([1,11]);
 
 
     }

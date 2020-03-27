@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\AllowedIP' => $baseDir . '/app/AllowedIP.php',
     'App\\Attempt' => $baseDir . '/app/Attempt.php',
     'App\\Certificate' => $baseDir . '/app/Certificate.php',
     'App\\Config' => $baseDir . '/app/Config.php',
@@ -74,6 +75,7 @@ return array(
     'App\\Http\\Middleware\\TrimStrings' => $baseDir . '/app/Http/Middleware/TrimStrings.php',
     'App\\Http\\Middleware\\TrustProxies' => $baseDir . '/app/Http/Middleware/TrustProxies.php',
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
+    'App\\Http\\Middleware\\allowedIpMiddleware' => $baseDir . '/app/Http/Middleware/allowedIpMiddleware.php',
     'App\\Http\\Middleware\\checkRoles' => $baseDir . '/app/Http/Middleware/checkRoles.php',
     'App\\Http\\Middleware\\isAvailableReservation' => $baseDir . '/app/Http/Middleware/isAvailableReservation.php',
     'App\\Jobs\\EndExamJob' => $baseDir . '/app/Jobs/EndExamJob.php',

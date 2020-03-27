@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\AllowedIP;
+use App\Http\Middleware\allowedIpMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -78,6 +80,7 @@ class Kernel extends HttpKernel
         'manage-exams-panel' => \App\Http\Middleware\AdminMiddleware\adminCanManageExamsPanel::class,
         'edit-student-marks' => \App\Http\Middleware\AdminMiddleware\adminCanEditFailedStudentMarks::class,
         'print-certificates' => \App\Http\Middleware\AdminMiddleware\adminCanPrintCertificates::class,
+        'allowed-ip' => \App\Http\Middleware\allowedIpMiddleware::class,
     ];
 
     /**
