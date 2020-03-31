@@ -94,6 +94,7 @@ class UsersController extends Controller
     }
     public function update(Request $request,User $user)
     {
+        if($user->id!=1){
        $check=false;
         $data=[];
         if (strlen($request->name) > 0){
@@ -128,14 +129,23 @@ class UsersController extends Controller
 
 
         return response()->json(['success' => $check]);
+        } return response()->json(['success'=>false,'message'=>'you can\'t update this user sorry.' ]);
     }
     public function destroy(User $user)
     {
-        $message = " delete user account  with id is " . $user->id;
-        Logging::logAdmin(auth()->user(), $message);
+        if($user->id!=1){
+            if($user->id != auth()->user()->id){
+                $message = " delete user account  with id is " . $user->id;
+                Logging::logAdmin(auth()->user(), $message);
 
-        $user->roles()->sync([]);
-        $user->delete();
+                $user->roles()->sync([]);
+                $user->delete();
+                return response()->json(['success'=>true ]);
+            }else
+                return response()->json(['success'=>false,'message'=>'you can\'t delete yourself.' ]);
+        } return response()->json(['success'=>false,'message'=>'you can\'t delete this user sorry.' ]);
+
+
     }
     public function updateRoles(Request $request, User $user)
     {

@@ -6646,6 +6646,8 @@ __webpack_require__.r(__webpack_exports__);
           if (response.data.success) {
             _this5.successAction();
           } else {
+            if (response.data.message != undefined) _this5.showAlert(response.data.message);
+
             _this5.showAlert("Something happened when updating . Please call Support");
           }
         })["catch"](function (error) {
@@ -6740,13 +6742,17 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function (value) {
           if (value == true) {
             axios["delete"]('/users/' + user.id).then(function (response) {
-              var index = _this9.users.indexOf(user);
+              if (response.data.success) {
+                var index = _this9.users.indexOf(user);
 
-              if (index > -1) {
-                _this9.users.splice(index, 1);
+                if (index > -1) {
+                  _this9.users.splice(index, 1);
+                }
+
+                _this9.showAlert("Successfully Deleted", 'success');
+              } else {
+                _this9.showAlert(response.data.message);
               }
-
-              _this9.showAlert("Successfully Deleted", 'success');
             })["catch"](function (error) {
               console.log(error);
             });
