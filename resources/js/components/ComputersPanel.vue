@@ -12,20 +12,24 @@
 
 
         <h1 class="mb-2">Computer IPs</h1>
+        <button class="btn btn-primary mb-2" @click="$refs.IPAddressAdderModal.show()">Add New Computer IP</button>
+
         <b-table striped
                  hover
+                 :fields="fields"
                  :sticky-header="true"
                  :items="computerIps"
                  class="mb-2 mt-2"
         >
             <template v-slot:cell(actions)="row">
                 <button class="btn btn-success" @click="showDialog(row.item)">Edit Computer IP</button>
+                <button class="btn btn-danger mr-2 mb-2" @click="deleteIP(row.item)">Delete</button>
 
             </template>
 
         </b-table>
 
-        <div class="row justify-content-center" v-if="students.length!=0">
+        <div class="row justify-content-center mt-2" v-if="computerIps.length!=0">
             <b-pagination
                 v-model="currentPage"
                 :total-rows="count"
@@ -33,15 +37,14 @@
                 aria-controls="my-table"
             ></b-pagination>
         </div>
-        <!-- Count Changer Modal-->
+        <!-- IP Changer Modal-->
         <b-modal
             id="modal-prevent-closing"
-            ref="countChanger"
-            title="Change Computers Count"
-            @shown="resetModal"
+            ref="IPAddressChangerModal"
+            title="Change IP Address"
             @ok="handleOk"
         >
-            <form ref="form" @submit.stop.prevent="handleCountSubmit">
+            <form ref="form" @submit.stop.prevent="handleSubmit">
                 <b-form-group
                     :state="computerIPState"
                     label="Computer IP Address"
@@ -49,21 +52,77 @@
                 >
                     <b-form-input
                         id="ip-input"
-                        v-model="count"
+                        v-model="modifiedIP.IP"
                         :state="computerIPState"
-                      placeholder="xxx.xxx.xxx.xxx"
+                        placeholder="xxx.xxx.xxx.xxx"
                         required
+
                     ></b-form-input>
+                    <!--                        @blur="checkIPIsUnique"-->
                     <b-form-invalid-feedback :state="computerIPState">
-                        Put correct IP Address
+                        {{ipStateMessage}}
+
                     </b-form-invalid-feedback>
+
                     <b-form-valid-feedback :state="computerIPState">
                         Looks Good.
                     </b-form-valid-feedback>
                 </b-form-group>
             </form>
         </b-modal>
+        <!--        IP Adder Modal-->
+        <b-modal
+            id="modal-prevent-closing"
+            ref="IPAddressAdderModal"
+            title="Add IP Address"
+            @reset="resetModal"
+            @ok="handleAdderModalOk"
+        >
+            <form ref="form" @submit.stop.prevent="handleAdderModalSubmit">
+                <b-form-group
+                    :state="computerIPState"
+                    label="Computer IP Address"
+                    label-for="ip-input"
+                >
+                    <b-form-input
+                        id="ip-input"
+                        v-model="modifiedIP.IP"
+                        :state="computerIPState"
+                        placeholder="xxx.xxx.xxx.xxx"
+                        required
 
+                    ></b-form-input>
+                    <!--                        @blur="checkIPIsUnique"-->
+                    <b-form-invalid-feedback :state="computerIPState">
+                        {{ipStateMessage}}
+
+                    </b-form-invalid-feedback>
+
+                    <b-form-valid-feedback :state="computerIPState">
+                        Looks Good.
+                    </b-form-valid-feedback>
+                </b-form-group>
+                <b-form-group
+                    :state="computerIPState"
+                    label="Computer Number"
+                    label-for="computer-number-input"
+                >
+                    <b-form-input
+                        id="computer-number-input"
+                        v-model="modifiedIP.computerNumber"
+                        :type="'number'"
+                        required
+                        :state="computerNumberState"
+                    ></b-form-input>
+                    <b-form-invalid-feedback :state="computerNumberState">
+                        This Computer has IP Address
+                    </b-form-invalid-feedback>
+                    <b-form-valid-feedback :state="computerNumberState">
+                        Looks Good.
+                    </b-form-valid-feedback>
+                </b-form-group>
+            </form>
+        </b-modal>
     </div>
 
 </template>
@@ -72,10 +131,10 @@
 
     export default {
         mounted() {
-            axios.get('/computer-ip/')
+            axios.get('/ip/')
                 .then(response => {
                     this.computerIps = response.data.ips;
-                    this.count=response.data.count;
+                    this.count = response.data.count;
                     // console.log(response.data);
                 }).catch(errors => {
 
@@ -83,6 +142,7 @@
         },
         data: function () {
             return {
+                fields:['computer_number','computer_ip','actions'],
                 computerIps: [],
                 dismissSecs: 5,
                 dismissCountDown: 0,
@@ -90,13 +150,18 @@
                 alert: "danger",
                 computerIp: null,
                 modifiedIP: {
-                    IP:'',
-                    computerNumber:0,
+                    IP: '',
+                    computerNumber: 0,
                 },
-                perPage: 50,
+                ipStateMessage: '',
+                perPage: 30,
                 currentPage: 1,
                 current: 1,
                 count: 0,
+                uniqueCheck:{
+                    IP:null,
+                    computerNumber:null,
+                },
             }
         },
         watch: {
@@ -110,18 +175,43 @@
                 axios.get(route)
                     .then(function (response) {
                         self.computerIps = response.data.ips;
-                        self.count=response.data.count;
+                        self.count = response.data.count;
                     });
 
                 this.$emit('input', newPage);
             }
         },
         computed: {
-            computerIPState:function(){
+            computerIPState: function () {
                 if (this.modifiedIP.IP.length == 0)
                     return null;
-                else
-                    this.validateIP(this.modifiedIP.IP);
+                else if (!this.validateIP(this.modifiedIP.IP)) {
+                    this.ipStateMessage = ' Put correct IP Address';
+                    return false;
+                } else {
+                    // console.log(this.checkIPIsUnique());
+                    // if(this.computerIP['computer ip']!==this.modifiedIP.IP)
+                    this.checkIPIsUnique();
+                    if (!this.uniqueCheck.IP) {
+                        this.ipStateMessage = 'This IP is token by another computer device';
+                        return false;
+                    }
+
+                    return true;
+                }
+
+            },
+            computerNumberState: function () {
+                if (this.modifiedIP.computerNumber == 0)
+                    return null;
+                else {
+                    this.checkComputerNumberIsUnique();
+                    return  this.uniqueCheck.computerNumber;
+                    // if(this.checkComputerNumberIsUnique())
+                    // return true;
+                    // else
+                    //     return false;
+                }
             },
 
         },
@@ -142,114 +232,99 @@
                 this.alert = alert;
                 this.dismissCountDown = this.dismissSecs
             },
+            checkIPIsUnique() {
 
-            showDialog(config) {
-                switch (config.id) {
-                    case 1:
-                    case 8:
-                        this.config = config;
-                        this.currentCount = config.value;
-                        this.count = config.value;
-                        this.$refs.countChanger.show();
-                        break;
-                    case 2:
-                    case 3:
-                    case 4:
-                        this.config = config;
-                        var time = config.value;
-                        this.currentHours = time.split(':')[0];
-                        this.hours = time.split(':')[0];
-                        this.currentMinutes = time.split(':')[1];
-                        this.minutes = time.split(':')[1];
-                        this.$refs.timeChanger.show();
-                        break;
-                    case 5:
-                    case 6:
-                    case 7:
-                        this.config = config;
-                        this.currentName = config.value;
-                        this.name = this.currentName;
-                        this.pos_name = config.name;
-                        this.$refs.nameChanger.show();
-                        break;
+                var data = new FormData();
+                data.append('ip', this.modifiedIP.IP);
+                 axios.post('/unique-ip', data).then(response => {
+                    // console.log(response.data.unique);
+                    this.uniqueCheck.IP= response.data.unique;
+                }).catch(error => console.log(error));
+            },
+            checkComputerNumberIsUnique() {
+                if(this.modifiedIP.computerNumber.length!=0){
+                    var data = new FormData();
+                    data.append('computer-number', this.modifiedIP.computerNumber);
+                     axios.post('/unique-number', data).then(response => {
+                       this.uniqueCheck.computerNumber=response.data.unique;
+                    }).catch(error => console.log(error));
 
                 }
 
             },
+            showDialog(ip) {
+
+                    this.computerIp=ip;
+                    this.modifiedIP.IP = ip['computer_ip'];
+                    this.modifiedIP.computerNumber = ip['computer_number'];
+
+                this.$refs.IPAddressChangerModal.show();
+            },
 
             resetModal() {
-                // this.hours = 0;
-                // this.minutes = 0;
-                // this.count = 0;
+                this.modifiedIP.IP = '';
+                this.modifiedIP.computerNumber = 0;
+            },
+
+            handleAdderModalOk(bvModalEvent) {
+                bvModalEvent.preventDefault();
+                this.handleAdderModalSubmit();
+
+            },
+            handleAdderModalSubmit() {
+                if (!this.computerIPState)
+                    return
+                if (!this.computerNumberState)
+                    return
+                this.storeIP();
+                //send the new computer
+                this.$nextTick(() => {
+                    this.$refs.IPAddressAdderModal.hide();
+                });
+            },
+            storeIP() {
+
+                var data = new FormData();
+                data.append('ip', this.modifiedIP.IP);
+                data.append('computer_number', this.modifiedIP.computerNumber);
+                axios.post('/ip',data).then(response=>{
+                   if(response.data.success){
+
+                       let ip ={
+                           computer_number:this.modifiedIP.computerNumber,
+                           computer_ip:this.modifiedIP.IP,
+                           actions:''
+                       };
+                       this.computerIps.push(ip);
+                       this.showAlert("Successfully Added", "success");
+                   }
+                   else
+                       this.showAlert("Something happened when adding . Please call Support");
+
+                }).catch((error)=>console.log(erorr));
             },
             handleOk(bvModalEvt) {
                 // Prevent modal from closing
                 bvModalEvt.preventDefault();
                 // Trigger submit handler
-                switch (this.config.id) {
-                    case 1:
-                    case 8:
-                        this.handleCountSubmit();
-                        break;
-                    case 2:
-                    case 3:
-                    case 4:
-                        this.handleTimeSubmit();
-                        break;
-                    case 5:
-                    case 6:
-                    case 7:
-                        this.handleNameSubmit();
-                        break;
+                this.handleSubmit();
+            },
+            handleSubmit(){
+                if (!this.computerIPState)
+                    return
 
-                }
-            },
-            handleCountSubmit() {
-                // Exit when the form isn't valid
-                if (!this.countState) {
-                    return
-                }
-                // Push the name to submitted names
-                this.newValue = this.count;
-                this.sendChange();
-                // Hide the modal manually
+                this.updateIP();
+                //send the new computer
                 this.$nextTick(() => {
-                    this.$refs.countChanger.hide()
-                })
+                    this.$refs.IPAddressChangerModal.hide();
+                });
             },
-            handleNameSubmit() {
-                // Exit when the form isn't valid
-                if (!this.nameState) {
-                    return
-                }
-                // Push the name to submitted names
-                this.newValue = this.name;
-                this.sendChange();
-                // Hide the modal manually
-                this.$nextTick(() => {
-                    this.$refs.nameChanger.hide()
-                })
-            },
-            handleTimeSubmit() {
-                // Exit when the form isn't valid
-                if (!this.timeState) {
-                    return
-                }
-                // Push the name to submitted names
-                this.newValue = this.hours + ':' + this.minutes;
-                this.sendChange();
-                // Hide the modal manually
-                this.$nextTick(() => {
-                    this.$refs.timeChanger.hide()
-                })
-            },
-
-            sendChange() {
-                axios.patch('/configs/'+this.config.id, {
-                    'value': this.newValue,
+            updateIP() {
+                axios.patch('/ip/' + this.computerIp.id, {
+                    'ip': this.modifiedIP.IP,
                 }).then(response => {
                     if (response.data.success) {
-                        this.config.value = this.newValue;
+                        this.computerIp.computer_ip = this.modifiedIP.IP;
                         this.showAlert("Successfully Updated", "success");
                     } else {
                         this.showAlert("Something happened when updating . Please call Support");
@@ -260,6 +335,40 @@
                         this.showAlert("Something happened when updating . Please call Support");
                         // console.log(error);
                     });
+
+            },
+            deleteIP(ip) {
+
+                    this.$bvModal.msgBoxConfirm('Are you sure about deleting this computer ' + ip.computer_ip, {
+                        title: 'Delete IP',
+                        size: 'sm',
+                        buttonSize: 'sm',
+                        okVariant: 'danger',
+                        okTitle: 'YES',
+                        cancelTitle: 'NO',
+                        footerClass: 'p-2',
+                        hideHeaderClose: false,
+                        centered: true
+                    })
+                        .then(value => {
+                            if (value == true) {
+                                axios.delete('/ip/' + ip.id)
+                                    .then(response => {
+                                        var index = this.computerIps.indexOf(ip);
+                                        if (index > -1) {
+                                            this.computerIps.splice(index, 1);
+                                        }
+                                        this.showAlert("Successfully Deleted", 'success');
+                                    }).catch(error => {
+                                    console.log(error);
+                                })
+                            }
+                        })
+                        .catch(err => {
+                            // An error occurred
+                            console.log(err);
+                        })
+
 
             },
         }

@@ -12,6 +12,7 @@
 */
 
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -266,7 +267,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::view('/cpanel/users-panel', 'cpanel.userspanel')->name('cpanel.users-panel');
         Route::view('/cpanel/configs-panel', 'cpanel.configpanel')->name('cpanel.configs-panel');
         Route::view('/cpanel/computers-panel', 'cpanel.computerspanel')->name('cpanel.computers-panel');
-        Route::apiResource('/computer-ip', 'ComputersIPController')->except('show');
+        Route::apiResource('/ip', 'ComputersIPController')->except('show');
         Route::resource('/users', 'ApiControllers\UsersController')
             ->only(['index', 'update', 'store', 'destroy']);
         Route::patch('/roles/{user}', 'ApiControllers\UsersController@updateRoles');
@@ -284,6 +285,38 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
 });
 Route::post('/users/unique-email', 'ApiControllers\ApiController@checkEmailIsUnique');
 Route::post('/students/unique-phone', 'ApiControllers\ApiController@checkPhoneIsUnique');
+//Route::get('/ip',function(Request $request){
+//    \App\AllowedIP::create([
+//        'computer_number'=>1,
+//        'ip'=>$request->ip()
+//    ]);
+//});
+Route::post('/unique-ip',function(Request $request){
+//    dd($request->get('ip'));
+    if($request->has('ip')) {
+        if (\App\AllowedIP::where('ip', $request->get('ip'))->get()->count() > 0)
+            return response()->json(['unique' => false]);
+        else
+            return response()->json(['unique' => true]);
+    }
+
+});
+Route::post('/unique-number',function(Request $request){
+//    dd($request->get('computer-number'));
+     if($request->has('computer-number')){
+//         dd(\App\AllowedIP::where('computer-number',1)->get());
+               return response()->json(['unique'=>!\App\AllowedIP::where('computer_number',intval($request->get('computer-number')))->get()->count()>0]);
+
+       }
+
+});
+Route::get('/ips',function(){
+//    dd(\App\AllowedIP::all());
+
+    dd(\App\AllowedIP::where('computer-number',1)->get());
+
+});
+
 //Route::resource('student','StudentsController')->middleware(['auth','admin']);
 //Route::get('/student','StudentsController@index')->name('student.index');
 //Route::get('/student/{student}','StudentsController@show')->name('student.show');
