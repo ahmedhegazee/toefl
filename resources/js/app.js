@@ -5,9 +5,10 @@
  */
 import BootstrapVue from 'bootstrap-vue';
 require('./bootstrap');
-
+import _  from 'underscore';
 window.Vue = require('vue');
 Vue.use(BootstrapVue);
+Vue.use(_);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -33,6 +34,7 @@ Vue.component('display-questions-panel', require('./components/DisplayQuestionsP
 Vue.component('multiple-questions', require('./components/MultipleQuestionsComponent.vue').default);
 Vue.component('stored-data-panel', require('./components/StoredDataPanel.vue').default);
 Vue.component('attempts-panel', require('./components/AttemptsPanel.vue').default);
+Vue.component('computers-panel', require('./components/ComputersPanel.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -409,6 +409,7 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
     );
 
     public static $classMap = array (
+        'App\\AllowedIP' => __DIR__ . '/../..' . '/app/AllowedIP.php',
         'App\\Attempt' => __DIR__ . '/../..' . '/app/Attempt.php',
         'App\\Certificate' => __DIR__ . '/../..' . '/app/Certificate.php',
         'App\\Config' => __DIR__ . '/../..' . '/app/Config.php',
@@ -477,6 +478,7 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Http\\Middleware\\allowedIpMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/allowedIpMiddleware.php',
         'App\\Http\\Middleware\\checkRoles' => __DIR__ . '/../..' . '/app/Http/Middleware/checkRoles.php',
         'App\\Http\\Middleware\\isAvailableReservation' => __DIR__ . '/../..' . '/app/Http/Middleware/isAvailableReservation.php',
         'App\\Jobs\\EndExamJob' => __DIR__ . '/../..' . '/app/Jobs/EndExamJob.php',

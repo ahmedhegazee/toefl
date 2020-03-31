@@ -473,6 +473,8 @@
                         if (response.data.success) {
                             this.successAction();
                         } else {
+                            if(response.data.message!=undefined)
+                                this.showAlert(response.data.message);
                             this.showAlert("Something happened when updating . Please call Support");
                         }
                     })
@@ -571,11 +573,15 @@
                             if (value == true) {
                                 axios.delete('/users/' + user.id)
                                     .then(response => {
-                                        var index = this.users.indexOf(user);
-                                        if (index > -1) {
-                                            this.users.splice(index, 1);
-                                        }
-                                        this.showAlert("Successfully Deleted", 'success');
+                                       if(response.data.success){
+                                           var index = this.users.indexOf(user);
+                                           if (index > -1) {
+                                               this.users.splice(index, 1);
+                                           }
+                                           this.showAlert("Successfully Deleted", 'success');
+                                       }else{
+                                           this.showAlert(response.data.message)
+                                       }
                                     }).catch(error => {
                                     console.log(error);
                                 })
