@@ -5,21 +5,21 @@
     <div class="container">
 
         <div class="row mb-4">
-            <div class="col-6">
-                <img src="/storage/{{$student->personalimage}}" style="height:400px;" alt="">
+            <div class="col-5 p-3">
+                <img src="/storage/{{$student->personalimage}}" style="height:300px;" alt="">
             </div>
-            <div class="col-6">
-                <img src="/storage/{{$student->nidimage}}" style="height:400px;" alt="">
+            <div class="col-5 p-3">
+                <img src="/storage/{{$student->nidimage}}" style="height:300px;" alt="">
 
             </div>
         </div>
         <div class="row mb-4">
-            <div class="col-6">
-                <img src="/storage/{{$student->documents->last()->certificate_document}}" style="height:400px;" alt="">
+            <div class="col-5 p-3">
+                <img src="/storage/{{$student->documents->last()->certificate_document}}" style="height:300px;" alt="">
 
             </div>
-            <div class="col-6">
-                <img src="/storage/{{$student->documents->last()->message_document}}" style="height:400px;" alt="">
+            <div class="col-5 p-3">
+                <img src="/storage/{{$student->documents->last()->message_document}}" style="height:300px;" alt="">
 
             </div>
         </div>

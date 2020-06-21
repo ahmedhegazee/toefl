@@ -2761,53 +2761,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
 
-    axios.get('/configs/').then(function (response) {
+    axios.get("/configs/").then(function (response) {
       _this.examConfigs = response.data.exam;
       _this.certificateConfigs = response.data.certificate; // console.log(response.data);
     })["catch"](function (errors) {});
@@ -2820,17 +2778,19 @@ __webpack_require__.r(__webpack_exports__);
       dismissCountDown: 0,
       message: "",
       alert: "danger",
-      currentName: '',
-      name: '',
-      pos_name: '',
+      currentName: "",
+      name: "",
+      pos_name: "",
       config: null,
-      newValue: '',
+      newValue: "",
       currentHours: 0,
       currentMinutes: 0,
       hours: 0,
       minutes: 0,
       currentCount: 0,
-      count: 0
+      count: 0,
+      dialogTitle: "",
+      dialogDesciption: ""
     };
   },
   computed: {
@@ -2866,14 +2826,33 @@ __webpack_require__.r(__webpack_exports__);
       this.alert = alert;
       this.dismissCountDown = this.dismissSecs;
     },
+    showCountDialg: function showCountDialg(config) {
+      this.config = config;
+      this.currentCount = config.value;
+      this.count = config.value;
+      this.$refs.countChanger.show();
+    },
     showDialog: function showDialog(config) {
       switch (config.id) {
         case 1:
+          this.dialogDesciption = "Current Computers Count";
+          this.dialogTitle = "Change Computers Count";
+          this.showCountDialg(config);
+          break;
+
         case 8:
-          this.config = config;
-          this.currentCount = config.value;
-          this.count = config.value;
-          this.$refs.countChanger.show();
+          this.dialogDesciption = "Current Certificate No";
+          this.dialogTitle = "Change Certificate No";
+          this.showCountDialg(config);
+          break;
+
+        case 9:
+        case 10:
+        case 11:
+        case 12:
+          this.dialogDesciption = "Current Questions Count";
+          this.dialogTitle = "Change Questions Count (".concat(config.name, ")");
+          this.showCountDialg(config);
           break;
 
         case 2:
@@ -2881,10 +2860,10 @@ __webpack_require__.r(__webpack_exports__);
         case 4:
           this.config = config;
           var time = config.value;
-          this.currentHours = time.split(':')[0];
-          this.hours = time.split(':')[0];
-          this.currentMinutes = time.split(':')[1];
-          this.minutes = time.split(':')[1];
+          this.currentHours = time.split(":")[0];
+          this.hours = time.split(":")[0];
+          this.currentMinutes = time.split(":")[1];
+          this.minutes = time.split(":")[1];
           this.$refs.timeChanger.show();
           break;
 
@@ -2910,6 +2889,10 @@ __webpack_require__.r(__webpack_exports__);
       switch (this.config.id) {
         case 1:
         case 8:
+        case 9:
+        case 10:
+        case 11:
+        case 12:
           this.handleCountSubmit();
           break;
 
@@ -2967,7 +2950,7 @@ __webpack_require__.r(__webpack_exports__);
       } // Push the name to submitted names
 
 
-      this.newValue = this.hours + ':' + this.minutes;
+      this.newValue = this.hours + ":" + this.minutes;
       this.sendChange(); // Hide the modal manually
 
       this.$nextTick(function () {
@@ -2977,8 +2960,8 @@ __webpack_require__.r(__webpack_exports__);
     sendChange: function sendChange() {
       var _this5 = this;
 
-      axios.patch('/configs/' + this.config.id, {
-        'value': this.newValue
+      axios.patch("/configs/" + this.config.id, {
+        value: this.newValue
       }).then(function (response) {
         if (response.data.success) {
           _this5.config.value = _this5.newValue;
@@ -3277,29 +3260,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "DisplayQuestionsPanel",
   mounted: function mounted() {
     var _this = this;
 
     // console.log(this.questions);
-    if (window.location.pathname.indexOf('exam') > -1 && window.location.pathname.indexOf('add') == -1) this.showExam = true;
+    if (window.location.pathname.indexOf("exam") > -1 && window.location.pathname.indexOf("add") == -1) this.showExam = true;
     this.busyState = true;
     var self = this;
-    axios.get(this.deleteRoute + '?showExam=' + this.showExam).then(function (response) {
+    axios.get(this.deleteRoute + "?showExam=" + this.showExam).then(function (response) {
       _this.questions = response.data.questions;
       _this.count = response.data.count;
-      if (_this.canChooseQuestions) _this.selected = response.data.checked;
+
+      if (_this.canChooseQuestions) {
+        _this.selected = response.data.checked;
+        _this.maxQuestions = parseInt(response.data.max_questions);
+      }
     });
     setTimeout(function () {
       if (self.questions.length == 0) {
-        self.showAlert('No questions is available.Add new one', 'success');
+        self.showAlert("No questions is available.Add new one", "success");
       }
 
       self.busyState = false;
     }, 3000); // this.questions = JSON.parse(this.questions);
   },
-  props: ['route', 'deleteRoute', 'isParagraph', 'canChoose', 'checked', 'storeRoute', 'isAudio', 'redirectRoute' // 'questions'
+  props: ["route", "deleteRoute", "isParagraph", "canChoose", "checked", "storeRoute", "isAudio", "redirectRoute" // 'questions'
   ],
   data: function data() {
     return {
@@ -3315,58 +3313,73 @@ __webpack_require__.r(__webpack_exports__);
       current: 1,
       count: 0,
       showExam: false,
-      busyState: false
+      busyState: false,
+      maxQuestions: 0,
+      questionsCounter: 0
     };
   },
   watch: {
     currentPage: function currentPage(newPage, oldPage) {
       this.questions = [];
       var self = this;
-      axios.get(this.deleteRoute + '?showExam=' + this.showExam + '&&page=' + newPage, {
-        'showExam': this.showExam
+      axios.get(this.deleteRoute + "?showExam=" + this.showExam + "&&page=" + newPage, {
+        showExam: this.showExam
       }).then(function (response) {
         self.questions = response.data.questions; // self.questions = ;
 
         self.count = response.data.count; // if (self.canChooseQuestions)
         //     self.selected = response.data.checked;
       });
-      this.$emit('input', newPage);
+      this.$emit("input", newPage);
     }
   },
   computed: {
     canChooseQuestions: function canChooseQuestions() {
-      return this.canChoose == 'true';
+      return this.canChoose == "true";
     },
     isParagraphs: function isParagraphs() {
-      return this.isParagraph == 'true';
+      return this.isParagraph == "true";
     },
     isAudios: function isAudios() {
-      return this.isAudio == 'true';
+      return this.isAudio == "true";
+    },
+    selectedQuestionsCount: function selectedQuestionsCount() {
+      if (this.isParagraphs || this.isAudios) {
+        this.questionsCounter = 0;
+
+        for (var i = 0; i < this.selected.length; i++) {
+          for (var j = 0; j < this.questions.length; j++) {
+            if (this.questions[j].id == this.selected[i]) this.questionsCounter += this.questions[j].Questions;
+          }
+        }
+
+        return this.questionsCounter;
+      } else return this.selected.length;
     }
   },
   methods: {
     showEditQuestion: function showEditQuestion(question) {
-      window.location.replace(this.route + '/' + question.id + '/edit');
+      window.location.replace(this.route + "/" + question.id + "/edit");
     },
     showParagraph: function showParagraph(paragraph) {
-      window.location.replace(this.route + '/' + paragraph.id);
+      window.location.replace(this.route + "/" + paragraph.id);
     },
     deleteQuestion: function deleteQuestion(question) {
       var _this2 = this;
 
-      this.$bvModal.msgBoxConfirm('Are you sure about removing this question ', {
-        title: 'Remove Question',
-        size: 'sm',
-        buttonSize: 'sm',
-        okVariant: 'danger',
-        okTitle: 'YES',
-        cancelTitle: 'NO',
-        footerClass: 'p-2',
+      this.$bvModal.msgBoxConfirm("Are you sure about removing this question ", {
+        title: "Remove Question",
+        size: "sm",
+        buttonSize: "sm",
+        okVariant: "danger",
+        okTitle: "YES",
+        cancelTitle: "NO",
+        footerClass: "p-2",
         hideHeaderClose: false,
         centered: true
       }).then(function (value) {
         if (value == true) {
-          axios["delete"](_this2.deleteRoute + '/' + question.id).then(function (response) {
+          axios["delete"](_this2.deleteRoute + "/" + question.id).then(function (response) {
             if (response.data.success) {
               var index = _this2.questions.indexOf(question);
 
@@ -3374,12 +3387,12 @@ __webpack_require__.r(__webpack_exports__);
                 _this2.questions.splice(index, 1);
               }
 
-              _this2.showAlert('Successfully removed', 'success');
+              _this2.showAlert("Successfully removed", "success");
             } else _this2.showAlert("You can't remove this question ");
           })["catch"](function (error) {
             console.log(error);
 
-            _this2.showAlert('Something happened. Please call support');
+            _this2.showAlert("Something happened. Please call support");
           });
         }
       })["catch"](function (err) {
@@ -3404,10 +3417,12 @@ __webpack_require__.r(__webpack_exports__);
     storeQuestions: function storeQuestions() {
       var _this3 = this;
 
-      axios.post(this.storeRoute, {
-        'questions': this.selected
+      if (this.selected.length > this.maxQuestions) {
+        this.showAlert("You can add only ".concat(this.maxQuestions, " Questions"), "danger");
+      } else axios.post(this.storeRoute, {
+        questions: this.selected
       }).then(function (response) {
-        _this3.showAlert('Successfully Added to the exam', 'success');
+        _this3.showAlert("Successfully Added to the exam", "success");
 
         var r = _this3.redirectRoute;
         setTimeout(function () {
@@ -3418,17 +3433,19 @@ __webpack_require__.r(__webpack_exports__);
         return function (error) {
           console.log(error);
 
-          _this3.showAlert('Something happened. Please call support');
+          _this3.showAlert("Something happened. Please call support");
         };
       });
     },
     storeParagraphs: function storeParagraphs() {
       var _this4 = this;
 
-      axios.post(this.storeRoute, {
-        'paragraphs': this.selected
+      if (this.questionsCounter > this.maxQuestions) {
+        this.showAlert("You can add only ".concat(this.maxQuestions, " Questions"), "danger");
+      } else axios.post(this.storeRoute, {
+        paragraphs: this.selected
       }).then(function (response) {
-        _this4.showAlert('Successfully Added to the exam', 'success');
+        _this4.showAlert("Successfully Added to the exam", "success");
 
         var r = _this4.redirectRoute;
         setTimeout(function () {
@@ -3439,17 +3456,19 @@ __webpack_require__.r(__webpack_exports__);
         return function (error) {
           console.log(error);
 
-          _this4.showAlert('Something happened. Please call support');
+          _this4.showAlert("Something happened. Please call support");
         };
       });
     },
     storeAudios: function storeAudios() {
       var _this5 = this;
 
-      axios.post(this.storeRoute, {
-        'audios': this.selected
+      if (this.questionsCounter > this.maxQuestions) {
+        this.showAlert("You can add only ".concat(this.maxQuestions, " Questions"), "danger");
+      } else axios.post(this.storeRoute, {
+        audios: this.selected
       }).then(function (response) {
-        _this5.showAlert('Successfully Added to the exam', 'success');
+        _this5.showAlert("Successfully Added to the exam", "success");
 
         var r = _this5.redirectRoute;
         setTimeout(function () {
@@ -3460,7 +3479,7 @@ __webpack_require__.r(__webpack_exports__);
         return function (error) {
           console.log(error);
 
-          _this5.showAlert('Something happened. Please call support');
+          _this5.showAlert("Something happened. Please call support");
         };
       });
     }
@@ -76649,7 +76668,7 @@ var render = function() {
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
         },
-        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+        [_vm._v(_vm._s(_vm.message))]
       ),
       _vm._v(" "),
       _c("h1", { staticClass: "mb-2" }, [_vm._v("Exam Configuration")]),
@@ -76778,7 +76797,7 @@ var render = function() {
                     { attrs: { state: _vm.nameState } },
                     [
                       _vm._v(
-                        "\n                    The name length must be between 5 and 200 characters.\n                "
+                        "The name length must be between 5 and 200 characters."
                       )
                     ]
                   ),
@@ -76786,11 +76805,7 @@ var render = function() {
                   _c(
                     "b-form-valid-feedback",
                     { attrs: { state: _vm.nameState } },
-                    [
-                      _vm._v(
-                        "\n                    Looks Good.\n                "
-                      )
-                    ]
+                    [_vm._v("Looks Good.")]
                   )
                 ],
                 1
@@ -76894,11 +76909,7 @@ var render = function() {
                   _c(
                     "b-form-invalid-feedback",
                     { attrs: { state: _vm.timeState } },
-                    [
-                      _vm._v(
-                        "\n                    Put correct time\n                "
-                      )
-                    ]
+                    [_vm._v("Put correct time")]
                   )
                 ],
                 1
@@ -76913,10 +76924,7 @@ var render = function() {
         "b-modal",
         {
           ref: "countChanger",
-          attrs: {
-            id: "modal-prevent-closing",
-            title: "Change Computers Count"
-          },
+          attrs: { id: "modal-prevent-closing", title: _vm.dialogTitle },
           on: { shown: _vm.resetModal, ok: _vm.handleOk }
         },
         [
@@ -76934,7 +76942,11 @@ var render = function() {
             },
             [
               _c("h4", [
-                _vm._v("Current Computers Count = " + _vm._s(_vm.currentCount))
+                _vm._v(
+                  _vm._s(_vm.dialogDesciption) +
+                    " = " +
+                    _vm._s(_vm.currentCount)
+                )
               ]),
               _vm._v(" "),
               _c(
@@ -76968,21 +76980,13 @@ var render = function() {
                   _c(
                     "b-form-invalid-feedback",
                     { attrs: { state: _vm.countState } },
-                    [
-                      _vm._v(
-                        "\n                    Put correct count\n                "
-                      )
-                    ]
+                    [_vm._v("Put correct count")]
                   ),
                   _vm._v(" "),
                   _c(
                     "b-form-valid-feedback",
                     { attrs: { state: _vm.countState } },
-                    [
-                      _vm._v(
-                        "\n                    Looks Good.\n                "
-                      )
-                    ]
+                    [_vm._v("Looks Good.")]
                   )
                 ],
                 1
@@ -77225,8 +77229,21 @@ var render = function() {
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
         },
-        [_vm._v("\n            " + _vm._s(_vm.message) + "\n        ")]
+        [_vm._v(_vm._s(_vm.message))]
       ),
+      _vm._v(" "),
+      _vm.canChooseQuestions
+        ? _c("div", { staticClass: "row justify-content-end" }, [
+            _c("h3", [
+              _vm._v(
+                _vm._s(_vm.selectedQuestionsCount) +
+                  "/" +
+                  _vm._s(_vm.maxQuestions) +
+                  " Q"
+              )
+            ])
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _c("b-table", {
         staticStyle: { "max-height": "70vh" },
@@ -77276,7 +77293,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Show\n                ")]
+                        [_vm._v("Show")]
                       )
                     : _vm._e(),
                   _vm._v(" "),
@@ -77291,7 +77308,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Edit\n                ")]
+                        [_vm._v("Edit")]
                       )
                     : _vm._e(),
                   _vm._v(" "),
@@ -77306,7 +77323,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Remove\n                ")]
+                        [_vm._v("Remove")]
                       )
                     : _vm._e(),
                   _vm._v(" "),
@@ -77321,7 +77338,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Show\n                ")]
+                        [_vm._v("Show")]
                       )
                     : _vm._e(),
                   _vm._v(" "),
@@ -77336,7 +77353,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Edit\n                ")]
+                        [_vm._v("Edit")]
                       )
                     : _vm._e()
                 ]
@@ -77407,7 +77424,7 @@ var render = function() {
               staticClass: "btn btn-primary",
               on: { click: _vm.storeQuestions }
             },
-            [_vm._v("Add Questions\n        ")]
+            [_vm._v("Add Questions")]
           )
         : _vm._e(),
       _vm._v(" "),
@@ -77418,7 +77435,7 @@ var render = function() {
               staticClass: "btn btn-primary",
               on: { click: _vm.storeParagraphs }
             },
-            [_vm._v("Add Paragraphs\n        ")]
+            [_vm._v("Add Paragraphs")]
           )
         : _vm._e(),
       _vm._v(" "),
@@ -77426,7 +77443,7 @@ var render = function() {
         ? _c(
             "button",
             { staticClass: "btn btn-primary", on: { click: _vm.storeAudios } },
-            [_vm._v("Add Audios\n        ")]
+            [_vm._v("Add Audios")]
           )
         : _vm._e()
     ],
@@ -92995,15 +93012,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!****************************************************!*\
   !*** ./resources/js/components/ComputersPanel.vue ***!
   \****************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ComputersPanel_vue_vue_type_template_id_00895d57___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ComputersPanel.vue?vue&type=template&id=00895d57& */ "./resources/js/components/ComputersPanel.vue?vue&type=template&id=00895d57&");
 /* harmony import */ var _ComputersPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ComputersPanel.vue?vue&type=script&lang=js& */ "./resources/js/components/ComputersPanel.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _ComputersPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _ComputersPanel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -93033,7 +93049,7 @@ component.options.__file = "resources/js/components/ComputersPanel.vue"
 /*!*****************************************************************************!*\
   !*** ./resources/js/components/ComputersPanel.vue?vue&type=script&lang=js& ***!
   \*****************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

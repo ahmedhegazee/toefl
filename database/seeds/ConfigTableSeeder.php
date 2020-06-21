@@ -12,38 +12,53 @@ class ConfigTableSeeder extends Seeder
     public function run()
     {
         \App\Config::create([
-            'name'=>'computers_count',
-            'value'=>'30',
+            'name' => 'computers_count',
+            'value' => '30',
         ]);
         \App\Config::create([
-            'name'=>'grammar_exam_time',
-            'value'=>'0:45',
+            'name' => 'grammar_exam_time',
+            'value' => '0:45',
         ]);
         \App\Config::create([
-            'name'=>'reading_exam_time',
-            'value'=>'1:0',
+            'name' => 'reading_exam_time',
+            'value' => '1:0',
         ]);
         \App\Config::create([
-            'name'=>'listening_exam_time',
-            'value'=>'1:0',
+            'name' => 'listening_exam_time',
+            'value' => '1:0',
         ]);
         \App\Config::create([
-            'name'=>'center_manager',
-            'value'=>'Dr.Faysel A. Metwally',
+            'name' => 'center_manager',
+            'value' => 'Dr.Faysel A. Metwally',
         ]);
         \App\Config::create([
-            'name'=>'faculty_dean',
-            'value'=>'Prof. Waleed Shawky Elbehiry',
+            'name' => 'faculty_dean',
+            'value' => 'Prof. Waleed Shawky Elbehiry',
         ]);
         \App\Config::create([
-            'name'=>'vice_president',
-            'value'=>'Prof. Hassan H. Younis',
+            'name' => 'vice_president',
+            'value' => 'Prof. Hassan H. Younis',
 
         ]);
         \App\Config::create([
-            'name'=>'certificate_id',
-            'value'=>'2414',
+            'name' => 'certificate_id',
+            'value' => '2414',
+        ]);
+        \App\Config::create([
+            'name' => 'grammar_questions',
+            'value' => '40',
+        ]);
+        \App\Config::create([
+            'name' => 'paragraph_questions',
+            'value' => '30',
+        ]);
+        \App\Config::create([
+            'name' => 'vocab_questions',
+            'value' => '30',
+        ]);
+        \App\Config::create([
+            'name' => 'listening_questions',
+            'value' => '40',
         ]);
     }
 }
-
