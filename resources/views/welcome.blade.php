@@ -96,11 +96,11 @@
     </div>
 
 </div>
-<div class="row" style="text-align: center;
-        margin-bottom: 4vh;
-        line-height: 1.8">
-    Developed By Ahmed Hegazy <br>
-    FCI SWE Dept 2019-2020 &copy;
-</div>
+{{--<div class="row" style="text-align: center;--}}
+{{--        margin-bottom: 4vh;--}}
+{{--        line-height: 1.8">--}}
+{{--    Developed By Ahmed Hegazy <br>--}}
+{{--    FCI SWE Dept 2019-2020 &copy;--}}
+{{--</div>--}}
 </body>
 </html>

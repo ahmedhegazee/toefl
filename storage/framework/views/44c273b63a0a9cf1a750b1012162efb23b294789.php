@@ -84,22 +84,22 @@
         </main>
 
     </div>
-    <div class="row bg-light " style="
-border-top: 1px solid rgba(0, 0, 0, 0.15);
-    padding-left: 45vw;
-    padding-top:10px;
-    padding-bottom:10px;
-    text-align: center;
-    line-height: 1.8;
-    overflow: hidden;
-    bottom: 0;
-    right:0;
-    margin:0;
-    width: 100%;
-">
-        Developed By Ahmed Hegazy <br>
-        FCI SWE Dept 2019-2020 &copy;
-    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

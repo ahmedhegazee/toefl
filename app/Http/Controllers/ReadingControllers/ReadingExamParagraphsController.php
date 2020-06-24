@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ReadingControllers;
 
+use App\Config;
 use App\Http\Controllers\Controller;
 use App\Logging;
 use App\Reading\Paragraph;
@@ -21,24 +22,24 @@ class ReadingExamParagraphsController extends Controller
             $paragraphs = Paragraph::getParagraphsForChoose(Paragraph::paginate(50));
             $checked = $exam->paragraphs()->pluck('paragraph_id');
             $count = Paragraph::all()->count();
-//            $checked = json_encode($checked);
-            return response()->json(['questions' => $paragraphs, 'count' => $count, 'checked' => $checked]);
+            $maxCountQuestions = Config::where('id', 10)->first()->value;
 
+            //            $checked = json_encode($checked);
+            return response()->json(['questions' => $paragraphs, 'max_questions' => $maxCountQuestions, 'count' => $count, 'checked' => $checked]);
         }
-
     }
 
     public function store(Request $request, ReadingExam $exam)
     {
-        $str='';
-        for($i=0;$i<sizeof($request['paragraphs']);$i++){
-            $str.=$request['paragraphs'][$i].',';
+        $str = '';
+        for ($i = 0; $i < sizeof($request['paragraphs']); $i++) {
+            $str .= $request['paragraphs'][$i] . ',';
         }
-        $message = " add  paragraphs {" .$str . "} to reading exam  with id {" . $exam->id . "} ";
+        $message = " add  paragraphs {" . $str . "} to reading exam  with id {" . $exam->id . "} ";
         Logging::logProfessor(auth()->user(), $message);
         $paragraphs = Paragraph::whereIn('id', $request['paragraphs'])->get();
         $exam->paragraphs()->sync($paragraphs);
-//        return redirect()->back();
+        //        return redirect()->back();
     }
 
     public function destroy(ReadingExam $exam, Paragraph $paragraph)
@@ -48,6 +49,6 @@ class ReadingExamParagraphsController extends Controller
         $exam->paragraphs()->detach($paragraph);
         return response()->json(['success' => true]);
 
-//        return redirect()->action('ReadingExamsController@showParagraphs',compact('exam'));
+        //        return redirect()->action('ReadingExamsController@showParagraphs',compact('exam'));
     }
 }

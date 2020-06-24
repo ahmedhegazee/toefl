@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ListeningControllers;
 
+use App\Config;
 use App\Http\Controllers\Controller;
 use App\Listening\Audio;
 use App\Listening\ListeningExam;
@@ -20,25 +21,27 @@ class ListeningExamAudiosController extends Controller
             $audios = Audio::getAudiosForChoose(Audio::paginate(50));
             $checked = $exam->audios()->pluck('audio_id');
             $count = Audio::all()->count();
-            return response()->json(['questions' => $audios, 'count' => $count, 'checked' => $checked]);
+            $maxCountQuestions = Config::where('id', 12)->first()->value;
+
+            return response()->json(['questions' => $audios, 'max_questions' => $maxCountQuestions, 'count' => $count, 'checked' => $checked]);
         }
 
-//        return view('listening.exams.audios', compact('audios', 'exam', 'checked'));
+        //        return view('listening.exams.audios', compact('audios', 'exam', 'checked'));
     }
 
     public function store(Request $request, ListeningExam $exam)
     {
-//        dd($request['questions']);
-        $str='';
-        for($i=0;$i<sizeof($request['audios']);$i++){
-            $str.=$request['audios'][$i].',';
+        //        dd($request['questions']);
+        $str = '';
+        for ($i = 0; $i < sizeof($request['audios']); $i++) {
+            $str .= $request['audios'][$i] . ',';
         }
         $audios = Audio::whereIn('id', $request['audios'])->get();
         $message = " add  audios {" . $str . "} to listening exam  with id {" . $exam->id . "} ";
         Logging::logProfessor(auth()->user(), $message);
         $exam->audios()->sync($audios);
-//        dd($exam->questions);
-//        return redirect()->back();
+        //        dd($exam->questions);
+        //        return redirect()->back();
     }
 
     public function destroy(ListeningExam $exam, Audio $audio)

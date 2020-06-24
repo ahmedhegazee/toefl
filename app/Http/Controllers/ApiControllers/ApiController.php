@@ -28,14 +28,13 @@ class ApiController extends Controller
         if ($count > 0) {
 
             if (
-//                Cache::has('student-' . $student->id . '-grammar') ||
-//                Cache::has('student-' . $student->id . '-reading') ||
-            !is_null($student->attempts->last()->result)
+                //                Cache::has('student-' . $student->id . '-grammar') ||
+                //                Cache::has('student-' . $student->id . '-reading') ||
+                !is_null($student->attempts->last()->result)
             ) {
                 $message = "can't delete this attempt {" . $student->attempts->last()->id . "}.The student has solved the exam whose id " . $student->id . " and name is " . $student->user->name;
                 Logging::logAdmin(auth()->user(), $message);
                 return response()->make("you can't delete this attempt.The student has solved the exam");
-
             } else {
                 $message = " delete this attempt {" . $student->attempts->last()->id . "} of this student whose id " . $student->id . " and name is " . $student->user->name;
                 Logging::logAdmin(auth()->user(), $message);
@@ -47,7 +46,6 @@ class ApiController extends Controller
             $message = "can't delete this attempt.The student doesn't have attempt in this reservation whose id " . $student->id . " and name is " . $student->user->name;
             Logging::logAdmin(auth()->user(), $message);
             return response()->make("the student doesn't have attempt in this reservation");
-
         }
     }
 
@@ -64,60 +62,57 @@ class ApiController extends Controller
         $students = $group->students()->with('results')->get()
             ->filter(function ($student) use ($group) {
                 if ($student->results()->count() > 0) {
-//                    $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+                    //                    $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
                     $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
                         ->where('group_id', $group->id)->get()->first();
                     return $attempt->result->success == 1;
                 }
-
             });
-        $certificates=$students->map(function ($student) use ($count, $endDate, $startDate, $group) {
+        $certificates = $students->map(function ($student) use ($count, $endDate, $startDate, $group) {
             if ($student->certificates->where('reservation_id', $group->reservation->id)->count() == 0) {
-//                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+                //                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
                 $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
                     ->where('group_id', $group->id)->get()->first();
                 return  $student->certificates()->create([
-                        'reservation_id' => $group->reservation->id,
-                        'result_id' => $attempt->result->id,
-                        'start_date' => $startDate,
-                        'end_date' => $endDate,
-                        'studying_degree' => $group->reservation->students->where('id', $student->id)->first()->pivot->studying,
-                        'no' => $count++
-                    ]
-                );
-            }
-            else
+                    'reservation_id' => $group->reservation->id,
+                    'result_id' => $attempt->result->id,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                    'studying_degree' => $group->reservation->students->where('id', $student->id)->first()->pivot->studying,
+                    'no' => $count++
+                ]);
+            } else
                 return $student->certificates->where('reservation_id', $group->reservation->id)->first();
         });
-//        foreach ($students as $student) {
-//            if ($student->certificates->where('reservation_id', $group->reservation->id)->count() == 0) {
-////                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
-//                $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
-//                    ->where('group_id', $group->id)->get()->first();
-//                $student->certificates()->create([
-//                        'reservation_id' => $group->reservation->id,
-//                        'result_id' => $attempt->result->id,
-//                        'start_date' => $startDate,
-//                        'end_date' => $endDate,
-//                        'studying_degree' => $group->reservation->students->where('id', $student->id)->first()->pivot->studying,
-//                        'no' => $count++
-//                    ]
-//                );
-//            }
-//            sleep(5);
-//        }
-//        sleep(60);
-//        $certificates= $students->map(function($student) use ($group) {
-//            return $student->certificates->where('reservation_id', $group->reservation->id)->first();
-//        });
-//        dd($certificates);
+        //        foreach ($students as $student) {
+        //            if ($student->certificates->where('reservation_id', $group->reservation->id)->count() == 0) {
+        ////                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+        //                $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
+        //                    ->where('group_id', $group->id)->get()->first();
+        //                $student->certificates()->create([
+        //                        'reservation_id' => $group->reservation->id,
+        //                        'result_id' => $attempt->result->id,
+        //                        'start_date' => $startDate,
+        //                        'end_date' => $endDate,
+        //                        'studying_degree' => $group->reservation->students->where('id', $student->id)->first()->pivot->studying,
+        //                        'no' => $count++
+        //                    ]
+        //                );
+        //            }
+        //            sleep(5);
+        //        }
+        //        sleep(60);
+        //        $certificates= $students->map(function($student) use ($group) {
+        //            return $student->certificates->where('reservation_id', $group->reservation->id)->first();
+        //        });
+        //        dd($certificates);
         $certificateNumbering->update([
             'value' => $count
         ]);
-        $message = "print certificates of reservation id " .$group->reservation->id . " which has start data is " . $group->reservation->start;
+        $message = "print certificates of reservation id " . $group->reservation->id . " which has start data is " . $group->reservation->start;
         Logging::logAdmin(auth()->user(), $message);
         return view('certificate', compact('certificates', 'count', 'centerManager', 'FacultyDean', 'vicePresident', 'startDate', 'endDate'));
-//        return $pdf->download('certificates ' . $reservation->start . ' . pdf');
+        //        return $pdf->download('certificates ' . $reservation->start . ' . pdf');
 
     }
     public function printStudentCertificate(Student $student, Certificate $certificate)
@@ -130,34 +125,34 @@ class ApiController extends Controller
         $message = "print certificate of student id " . $student->id . " which no is " . $certificate->no;
         Logging::logAdmin(auth()->user(), $message);
         return view('students.certificate', compact('centerManager', 'FacultyDean', 'vicePresident', 'certificate', 'student'));
-//        return $pdf->download('certificates ' . $reservation->start . ' . pdf');
+        //        return $pdf->download('certificates ' . $reservation->start . ' . pdf');
 
     }
 
     public function getStudentsForCertificates(Group $group)
     {
         $students = $group->students()->get()
-            ->filter(function($student) use ($group){
-//                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+            ->filter(function ($student) use ($group) {
+                //                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
                 $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
                     ->where('group_id', $group->id)->get()->first();
 
                 if (!is_null($attempt->result))
-                   return $attempt->result->success == 1;
+                    return $attempt->result->success == 1;
             })
-            ->map(function ($student)  use ($group){
+            ->map(function ($student)  use ($group) {
 
-//                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+                //                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
                 $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
                     ->where('group_id', $group->id)->get()->first();
-                        return [
-                            "ID" => $student->id,
-                            "English Name" => $student->user->name,
-                            "Arabic Name" => $student->arabic_name,
-                            "Email" => $student->user->email,
-                            "Phone Number" => $student->phone,
-                            "Score" => $attempt->result->mark,
-                        ];
+                return [
+                    "ID" => $student->id,
+                    "English Name" => $student->user->name,
+                    "Arabic Name" => $student->arabic_name,
+                    "Email" => $student->user->email,
+                    "Phone Number" => $student->phone,
+                    "Score" => $attempt->result->mark,
+                ];
             })->values()->all();
         return response()->json($students);
     }
@@ -192,7 +187,7 @@ class ApiController extends Controller
 
         $students = $group->students()->get()
             ->filter(function ($student) use ($group) {
-//                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
+                //                $attempt = Attempt::where('reservation_id', $group->reservation->id)->where('student_id', $student->id)->get()->first();
                 $attempt = $student->attempts()->where('reservation_id', $group->reservation->id)
                     ->where('group_id', $group->id)->get()->first();
 
@@ -217,7 +212,19 @@ class ApiController extends Controller
     public function getClosedReservations()
     {
 
-        $reservations = Reservation::closed(1)->get()->filter(function ($reservation) {
+        $reservations = Reservation::closed(1)->get()->map(function ($reservation) {
+            return [
+                'id' => $reservation->id,
+                'start' => $reservation->start
+            ];
+        })->toArray();
+        dd($reservations);
+        return response()->json($reservations);
+    }
+    public function getExaminedReservations()
+    {
+
+        $reservations = Reservation::closed(1)->examined(1)->get()->filter(function ($reservation) {
             return $reservation->groups->where("is_examined", 1)->count() > 0;
         })->map(function ($reservation) {
             return [
@@ -247,15 +254,15 @@ class ApiController extends Controller
         $group = Group::find($request->get('group'));
         $students = Student::whereIn('id', $request->get('students'))->get()
             ->filter(function ($student) use ($reservation, $group) {
-//            $attempt = Attempt::where('student_id', $student->id)
-//                ->where('reservation_id', $reservation->id)
-//                ->where('group_id', $group->id)->get()->first();
-            return $student->attempts()->where('reservation_id', $reservation->id)
-                    ->where('group_id', $group->id)->get()->first()->success==0
-                && $student->reservation->last()->id ==$reservation->id;
-//            return $student->results->last()->success == 0 && $attempt->result->id == $student->results->last()->id;
-        });
-//        dd($students);
+                //            $attempt = Attempt::where('student_id', $student->id)
+                //                ->where('reservation_id', $reservation->id)
+                //                ->where('group_id', $group->id)->get()->first();
+                return $student->attempts()->where('reservation_id', $reservation->id)
+                    ->where('group_id', $group->id)->get()->first()->success == 0
+                    && $student->reservation->last()->id == $reservation->id;
+                //            return $student->results->last()->success == 0 && $attempt->result->id == $student->results->last()->id;
+            });
+        //        dd($students);
         $ids = $students->each(function ($student) {
             $student->attempts->last()->result->delete();
             $student->attempts->last()->delete();
@@ -267,15 +274,15 @@ class ApiController extends Controller
         return response()->json($ids);
     }
 
-//    public function getReservations()
-//    {
-////        return response()->json(Reservation::where('is_examined', 1)->get(['id', 'start'])->toArray());
-//        return response()->json(Reservation::closed(1)->get(['id', 'start'])->toArray());
-//    }
+    //    public function getReservations()
+    //    {
+    ////        return response()->json(Reservation::where('is_examined', 1)->get(['id', 'start'])->toArray());
+    //        return response()->json(Reservation::closed(1)->get(['id', 'start'])->toArray());
+    //    }
 
     public function getReservationsForExams()
     {
-//        return response()->json(Reservation::where('is_examined', 0)->get(['id', 'start'])->toArray());
+        //        return response()->json(Reservation::where('is_examined', 0)->get(['id', 'start'])->toArray());
         return response()->json(Reservation::examined(0)->closed(1)->get(['id', 'start'])->toArray());
     }
 
@@ -300,11 +307,9 @@ class ApiController extends Controller
                     'success' => 1
                 ]
             );
-
         } else {
             $check = false;
             $message = "failed in updating student mark whose name is " . $student->user->name . " and id is " . $student->id . " from " . $student->results->last()->mark . " to " . $score;
-
         }
         Logging::logProfessor(auth()->user(), $message);
 
@@ -331,9 +336,9 @@ class ApiController extends Controller
     public function getAvailableReservations()
     {
         $reservations = Reservation::closed(0)->get();
-//        $reservations = Reservation::where('start', ' <= ', now()->toDateString())->closed(0)->get();
+        //        $reservations = Reservation::where('start', ' <= ', now()->toDateString())->closed(0)->get();
 
-//            ->where('end', ' >= ', now()->toDateString())
+        //            ->where('end', ' >= ', now()->toDateString())
 
 
         $reservations = $reservations->map(function ($reservation) {
@@ -372,7 +377,7 @@ class ApiController extends Controller
 
     public function editStudentResult(Request $request, Student $student)
     {
-//        dd($request->data);
+        //        dd($request->data);
 
         $data = json_decode($request->data);
         $data = collect($data);
@@ -387,30 +392,30 @@ class ApiController extends Controller
             $marks += Exam::getListeningMarks($listeningAnswers);
         }
 
-        if($data->has('vocab')&&$data->has('paragraph')){
+        if ($data->has('vocab') && $data->has('paragraph')) {
             $vocabAnswers = collect($data->get('vocab'));
             $paragraphAnswers = collect($data->get('paragraph'));
             $marks += Exam::getReadingMarks($vocabAnswers, $paragraphAnswers);
         }
         $student->editResult($marks);
 
-//        else{
-//            if($checkGrammar){
-//                $grammarAnswers=collect($data->get('grammar'));
-//                $marks=Exam::getGrammarMarks($grammarAnswers);
-//                $student->editResult($attempt,$marks);
-//            }if($checkListening){
-//                $listeningAnswers=collect($data->get('listening'));
-//                $marks=Exam::getListeningMarks($listeningAnswers);
-//                $student->editResult($attempt,$marks);
-//            }if($checkVocab&&$checkParagraph){
-//                $vocabAnswers=collect($data->get('vocab'));
-//                $paragraphAnswers=collect($data->get('paragraph'));
-//                $marks=Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
-//                $student->editResult($attempt,$marks);
-//            }
-//        }
-//        dd($data->vocab);
-//        dd($data->grammar);
+        //        else{
+        //            if($checkGrammar){
+        //                $grammarAnswers=collect($data->get('grammar'));
+        //                $marks=Exam::getGrammarMarks($grammarAnswers);
+        //                $student->editResult($attempt,$marks);
+        //            }if($checkListening){
+        //                $listeningAnswers=collect($data->get('listening'));
+        //                $marks=Exam::getListeningMarks($listeningAnswers);
+        //                $student->editResult($attempt,$marks);
+        //            }if($checkVocab&&$checkParagraph){
+        //                $vocabAnswers=collect($data->get('vocab'));
+        //                $paragraphAnswers=collect($data->get('paragraph'));
+        //                $marks=Exam::getReadingMarks($vocabAnswers,$paragraphAnswers);
+        //                $student->editResult($attempt,$marks);
+        //            }
+        //        }
+        //        dd($data->vocab);
+        //        dd($data->grammar);
     }
 }

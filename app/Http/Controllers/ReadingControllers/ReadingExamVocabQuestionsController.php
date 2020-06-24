@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ReadingControllers;
 
+use App\Config;
 use App\Http\Controllers\Controller;
 use App\Logging;
 use App\Question;
@@ -22,21 +23,23 @@ class ReadingExamVocabQuestionsController extends Controller
             $questions = Question::getQuestionsForChoosePanel(VocabQuestion::paginate(50));
             $checked = $exam->vocabQuestions()->pluck('vocab_question_id');
             $count = VocabQuestion::all()->count();
-            return response()->json(['questions' => $questions, 'count' => $count, 'checked' => $checked]);
+            $maxCountQuestions = Config::where('id', 11)->first()->value;
+
+            return response()->json(['questions' => $questions, 'max_questions' => $maxCountQuestions, 'count' => $count, 'checked' => $checked]);
         }
     }
 
     public function store(Request $request, ReadingExam $exam)
     {
-        $str='';
-        for($i=0;$i<sizeof($request['questions']);$i++){
-            $str.=$request['questions'][$i].',';
+        $str = '';
+        for ($i = 0; $i < sizeof($request['questions']); $i++) {
+            $str .= $request['questions'][$i] . ',';
         }
         $message = " add  vocab questions {" . $str . "} to reading exam  with id {" . $exam->id . "} ";
         Logging::logProfessor(auth()->user(), $message);
         $questions = VocabQuestion::whereIn('id', $request['questions'])->get();
         $exam->vocabQuestions()->sync($questions);
-//        return redirect()->back();
+        //        return redirect()->back();
     }
 
     public function destroy(ReadingExam $exam, VocabQuestion $question)

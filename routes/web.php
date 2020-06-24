@@ -11,7 +11,7 @@
 |
 */
 
-
+use App\Config;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -53,13 +53,13 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::post('/student/{student}/new-reservation', 'StudentsController@moveStudentToNewReservation');
         Route::get('/student/{student}/reservations', 'StudentsController@getStudentReservations');
         Route::get('/reservations/available', 'ApiControllers\ApiController@getAvailableReservations');
-//        Route::any('/search', function () {
-//            $q = request()->get('q');
-//            $student = \App\Student::where('phone', 'LIKE', '%' . $q . '%')->get();
-//            if (count($student) > 0)
-//                return redirect()->back()->with('details', $student);
-//            else return redirect()->back()->with('message', 'No Students found. Try to search again !');
-//        })->name('student.search');
+        //        Route::any('/search', function () {
+        //            $q = request()->get('q');
+        //            $student = \App\Student::where('phone', 'LIKE', '%' . $q . '%')->get();
+        //            if (count($student) > 0)
+        //                return redirect()->back()->with('details', $student);
+        //            else return redirect()->back()->with('message', 'No Students found. Try to search again !');
+        //        })->name('student.search');
     });
     Route::group(['middleware' => ['manage-grammar']], function () {
         Route::view('/cpanel/grammar/questions-panel', 'grammar.questions.index')->name('grammar.questions-panel');
@@ -91,7 +91,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
             ]);
         Route::get('/cpanel/grammar/exam/{exam}/add-questions', function (\App\Grammar\GrammarExam $exam) {
             return view('grammar.exams.questions', compact('exam'));
-
         })->name('grammar.exam.questions.add');
         Route::resource('/cpanel/grammar/exam/{exam}/questions', 'GrammarControllers\GrammarExamQuestionsController')
             ->only(['index', 'store', 'destroy'])
@@ -100,16 +99,16 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
                 'destroy' => 'grammar.exam.questions.destroy',
                 'index' => 'grammar.exam.questions.index'
             ]);
-//        Route::get('/grammar/exam/{exam}/questions', 'GrammarExamController@showQuestions')->name('grammar.exam.questions.show');
-//        Route::post('/grammar/exam/{exam}/questions', 'GrammarExamController@storeQuestions')->name('grammar.exam.questions.store');
-//        Route::delete('/grammar/exam/{exam}/questions/{question}', 'GrammarExamController@destroyQuestions')->name('grammar.exam.questions.destroy');
+        //        Route::get('/grammar/exam/{exam}/questions', 'GrammarExamController@showQuestions')->name('grammar.exam.questions.show');
+        //        Route::post('/grammar/exam/{exam}/questions', 'GrammarExamController@storeQuestions')->name('grammar.exam.questions.store');
+        //        Route::delete('/grammar/exam/{exam}/questions/{question}', 'GrammarExamController@destroyQuestions')->name('grammar.exam.questions.destroy');
         Route::get('/cpanel/grammar/live/{exam}', 'LiveExamsController@showGrammarExam')->name('grammar.live.exam.start');
         Route::post('/cpanel/grammar/live', 'LiveExamsController@storeGrammarExamAttempt')->name('grammar.live.exam.submit');
     });
     Route::group(['middleware' => ['manage-reading']], function () {
         Route::view('/cpanel/reading/vocab-panel', 'reading.vocab.index')->name('vocab-panel');
-//        Route::view('/cpanel/reading', 'reading.index')->name('reading.index');
-//        Route::view('/cpanel/reading/questions', 'reading.questions')->name('reading.questions.index');
+        //        Route::view('/cpanel/reading', 'reading.index')->name('reading.index');
+        //        Route::view('/cpanel/reading/questions', 'reading.questions')->name('reading.questions.index');
 
         Route::get('/cpanel/reading/vocab/multiple-questions', 'ReadingControllers\VocabQuestionsController@showMultipleQuestions')
             ->name('vocab.multiple-questions');;
@@ -150,11 +149,9 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::get('/cpanel/reading/exam/{exam}/vocab', 'ReadingControllers\ReadingExamsController@showVocab')->name('reading.exam.show.vocab');
         Route::get('/cpanel/reading/exam/{exam}/add-vocab', function (\App\Reading\ReadingExam $exam) {
             return view('reading.exams.addvocab', compact('exam'));
-
         })->name('reading.exam.vocab.add');
         Route::get('/cpanel/reading/exam/{exam}/add-paragraph', function (\App\Reading\ReadingExam $exam) {
             return view('reading.exams.addparagraphs', compact('exam'));
-
         })->name('reading.exam.paragraph.add');
         Route::resource('/cpanel/reading/exam/{exam}/vocab-questions', 'ReadingControllers\ReadingExamVocabQuestionsController')
             ->only(['index', 'store', 'destroy'])
@@ -163,10 +160,10 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
                 'destroy' => 'reading.exam.vocab.destroy',
                 'index' => 'reading.exam.vocab.index'
             ]);
-//        Route::get('/cpanel/reading/exam/{exam}/create/vocab', 'ReadingControllers\ReadingExamsController@addVocabQuestions')->name('reading.exam.add.vocab');
-//        Route::post('/cpanel/reading/exam/{exam}/vocab', 'ReadingControllers\ReadingExamsController@storeVocabQuestions')->name('reading.exam.store.vocab');
-//        Route::delete('/cpanel/reading/exam/{exam}/vocab/{question}', 'ReadingControllers\ReadingExamsController@destroyVocabQuestionss')->name('reading.exam.destroy.vocab');
-//
+        //        Route::get('/cpanel/reading/exam/{exam}/create/vocab', 'ReadingControllers\ReadingExamsController@addVocabQuestions')->name('reading.exam.add.vocab');
+        //        Route::post('/cpanel/reading/exam/{exam}/vocab', 'ReadingControllers\ReadingExamsController@storeVocabQuestions')->name('reading.exam.store.vocab');
+        //        Route::delete('/cpanel/reading/exam/{exam}/vocab/{question}', 'ReadingControllers\ReadingExamsController@destroyVocabQuestionss')->name('reading.exam.destroy.vocab');
+        //
         Route::resource('/cpanel/reading/exam/{exam}/paragraphs', 'ReadingControllers\ReadingExamParagraphsController')
             ->only(['index', 'store', 'destroy'])
             ->names([
@@ -174,9 +171,9 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
                 'destroy' => 'reading.exam.paragraph.destroy',
                 'index' => 'reading.exam.paragraph.index'
             ]);
-//        Route::get('/cpanel/reading/exam/{exam}/create/paragraphs', 'ReadingControllers\ReadingExamsController@addParagraphs')->name('reading.exam.add.paragraphs');
-//        Route::post('/cpanel/reading/exam/{exam}/paragraphs', 'ReadingControllers\ReadingExamsController@storeParagraphs')->name('reading.exam.store.paragraphs');
-//        Route::delete('/cpanel/reading/exam/{exam}/paragraphs/{paragraph}', 'ReadingControllers\ReadingExamsController@destroyParagraphs')->name('reading.exam.destroy.paragraphs');
+        //        Route::get('/cpanel/reading/exam/{exam}/create/paragraphs', 'ReadingControllers\ReadingExamsController@addParagraphs')->name('reading.exam.add.paragraphs');
+        //        Route::post('/cpanel/reading/exam/{exam}/paragraphs', 'ReadingControllers\ReadingExamsController@storeParagraphs')->name('reading.exam.store.paragraphs');
+        //        Route::delete('/cpanel/reading/exam/{exam}/paragraphs/{paragraph}', 'ReadingControllers\ReadingExamsController@destroyParagraphs')->name('reading.exam.destroy.paragraphs');
 
         Route::get('/cpanel/live/reading/{exam}', 'LiveExamsController@showReadingExam')->name('reading.live.exam.start');
         Route::post('/cpanel/live/reading', 'LiveExamsController@storeReadingExamAttempt')->name('reading.live.exam.submit');
@@ -206,7 +203,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
             ]);
         Route::get('/cpanel/listening/exam/{exam}/add-audios', function (\App\Listening\ListeningExam $exam) {
             return view('listening.exams.audios', compact('exam'));
-
         })->name('listening.exam.audios.add');
         Route::resource('/cpanel/listening/exam/{exam}/audio', 'ListeningControllers\ListeningExamAudiosController')->only(['index', 'store', 'destroy'])
             ->names([
@@ -218,9 +214,9 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
             ->name('listening.multiple-questions');
         Route::post('/cpanel/listening/audio/{audio}/multiple-questions', 'ListeningControllers\ListeningQuestionsController@storeMultipleQuestions')
             ->name('listening.multiple-questions.store');
-//        Route::get('/cpanel/listening/exam/{exam}/audio', 'ListeningControllers\ListeningExamController@showAudios')->name('listening.exam.audios.show');
-//        Route::post('/cpanel/listening/exam/{exam}/audio', 'ListeningControllers\ListeningExamController@storeAudios')->name('listening.exam.audios.store');
-//        Route::delete('/cpanel/listening/exam/{exam}/audio/{audio}', 'ListeningControllers\ListeningExamController@destroyAudios')->name('listening.exam.audios.destroy');
+        //        Route::get('/cpanel/listening/exam/{exam}/audio', 'ListeningControllers\ListeningExamController@showAudios')->name('listening.exam.audios.show');
+        //        Route::post('/cpanel/listening/exam/{exam}/audio', 'ListeningControllers\ListeningExamController@storeAudios')->name('listening.exam.audios.store');
+        //        Route::delete('/cpanel/listening/exam/{exam}/audio/{audio}', 'ListeningControllers\ListeningExamController@destroyAudios')->name('listening.exam.audios.destroy');
 
         Route::get('/cpanel/live/listening/{exam}', 'LiveExamsController@showListeningExam')->name('listening.live.exam.start');
         Route::post('/cpanel/live/listening', 'LiveExamsController@storeListeningExamAttempt')->name('listening.live.exam.submit');
@@ -231,14 +227,14 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::get('/students/{group}/certificates', 'ApiControllers\ApiController@getStudentsForCertificates');
     });
 
-    Route::get('/reservations/closed', 'ApiControllers\ApiController@getClosedReservations');
+    // Route::get('/reservations/closed', 'ApiControllers\ApiController@getClosedReservations');
+    Route::get('/reservations/examined', 'ApiControllers\ApiController@getExaminedReservations');
     Route::get('/groups/{res}/examined', 'ApiControllers\ApiController@getExaminedGroups');
 
     Route::group(['middleware' => ['edit-student-marks']], function () {
         Route::view('/cpanel/marks', 'cpanel.failedStudents')->name('cpanel.marks-panel');
         Route::get('/students/{group}/failed', 'ApiControllers\ApiController@getFailedStudents');
         Route::patch('/students/marks', 'ApiControllers\ApiController@updateStudentMarks');
-
     });
     Route::group(['middleware' => ['manage-exams-panel']], function () {
         Route::view('/cpanel/exam-panel', 'exams.examControlPanel')->name('cpanel.exams-panel');
@@ -253,7 +249,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::get('/groups/{res}', 'ApiControllers\ApiController@getGroups');
         Route::get('/students/{group}', 'ApiControllers\ApiController@getStudents');
         Route::post('/group/{group}/examined', 'ApiControllers\ExamsApiController@isGroupExamined');
-//        Route::post('/reservation/{res}/examined', 'ApiControllers\ExamsApiController@isReservationExamined');
+        //        Route::post('/reservation/{res}/examined', 'ApiControllers\ExamsApiController@isReservationExamined');
         Route::post('/students/{group}/enter', 'ApiControllers\ExamsApiController@studentsCanEnterExam');
         Route::post('/students/{group}/start', 'ApiControllers\ExamsApiController@studentsCanStartExam');
         Route::post('/students/{group}/stop', 'ApiControllers\ExamsApiController@endExam');
@@ -281,7 +277,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::resource('/cpanel/res/{re}/group', 'GroupsController')
             ->only(['show', 'update']);
     });
-
 });
 Route::post('/users/unique-email', 'ApiControllers\ApiController@checkEmailIsUnique');
 Route::post('/students/unique-phone', 'ApiControllers\ApiController@checkPhoneIsUnique');
@@ -291,30 +286,26 @@ Route::post('/students/unique-phone', 'ApiControllers\ApiController@checkPhoneIs
 //        'ip'=>$request->ip()
 //    ]);
 //});
-Route::post('/unique-ip',function(Request $request){
-//    dd($request->get('ip'));
-    if($request->has('ip')) {
+Route::post('/unique-ip', function (Request $request) {
+    //    dd($request->get('ip'));
+    if ($request->has('ip')) {
         if (\App\AllowedIP::where('ip', $request->get('ip'))->get()->count() > 0)
             return response()->json(['unique' => false]);
         else
             return response()->json(['unique' => true]);
     }
-
 });
-Route::post('/unique-number',function(Request $request){
-//    dd($request->get('computer-number'));
-     if($request->has('computer-number')){
-//         dd(\App\AllowedIP::where('computer-number',1)->get());
-               return response()->json(['unique'=>!\App\AllowedIP::where('computer_number',intval($request->get('computer-number')))->get()->count()>0]);
-
-       }
-
+Route::post('/unique-number', function (Request $request) {
+    //    dd($request->get('computer-number'));
+    if ($request->has('computer-number')) {
+        //         dd(\App\AllowedIP::where('computer-number',1)->get());
+        return response()->json(['unique' => !\App\AllowedIP::where('computer_number', intval($request->get('computer-number')))->get()->count() > 0]);
+    }
 });
-Route::get('/ips',function(){
-//    dd(\App\AllowedIP::all());
+Route::get('/ips', function () {
+    //    dd(\App\AllowedIP::all());
 
-    dd(\App\AllowedIP::where('computer-number',1)->get());
-
+    dd(\App\AllowedIP::where('computer-number', 1)->get());
 });
 
 //Route::resource('student','StudentsController')->middleware(['auth','admin']);
@@ -348,15 +339,14 @@ Route::group(['middleware' => ['auth', 'allowed-ip', 'check_student', 'student_i
     Route::group(['middleware' => 'can_start_exam'], function () {
         Route::get('/exam/start', 'ExamsController@showExam')->name('exam.show');
         Route::post('/exam/start', 'ExamsController@storeResult')->name('exam.store');
-//        Route::get('/exam/grammar', 'ExamsController@showGrammarExam')->name('grammar.exam.start');
-//        Route::post('/exam/grammar', 'ExamsController@storeGrammarExamAttempt')->name('grammar.exam.submit');
-//        Route::get('/exam/reading', 'ExamsController@showReadingExam')->name('reading.exam.start');
-//        Route::post('/exam/reading', 'ExamsController@storeReadingExamAttempt')->name('reading.exam.submit');
-//        Route::get('/exam/listening', 'ExamsController@showListeningExam')->name('listening.exam.start');
-//        Route::post('/exam/listening', 'ExamsController@storeListeningExamAttempt')->name('listening.exam.submit');
+        //        Route::get('/exam/grammar', 'ExamsController@showGrammarExam')->name('grammar.exam.start');
+        //        Route::post('/exam/grammar', 'ExamsController@storeGrammarExamAttempt')->name('grammar.exam.submit');
+        //        Route::get('/exam/reading', 'ExamsController@showReadingExam')->name('reading.exam.start');
+        //        Route::post('/exam/reading', 'ExamsController@storeReadingExamAttempt')->name('reading.exam.submit');
+        //        Route::get('/exam/listening', 'ExamsController@showListeningExam')->name('listening.exam.start');
+        //        Route::post('/exam/listening', 'ExamsController@storeListeningExamAttempt')->name('listening.exam.submit');
 
     });
-
 });
 
 
@@ -411,4 +401,3 @@ Route::get("/speech", function () {
     }
 });
 */
-

@@ -3,21 +3,21 @@
     <div class="container">
 
         <div class="row mb-4">
-            <div class="col-6">
-                <img src="/storage/<?php echo e($student->personalimage); ?>" style="height:400px;" alt="">
+            <div class="col-5 p-3">
+                <img src="/storage/<?php echo e($student->personalimage); ?>" style="height:300px;" alt="">
             </div>
-            <div class="col-6">
-                <img src="/storage/<?php echo e($student->nidimage); ?>" style="height:400px;" alt="">
+            <div class="col-5 p-3">
+                <img src="/storage/<?php echo e($student->nidimage); ?>" style="height:300px;" alt="">
 
             </div>
         </div>
         <div class="row mb-4">
-            <div class="col-6">
-                <img src="/storage/<?php echo e($student->documents->last()->certificate_document); ?>" style="height:400px;" alt="">
+            <div class="col-5 p-3">
+                <img src="/storage/<?php echo e($student->documents->last()->certificate_document); ?>" style="height:300px;" alt="">
 
             </div>
-            <div class="col-6">
-                <img src="/storage/<?php echo e($student->documents->last()->message_document); ?>" style="height:400px;" alt="">
+            <div class="col-5 p-3">
+                <img src="/storage/<?php echo e($student->documents->last()->message_document); ?>" style="height:300px;" alt="">
 
             </div>
         </div>

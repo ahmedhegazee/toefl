@@ -246,22 +246,22 @@
     <!-- ============================================================== -->
 
 </div>
-<div class="row shadow" style="
-    padding-left: 50vw;
-    padding-top: 10px;
-    overflow: hidden;
-    bottom: -20vh;
-    right:0;
-    margin:0;
-    padding-bottom: 10px;
-    line-height: 1.8;
-    color:#fff;
-    width: 100%;
-    background-color: #131519;
-   ">
-    Developed By Ahmed Hegazy <br>
-    FCI SWE Dept 2019-2020 &copy;
-</div>
+{{--<div class="row shadow" style="--}}
+{{--    padding-left: 50vw;--}}
+{{--    padding-top: 10px;--}}
+{{--    overflow: hidden;--}}
+{{--    bottom: -20vh;--}}
+{{--    right:0;--}}
+{{--    margin:0;--}}
+{{--    padding-bottom: 10px;--}}
+{{--    line-height: 1.8;--}}
+{{--    color:#fff;--}}
+{{--    width: 100%;--}}
+{{--    background-color: #131519;--}}
+{{--   ">--}}
+{{--    Developed By Ahmed Hegazy <br>--}}
+{{--    FCI SWE Dept 2019-2020 &copy;--}}
+{{--</div>--}}
 
 <script src="{{asset('js/app.js')}}"></script>
 <script src="{{asset('js/all.min.js')}}"></script>
