@@ -1911,13 +1911,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "DisplayQuestionsPanel",
   mounted: function mounted() {
     var _this = this;
 
     // console.log(this.questions);
-    axios.get('/reservations/closed').then(function (response) {
+    axios.get("/reservations/examined").then(function (response) {
       _this.reservations = response.data;
 
       if (_this.reservations.length == 0) {
@@ -1940,11 +1946,11 @@ __webpack_require__.r(__webpack_exports__);
       count: 0,
       show: false,
       reservations: [],
-      m: '',
+      m: "",
       groups: [],
       students: [],
-      reservation: '',
-      group: ''
+      reservation: "",
+      group: ""
     };
   },
   methods: {
@@ -1983,11 +1989,11 @@ __webpack_require__.r(__webpack_exports__);
       var _this4 = this;
 
       this.show = false;
-      this.m = '';
+      this.m = "";
       axios.patch("/students/retake-exam", {
-        'students': this.selected,
-        'reservation': this.reservation,
-        'group': this.group
+        students: this.selected,
+        reservation: this.reservation,
+        group: this.group
       }).then(function (response) {
         var changed = response.data;
         var unchanged = [];
@@ -2000,7 +2006,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log(unchanged);
 
         if (changed.length > 0) {
-          _this4.showAlert("Students with id {".concat(changed, "} can take the exam again"), 'success');
+          _this4.showAlert("Students with id {".concat(changed, "} can take the exam again"), "success");
         }
 
         if (unchanged.length > 0) {
@@ -2011,7 +2017,7 @@ __webpack_require__.r(__webpack_exports__);
         return function (error) {
           console.log(error);
 
-          _this4.showAlert('Something happened. Please call support');
+          _this4.showAlert("Something happened. Please call support");
         };
       });
     }
@@ -2126,29 +2132,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CertificatePanel",
   mounted: function mounted() {
     var _this = this;
 
-    axios.get('/reservations/closed').then(function (response) {
+    axios.get("/reservations/examined").then(function (response) {
       _this.reservations = response.data;
 
       if (_this.reservations.length == 0) {
-        _this.msg = '  Sorry there is no available reservations';
+        _this.msg = "  Sorry there is no available reservations";
         _this.show = true;
       } // console.log(response.data);
 
@@ -2158,18 +2151,18 @@ __webpack_require__.r(__webpack_exports__);
     return {
       reservations: [],
       students: [],
-      reservation: '',
+      reservation: "",
       groups: [],
-      group: '',
+      group: "",
       dismissSecs: 5,
       dismissCountDown: 0,
       message: "",
       alert: "danger",
-      startDate: '',
-      endDate: '',
+      startDate: "",
+      endDate: "",
       perPage: 20,
       currentPage: 1,
-      msg: '',
+      msg: "",
       show: false
     };
   },
@@ -2189,7 +2182,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     clearMessage: function clearMessage() {
       this.show = false;
-      this.msg = '';
+      this.msg = "";
     },
     getGroups: function getGroups() {
       var _this2 = this;
@@ -2208,7 +2201,7 @@ __webpack_require__.r(__webpack_exports__);
         _this3.students = response.data;
 
         if (_this3.students.length == 0) {
-          _this3.msg = 'Sorry there is no succeeded students in this group';
+          _this3.msg = "Sorry there is no succeeded students in this group";
           _this3.show = true;
         } // console.log(response.data);
 
@@ -2228,8 +2221,8 @@ __webpack_require__.r(__webpack_exports__);
     print: function print() {
       // if (this.endState && this.startState)
       axios.post("/students/" + this.group + "/print", {
-        'start': this.startDate,
-        'end': this.endDate
+        start: this.startDate,
+        end: this.endDate
       }).then(function (response) {
         document.write(response.data);
       })["catch"](function (error) {
@@ -2241,11 +2234,11 @@ __webpack_require__.r(__webpack_exports__);
       // }
     },
     showModal: function showModal() {
-      this.$refs['my-modal'].show();
+      this.$refs["my-modal"].show();
     },
     hideModal: function hideModal() {
       if (this.endState && this.startState) {
-        this.$refs['my-modal'].hide();
+        this.$refs["my-modal"].hide();
         this.print();
       }
     },
@@ -4145,21 +4138,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     var _this = this;
 
-    axios.get('/reservations/closed').then(function (response) {
+    axios.get("/reservations/examined").then(function (response) {
       _this.reservations = response.data;
 
       if (_this.reservations.length == 0) {
-        _this.msg = '  Sorry there is no available reservations';
+        _this.msg = "  Sorry there is no available reservations";
         _this.show = true;
       } // console.log(response.data);
 
@@ -4169,7 +4156,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       reservations: [],
       students: [],
-      reservation: '',
+      reservation: "",
       dismissSecs: 5,
       dismissCountDown: 0,
       message: "",
@@ -4177,14 +4164,14 @@ __webpack_require__.r(__webpack_exports__);
       score: 0,
       currentScore: 0,
       requiredScore: 0,
-      st_name: '',
+      st_name: "",
       student: null,
       perPage: 20,
       currentPage: 1,
-      msg: '',
+      msg: "",
       show: false,
       groups: [],
-      group: ''
+      group: ""
     };
   },
   computed: {
@@ -4198,7 +4185,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     clearMessage: function clearMessage() {
       this.show = false;
-      this.msg = '';
+      this.msg = "";
     },
     getGroups: function getGroups() {
       var _this2 = this;
@@ -4212,7 +4199,7 @@ __webpack_require__.r(__webpack_exports__);
     getStudents: function getStudents() {
       var _this3 = this;
 
-      axios.get('/students/' + this.group + '/failed').then(function (response) {
+      axios.get("/students/" + this.group + "/failed").then(function (response) {
         _this3.students = response.data;
       })["catch"](function (errors) {});
     },
@@ -4267,9 +4254,9 @@ __webpack_require__.r(__webpack_exports__);
     sendMarksChange: function sendMarksChange() {
       var _this5 = this;
 
-      axios.patch('/students/marks', {
-        'id': this.student.ID,
-        'score': this.score
+      axios.patch("/students/marks", {
+        id: this.student.ID,
+        score: this.score
       }).then(function (response) {
         if (response.data.success) {
           var index = _this5.students.indexOf(_this5.student);
@@ -75735,7 +75722,7 @@ var render = function() {
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
         },
-        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+        [_vm._v(_vm._s(_vm.message))]
       ),
       _vm._v(" "),
       _c("div", { staticClass: "form-group row" }, [
@@ -75937,7 +75924,7 @@ var render = function() {
       ),
       _vm._v(" "),
       _vm.students.length != 0
-        ? _c("div", { staticClass: "row justify-content-end pr-5 " }, [
+        ? _c("div", { staticClass: "row justify-content-end pr-5" }, [
             _c(
               "button",
               {
@@ -75988,11 +75975,11 @@ var render = function() {
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
         },
-        [_vm._v("\n            " + _vm._s(_vm.message) + "\n        ")]
+        [_vm._v(_vm._s(_vm.message))]
       ),
       _vm._v(" "),
       _c("b-alert", { attrs: { show: _vm.show, variant: "danger" } }, [
-        _vm._v("\n          " + _vm._s(_vm.msg) + "\n        ")
+        _vm._v(_vm._s(_vm.msg))
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "form-group row" }, [
@@ -76128,7 +76115,7 @@ var render = function() {
               }
             }
           },
-          [_vm._v("\n               Print\n            ")]
+          [_vm._v("Print")]
         )
       ]),
       _vm._v(" "),
@@ -76219,11 +76206,7 @@ var render = function() {
                       _c(
                         "b-form-invalid-feedback",
                         { attrs: { id: "input-start-feedback" } },
-                        [
-                          _vm._v(
-                            "\n                            Choose Correct Start Date\n                        "
-                          )
-                        ]
+                        [_vm._v("Choose Correct Start Date")]
                       )
                     ],
                     1
@@ -76264,11 +76247,7 @@ var render = function() {
                       _c(
                         "b-form-invalid-feedback",
                         { attrs: { id: "input-end-feedback" } },
-                        [
-                          _vm._v(
-                            "\n                            Choose Correct End Date\n                        "
-                          )
-                        ]
+                        [_vm._v("Choose Correct End Date")]
                       )
                     ],
                     1
@@ -77970,11 +77949,11 @@ var render = function() {
           },
           on: { "dismiss-count-down": _vm.countDownChanged }
         },
-        [_vm._v("\n        " + _vm._s(_vm.message) + "\n    ")]
+        [_vm._v(_vm._s(_vm.message))]
       ),
       _vm._v(" "),
       _c("b-alert", { attrs: { show: _vm.show, variant: "danger" } }, [
-        _vm._v("\n        " + _vm._s(_vm.msg) + "\n    ")
+        _vm._v(_vm._s(_vm.msg))
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "form-group row" }, [
@@ -78220,7 +78199,7 @@ var render = function() {
                     { attrs: { state: _vm.scoreState } },
                     [
                       _vm._v(
-                        "\n                    The score must be higher than the old one and less than 677.\n                "
+                        "The score must be higher than the old one and less than 677."
                       )
                     ]
                   ),
@@ -78228,11 +78207,7 @@ var render = function() {
                   _c(
                     "b-form-valid-feedback",
                     { attrs: { state: _vm.scoreState } },
-                    [
-                      _vm._v(
-                        "\n                    Looks Good.\n                "
-                      )
-                    ]
+                    [_vm._v("Looks Good.")]
                   )
                 ],
                 1

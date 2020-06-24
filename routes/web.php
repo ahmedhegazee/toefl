@@ -227,7 +227,8 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::get('/students/{group}/certificates', 'ApiControllers\ApiController@getStudentsForCertificates');
     });
 
-    Route::get('/reservations/closed', 'ApiControllers\ApiController@getClosedReservations');
+    // Route::get('/reservations/closed', 'ApiControllers\ApiController@getClosedReservations');
+    Route::get('/reservations/examined', 'ApiControllers\ApiController@getExaminedReservations');
     Route::get('/groups/{res}/examined', 'ApiControllers\ApiController@getExaminedGroups');
 
     Route::group(['middleware' => ['edit-student-marks']], function () {
