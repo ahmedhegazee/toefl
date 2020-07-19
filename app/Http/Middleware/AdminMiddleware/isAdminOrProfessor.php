@@ -4,7 +4,7 @@ namespace App\Http\Middleware\AdminMiddleware;
 
 use Closure;
 
-class admin
+class isAdminOrProfessor
 {
     /**
      * Handle an incoming request.
@@ -17,12 +17,11 @@ class admin
     public function handle($request, Closure $next)
     {
 
-        if(auth()->user()->isAdmin())
-        return $next($request);
-        else{
+        if (auth()->user()->isAdmin() || auth()->user()->isProfessor())
+            return $next($request);
+        else {
             auth()->logout();
-            return redirect(route('error'))->with('error','Unauthorized <br/>You Are Not Admin');
+            return redirect(route('error'))->with('error', 'Unauthorized Access');
         }
-
     }
 }

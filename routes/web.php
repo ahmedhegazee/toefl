@@ -12,6 +12,7 @@
 */
 
 use App\Config;
+use App\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,13 +40,12 @@ Route::get('/home', 'HomeController@index')->name('home')->middleware('check_rol
 //})->name('result');
 Route::view('/error', 'error')->name('error');
 Route::view('/success', 'success')->name('success');
-Route::group(['middleware' => ['admin', 'auth']], function () {
+Route::group(['middleware' => ['auth', 'is-admin-professor']], function () {
     Route::view('/cpanel', 'cpanel')->name('admin');
 
     Route::group(['middleware' => ['manage-students-panel']], function () {
         Route::view('/cpanel/students-panel', 'cpanel.studentspanel')->name('cpanel.students-panel');
-        Route::resource('student', 'StudentsController')
-            ->only(['index', 'show', 'update']);
+        Route::resource('student', 'StudentsController')->only(['index', 'show', 'update']);
         Route::post('/student/{student}/images', 'StudentsController@updateImages');
         Route::get('/student/{student}/certificate', 'StudentsController@getCertificates');
         Route::get('/student/{student}/certificate/{certificate}/print', 'ApiControllers\ApiController@printStudentCertificate');
@@ -120,7 +120,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
             ->name('paragraph.multiple-questions');
         Route::post('/cpanel/reading/{paragraph}/multiple-questions', 'ReadingControllers\ParagraphQuestionsController@storeMultipleQuestions')
             ->name('paragraph.multiple-questions.store');
-        Route::resource('/cpanel/reading/paragraph', 'ReadingControllers\ParagraphsController')->middleware(['auth', 'admin']);
+        Route::resource('/cpanel/reading/paragraph', 'ReadingControllers\ParagraphsController');
         Route::view('/cpanel/reading/paragraph-panel', 'reading.paragraph.index')->name('paragraph-panel');
 
         Route::resource('/cpanel/reading/{paragraph}/question', 'ReadingControllers\ParagraphQuestionsController')
@@ -227,8 +227,8 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::get('/students/{group}/certificates', 'ApiControllers\ApiController@getStudentsForCertificates');
     });
 
-    // Route::get('/reservations/closed', 'ApiControllers\ApiController@getClosedReservations');
-    Route::get('/reservations/examined', 'ApiControllers\ApiController@getExaminedReservations');
+    Route::get('/reservations/closed', 'ApiControllers\ApiController@getClosedReservations');
+    // Route::get('/reservations/examined', 'ApiControllers\ApiController@getExaminedReservations');
     Route::get('/groups/{res}/examined', 'ApiControllers\ApiController@getExaminedGroups');
 
     Route::group(['middleware' => ['edit-student-marks']], function () {
@@ -302,11 +302,11 @@ Route::post('/unique-number', function (Request $request) {
         return response()->json(['unique' => !\App\AllowedIP::where('computer_number', intval($request->get('computer-number')))->get()->count() > 0]);
     }
 });
-Route::get('/ips', function () {
-    //    dd(\App\AllowedIP::all());
+// Route::get('/ips', function () {
+//     //    dd(\App\AllowedIP::all());
 
-    dd(\App\AllowedIP::where('computer-number', 1)->get());
-});
+//     dd(\App\AllowedIP::where('computer-number', 1)->get());
+// });
 
 //Route::resource('student','StudentsController')->middleware(['auth','admin']);
 //Route::get('/student','StudentsController@index')->name('student.index');
@@ -332,7 +332,8 @@ Route::get('/ips', function () {
 
 //Exams
 //,'has_only_one_attempt'
-Route::group(['middleware' => ['auth', 'allowed-ip', 'check_student', 'student_is_online']], function () {
+// Route::group(['middleware' => ['auth', 'allowed-ip', 'check_student', 'student_is_online']], function () {
+Route::group(['middleware' => ['auth',  'check_student', 'student_is_online']], function () {
     Route::get('/exam/home', 'ExamsController@showStudentHome')->name('student.home');
     Route::any('/active', function () {
     });
@@ -348,6 +349,7 @@ Route::group(['middleware' => ['auth', 'allowed-ip', 'check_student', 'student_i
 
     });
 });
+
 
 
 //live exams

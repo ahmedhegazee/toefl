@@ -15,10 +15,10 @@ class User extends Authenticatable
      *
      * @var array
      */
-//    protected $fillable = [
-//        'name', 'email', 'password',
-//    ];
-protected $guarded=[];
+    //    protected $fillable = [
+    //        'name', 'email', 'password',
+    //    ];
+    protected $guarded = [];
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -44,11 +44,11 @@ protected $guarded=[];
     public function getRoleID()
     {
         return $this->role->id;
-}
+    }
 
     public function getStudent()
     {
-        return Student::where('uid',$this->id)->get()->first();
+        return Student::where('uid', $this->id)->get()->first();
     }
 
     public function roles()
@@ -58,43 +58,46 @@ protected $guarded=[];
 
     public function isAdmin()
     {
-        return $this->roles->contains(1) ;
+        return $this->roles->contains(1);
+    }
+    public function isProfessor()
+    {
+        return $this->roles->contains(2);
     }
     public function isSuperAdmin()
     {
-        return $this->roles->contains(11) ;
+        return $this->roles->contains(12);
     }
     public function canEditMarks()
     {
-        return $this->roles->contains(7) ;
+        return $this->roles->contains(8);
     }
     public function canManageExamsPanel()
     {
-        return $this->roles->contains(3) ;
+        return $this->roles->contains(4);
     }
     public function canManageStudentsPanel()
     {
-        return $this->roles->contains(9) ;
+        return $this->roles->contains(10);
     }
     public function canManageReservationsPanel()
     {
-        return $this->roles->contains(10) ;
+        return $this->roles->contains(11);
     }
     public function canManageGrammarSection()
     {
-        return $this->roles->contains(5) ;
+        return $this->roles->contains(6);
     }
     public function canManageReadingSection()
     {
-        return $this->roles->contains(4) ;
+        return $this->roles->contains(5);
     }
     public function canManageListeningSection()
     {
-        return $this->roles->contains(6) ;
+        return $this->roles->contains(7);
     }
     public function canPrintCertificates()
     {
-        return $this->roles->contains(8) ;
+        return $this->roles->contains(9);
     }
-
 }

@@ -72,7 +72,11 @@
       ></b-pagination>
     </div>
     <div class="row justify-content-end pr-5" v-if="students.length!=0">
-      <button class="btn btn-primary" @click="retakeExamAgain">Retake the exam again</button>
+      <button
+        class="btn btn-primary"
+        @click="retakeExamAgain"
+        :disabled="selected.length==0"
+      >Retake the exam again</button>
     </div>
   </div>
 </template>
@@ -83,7 +87,7 @@ export default {
   mounted() {
     // console.log(this.questions);
     axios
-      .get("/reservations/examined")
+      .get("/reservations/closed")
       .then(response => {
         this.reservations = response.data;
         if (this.reservations.length == 0) {
@@ -163,23 +167,16 @@ export default {
           group: this.group
         })
         .then(response => {
-          var changed = response.data;
-          var unchanged = [];
-          for (var i = 0; i < this.selected.length; i++) {
-            if (changed.indexOf(this.selected[i]) == -1)
-              unchanged.push(this.selected[i]);
-          }
-          console.log(changed);
-          console.log(unchanged);
-          if (changed.length > 0) {
+          if (response.data.success) {
             this.showAlert(
-              `Students with id {${changed}} can take the exam again`,
+              `Students with id {${this.selected}} can take the exam again`,
               "success"
             );
-          }
-          if (unchanged.length > 0) {
-            this.m = `Students with id {${unchanged}} cannot take the exam again because they are succeeded`;
-            this.show = true;
+          } else {
+            this.showAlert(
+              `Students with id {${this.selected}} have chance to take the exam again already `,
+              "danger"
+            );
           }
         })
         .catch(error => error => {

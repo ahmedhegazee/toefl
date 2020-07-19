@@ -96,7 +96,7 @@
 export default {
   mounted() {
     axios
-      .get("/reservations/examined")
+      .get("/reservations/closed")
       .then(response => {
         this.reservations = response.data;
         if (this.reservations.length == 0) {

@@ -25,10 +25,10 @@ endif; ?>
 <?php for($i=0;$i<4;$i++): ?>
 
 <div class="form-group row">
-    <label for="options.<?php echo e($i); ?>" class="col-md-4 col-form-label text-md-right"> <?php echo e($options[$i]); ?></label>
+    <label for="options<?php echo e($i); ?>" class="col-md-4 col-form-label text-md-right"> <?php echo e($options[$i]); ?></label>
 
     <div class="col-md-6">
-        <input id="options.<?php echo e($i); ?>" type="text" pattern="[A-Za-z0-9 ]+" class="form-control <?php if($errors->has('options.'.$i)): ?> is-invalid <?php endif; ?>" name="options[<?php echo e($i); ?>]"
+        <input id="options<?php echo e($i); ?>" type="text" pattern="[A-Za-z0-9 ]+" class="form-control <?php if($errors->has('options.'.$i)): ?> is-invalid <?php endif; ?>" name="options[<?php echo e($i); ?>]"
             value="<?php echo e($question->options[$i]->content??old('options.'.$i)); ?>"       required>
         <?php if ($errors->has('options.'.$i)) :
 if (isset($message)) { $messageCache = $message; }

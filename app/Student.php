@@ -177,10 +177,22 @@ class Student extends Model
             ];
         });
     }
-
-    public static function getExaminedStudents($students)
+    public static function filterStudents($students, $group)
     {
-        return $students->map(function ($student) {
+        return $students->filter(function ($student) use ($group) {
+            return $student->attempts->where('group_id', $group->id)->count() > 0;
+        })->filter(function ($student) use ($group) {
+            return !is_null($student->attempts()->where('group_id', $group->id)->get()->first()->result);
+        })
+            ->filter(function ($student) use ($group) {
+                return $student->attempts()->where('group_id', $group->id)->get()->first()->result->success == 0
+                    && $student->reservation->last()->id == $group->reservation->id;
+            });
+    }
+    public static function getExaminedStudents($students, $group)
+    {
+
+        return Student::filterStudents($students, $group)->map(function ($student) {
             return [
                 'check' => '',
                 'id' => $student->id,

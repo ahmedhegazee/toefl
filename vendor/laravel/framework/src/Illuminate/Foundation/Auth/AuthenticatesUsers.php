@@ -38,8 +38,10 @@ trait AuthenticatesUsers
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
-        if (method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request)) {
+        if (
+            method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)
+        ) {
             $this->fireLockoutEvent($request);
 
             return $this->sendLockoutResponse($request);
@@ -82,7 +84,8 @@ trait AuthenticatesUsers
     protected function attemptLogin(Request $request)
     {
         return $this->guard()->attempt(
-            $this->credentials($request), $request->filled('remember')
+            $this->credentials($request),
+            $request->filled('remember')
         );
     }
 
@@ -114,30 +117,30 @@ trait AuthenticatesUsers
     }
     public function isAdmin($user)
     {
-        return $user->roles->contains(1);
+        return $user->roles->contains(1) || $user->roles->contains(2);
     }
     public function isStudent($user)
     {
-        return $user->roles->contains(2);
+        return $user->roles->contains(3);
     }
     public function hasAttempt($user)
     {
-        $student =$user->getStudent();
-        $attempt=  Attempt::where('student_id',$student->id)
-            ->where('reservation_id',$student->reservation->last()->id)
-            ->where('group_id',$student->group->last()->id)->get()->first();
-//      dd($attempt);
-        if(!is_null($attempt)) {
-//                if (!is_null($attempt->result))
+        $student = $user->getStudent();
+        $attempt =  Attempt::where('student_id', $student->id)
+            ->where('reservation_id', $student->reservation->last()->id)
+            ->where('group_id', $student->group->last()->id)->get()->first();
+        //      dd($attempt);
+        if (!is_null($attempt)) {
+            //                if (!is_null($attempt->result))
             return true;
-        }
-        else
+        } else
             return false;
     }
 
     public function isOnline($user)
-    { $student =$user->getStudent();
-        return $student->isOnline()=='active';
+    {
+        $student = $user->getStudent();
+        return $student->isOnline() == 'active';
     }
 
     /**
@@ -149,20 +152,18 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-        if($this->isAdmin($user))
+        if ($this->isAdmin($user))
             return redirect()->route('admin');
-        else if($this->isStudent($user))
-        {
-            if($this->hasAttempt($user)||$this->isOnline($user)){
+        else if ($this->isStudent($user)) {
+            if ($this->hasAttempt($user) || $this->isOnline($user)) {
                 auth()->logout();
-                return redirect()->route('error')->with('error','you have only one attempt to take the exam');
-            }else{
+                return redirect()->route('error')->with('error', 'you have only one attempt to take the exam');
+            } else {
                 $expiresAt = Carbon::now()->addMinutes(5);
                 Cache::put('student-is-online-' . $user->getStudent()->id, true, $expiresAt);
 
                 return redirect()->route('student.home');
             }
-
         }
     }
 

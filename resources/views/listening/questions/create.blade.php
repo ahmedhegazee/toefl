@@ -7,7 +7,7 @@
             @include('layouts.questions')
             <div class="row justify-content-end pr-5">
 
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" id="button" class="btn btn-primary">
                 {{ __('Add Listening Question') }}
             </button>
             </div>
