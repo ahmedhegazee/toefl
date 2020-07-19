@@ -17,10 +17,10 @@
 @for($i=0;$i<4;$i++)
 
 <div class="form-group row">
-    <label for="options.{{$i}}" class="col-md-4 col-form-label text-md-right"> {{$options[$i]}}</label>
+    <label for="options{{$i}}" class="col-md-4 col-form-label text-md-right"> {{$options[$i]}}</label>
 
     <div class="col-md-6">
-        <input id="options.{{$i}}" type="text" pattern="[A-Za-z0-9 ]+" class="form-control @if($errors->has('options.'.$i)) is-invalid @endif" name="options[{{$i}}]"
+        <input id="options{{$i}}" type="text" pattern="[A-Za-z0-9 ]+" class="form-control @if($errors->has('options.'.$i)) is-invalid @endif" name="options[{{$i}}]"
             value="{{$question->options[$i]->content??old('options.'.$i)}}"       required>
         @error('options.'.$i)
         <span class="invalid-feedback" role="alert">

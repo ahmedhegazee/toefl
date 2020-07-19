@@ -6,8 +6,8 @@
             Your browser does not support the audio element.
         </audio>
         <br>
-        <a href="<?php echo e(route('listening.question.create',compact('audio'))); ?>" class="btn btn-primary mt-2 mr-4">Add Listening Question</a>
-        <a href="<?php echo e(route('listening.multiple-questions',compact('audio'))); ?>" class="btn btn-primary mt-2">Add Multiple Listening Question</a>
+        <a href="<?php echo e(route('listening.question.create',compact('audio'))); ?>" id="add-question" class="btn btn-primary mt-2 mr-4">Add Listening Question</a>
+        <a href="<?php echo e(route('listening.multiple-questions',compact('audio'))); ?>" id="multiple-questions" class="btn btn-primary mt-2">Add Multiple Listening Question</a>
 
 
 

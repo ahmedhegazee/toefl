@@ -437,6 +437,7 @@ class ComposerStaticInitf6dde4b206199af9a5bab2b6faaa40fa
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
         'App\\Http\\Controllers\\Auth\\ResetPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ResetPasswordController.php',
         'App\\Http\\Controllers\\Auth\\VerificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/VerificationController.php',
+        'App\\Http\\Controllers\\ComputersIPController' => __DIR__ . '/../..' . '/app/Http/Controllers/ComputersIPController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\ExamsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ExamsController.php',
         'App\\Http\\Controllers\\GrammarControllers\\GrammarExamController' => __DIR__ . '/../..' . '/app/Http/Controllers/GrammarControllers/GrammarExamController.php',

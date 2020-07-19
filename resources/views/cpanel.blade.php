@@ -174,6 +174,9 @@
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
                                                     href="{{route('cpanel.users-panel')}}" aria-expanded="false">
                                 <i class="fas fa-users mr-2 ml-1 fa-1x"></i><span class="hide-menu">Users Panel</span></a></li>
+     {{-- <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                                    href="{{route('cpanel.computers-panel')}}" aria-expanded="false">
+                                <i class="fas fa-network-wired mr-2 ml-1 fa-1x"></i><span class="hide-menu">Computers Panel</span></a></li> --}}
                     @endif
                         @if(auth()->user()->canManageGrammarSection())
                         <li class="sidebar-item"><a class="sidebar-link waves-effect waves-dark sidebar-link"

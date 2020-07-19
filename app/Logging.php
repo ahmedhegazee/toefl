@@ -4,6 +4,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class Logging{
+    // private  static Logging $instance = new Logging();
+    // private __construct(){}
     public static function logAdmin(User $user,$message)
     {
         $time =Carbon::now()->toDateTimeString();
@@ -24,4 +26,3 @@ class Logging{
         Log::channel('studentsSteps')->info($data);
     }
 }
-?>

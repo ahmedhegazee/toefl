@@ -218,22 +218,21 @@ class ApiController extends Controller
                 'start' => $reservation->start
             ];
         })->toArray();
-        dd($reservations);
+        // dd($reservations);
         return response()->json($reservations);
     }
-    public function getExaminedReservations()
-    {
-
-        $reservations = Reservation::closed(1)->examined(1)->get()->filter(function ($reservation) {
-            return $reservation->groups->where("is_examined", 1)->count() > 0;
-        })->map(function ($reservation) {
-            return [
-                'id' => $reservation->id,
-                'start' => $reservation->start
-            ];
-        })->toArray();
-        return response()->json($reservations);
-    }
+    // public function getExaminedReservations()
+    // {
+    //     $reservations = Reservation::closed(1)->examined(1)->get()->filter(function ($reservation) {
+    //         return $reservation->groups->where("is_examined", 1)->count() > 0;
+    //     })->map(function ($reservation) {
+    //         return [
+    //             'id' => $reservation->id,
+    //             'start' => $reservation->start
+    //         ];
+    //     })->toArray();
+    //     return response()->json($reservations);
+    // }
 
     public function getExaminedGroups(Reservation $res)
     {
@@ -242,9 +241,10 @@ class ApiController extends Controller
 
     public function getExaminedStudents(Group $group)
     {
-        $students = Student::getExaminedStudents($group->students);
+        $students = Student::getExaminedStudents($group->students, $group);
         $count = $students->count();
-        $students = $students->all();
+        $students = $students->values()->all();
+        // $students = $students->all();
         return response()->json(['students' => $students, 'count' => $count]);
     }
 
@@ -252,26 +252,30 @@ class ApiController extends Controller
     {
         $reservation = Reservation::find($request->get('reservation'));
         $group = Group::find($request->get('group'));
-        $students = Student::whereIn('id', $request->get('students'))->get()
-            ->filter(function ($student) use ($reservation, $group) {
-                //            $attempt = Attempt::where('student_id', $student->id)
-                //                ->where('reservation_id', $reservation->id)
-                //                ->where('group_id', $group->id)->get()->first();
-                return $student->attempts()->where('reservation_id', $reservation->id)
-                    ->where('group_id', $group->id)->get()->first()->success == 0
-                    && $student->reservation->last()->id == $reservation->id;
-                //            return $student->results->last()->success == 0 && $attempt->result->id == $student->results->last()->id;
+        // $students = Student::whereIn('id', $request->get('students'))->get()
+        //     ->filter(function ($student) use ($reservation, $group) {
+        //         //            $attempt = Attempt::where('student_id', $student->id)
+        //         //                ->where('reservation_id', $reservation->id)
+        //         //                ->where('group_id', $group->id)->get()->first();
+        //         return $student->attempts()->where('reservation_id', $reservation->id)
+        //             ->where('group_id', $group->id)->get()->first()->result->success == 0
+        //             && $student->reservation->last()->id == $reservation->id;
+        //         //            return $student->results->last()->success == 0 && $attempt->result->id == $student->results->last()->id;
+        //     });
+        // //        dd($students);
+        $ids = $request->get('students');
+        $students = Student::filterStudents(Student::whereIn('id', $ids)->get(), $group);
+        if (sizeof($students)) {
+            $students->each(function ($student) {
+                $student->attempts->last()->result->delete();
+                $student->attempts->last()->delete();
             });
-        //        dd($students);
-        $ids = $students->each(function ($student) {
-            $student->attempts->last()->result->delete();
-            $student->attempts->last()->delete();
-        })->pluck('id')->all();
-        if (sizeof($ids)) {
             $reservation->update(['is_examined' => 0]);
             $group->update(['is_examined' => 0]);
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false]);
         }
-        return response()->json($ids);
     }
 
     //    public function getReservations()

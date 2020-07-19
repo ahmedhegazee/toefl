@@ -20,28 +20,28 @@ class GrammarQuestionsController extends Controller
      */
     public function index()
     {
-//        $questions = GrammarQuestion::with('options','type')->paginate(15);
-//        $questions1 = GrammarQuestion::all()
-//            ->map(function ($question) {
-//                return [
-//                    'id' => $question->id,
-//                    'Question' => $question->content,
-//                    'Question Type' => $question->type->name,
-//                    'First Option' => $question->options[0]->content,
-//                    'Second Option' => $question->options[1]->content,
-//                    'Third Option' => $question->options[2]->content,
-//                    'Fourth Option' => $question->options[3]->content,
-//                    'Correct Answer' => Question::getCorrectAnswer($question->options),
-//                    'actions' => '',
-//                ];
-//            })->values()->toArray();
+        //        $questions = GrammarQuestion::with('options','type')->paginate(15);
+        //        $questions1 = GrammarQuestion::all()
+        //            ->map(function ($question) {
+        //                return [
+        //                    'id' => $question->id,
+        //                    'Question' => $question->content,
+        //                    'Question Type' => $question->type->name,
+        //                    'First Option' => $question->options[0]->content,
+        //                    'Second Option' => $question->options[1]->content,
+        //                    'Third Option' => $question->options[2]->content,
+        //                    'Fourth Option' => $question->options[3]->content,
+        //                    'Correct Answer' => Question::getCorrectAnswer($question->options),
+        //                    'actions' => '',
+        //                ];
+        //            })->values()->toArray();
         $questions1 = Question::getGrammarQuestions(GrammarQuestion::paginate(50));
-//        $questions1 = json_encode($questions1);
-//        dd($questions1);
-//        return view('grammar.questions.index',compact('questions','questions1'));
-//        return view('grammar.questions.index', compact('questions1'));
-        $count=GrammarQuestion::all()->count();
-    return response()->json(['questions'=>$questions1,'count'=>$count]);
+        //        $questions1 = json_encode($questions1);
+        //        dd($questions1);
+        //        return view('grammar.questions.index',compact('questions','questions1'));
+        //        return view('grammar.questions.index', compact('questions1'));
+        $count = GrammarQuestion::all()->count();
+        return response()->json(['questions' => $questions1, 'count' => $count]);
     }
 
 
@@ -109,7 +109,6 @@ class GrammarQuestionsController extends Controller
         ];
         $types = GrammarQuestionType::all();
         return view('grammar.questions.update', compact('question', 'options', 'types'));
-
     }
 
     /**
@@ -160,21 +159,21 @@ class GrammarQuestionsController extends Controller
             $check = true;
         }
         return response()->json(['success' => $check]);
-//        return Redirect::action('GrammarQuestionsController@index');
+        //        return Redirect::action('GrammarQuestionsController@index');
 
     }
 
     public function showMultipleQuestions()
     {
-        $title="Add Multiple Grammar Questions";
-        $isGrammar='true';
-        $storeRoute=route('grammar.multiple-questions.store');
-        $redirectRoute=route('grammar.questions-panel');
-        return view('multiple-questions',compact('isGrammar','redirectRoute','storeRoute','title'));
-}
+        $title = "Add Multiple Grammar Questions";
+        $isGrammar = 'true';
+        $storeRoute = route('grammar.multiple-questions.store');
+        $redirectRoute = route('grammar.questions-panel');
+        return view('multiple-questions', compact('isGrammar', 'redirectRoute', 'storeRoute', 'title'));
+    }
     public function storeMultipleQuestions(Request $request)
     {
-//        dd(collect($request->questions));
+        //        dd(collect($request->questions));
         collect($request->questions)->map(function ($question) {
             $question1 = GrammarQuestion::create([
                 'content' => $question['question'],
@@ -195,9 +194,7 @@ class GrammarQuestionsController extends Controller
                 'content' => $question['Fourth Option']
             ]);
             $question1->options[$question['correct'] - 1]->update(['correct' => 1]);
-
         });
-
     }
 
     /**
@@ -222,7 +219,5 @@ class GrammarQuestionsController extends Controller
             'type' => 'required|numeric'
         ];
         return Validator::make($data, $roles, $message);
-
     }
-
 }

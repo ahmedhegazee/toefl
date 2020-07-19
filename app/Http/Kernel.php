@@ -65,12 +65,12 @@ class Kernel extends HttpKernel
 
         'available' => \App\Http\Middleware\isAvailableReservation::class,
         'check_roles' => \App\Http\Middleware\checkRoles::class,
-//Students Middleware
+        //Students Middleware
         'student_is_online' => \App\Http\Middleware\StudentMiddlewares\studentLastActivity::class,
         'check_student' => \App\Http\Middleware\StudentMiddlewares\checkStudent::class,
         'can_start_exam' => \App\Http\Middleware\StudentMiddlewares\canStartExam::class,
-//Admin Middleware
-        'admin' => \App\Http\Middleware\AdminMiddleware\admin::class,
+        //Admin Middleware
+        'is-admin-professor' => \App\Http\Middleware\AdminMiddleware\isAdminOrProfessor::class,
         'super-admin' => \App\Http\Middleware\AdminMiddleware\isSuperAdmin::class,
         'manage-reading' => \App\Http\Middleware\AdminMiddleware\adminCanManageReadingSection::class,
         'manage-listening' => \App\Http\Middleware\AdminMiddleware\adminCanManageListeningSection::class,

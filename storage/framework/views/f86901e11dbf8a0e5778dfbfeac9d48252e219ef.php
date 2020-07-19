@@ -5,7 +5,7 @@
             <?php echo $__env->make('listening.audio.form', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             <div class="row justify-content-end pr-5">
 
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" id="button" class="btn btn-primary">
                 <?php echo e(__('Add Audio')); ?>
 
             </button>
